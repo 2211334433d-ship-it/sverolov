@@ -1,0 +1,2016 @@
+<!doctype html>
+<html lang="ru" data-halloween>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сферолов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef3ec; --surface:#ffffff; --surface-2:#f1f5ef; --text:#1c2a20; --muted:#55665a; --border:#d3ddd0;
+  --accent:#2f7d5b; --on-accent:#ffffff; --danger:#c2453b; --glass:rgba(255,255,255,.86);
+  --toast-bg:#1f2a22; --toast-text:#ffffff; --shadow:0 8px 24px rgba(20,40,25,.14);
+  --sky-top:#8ccaf2; --sky-bottom:#e2f4ff; --ground-top:#a9db8c; --ground-bottom:#6cb65f;
+  --hill-1:#bfe0cf; --hill-2:#97cc8b; --grass:#4d9447; --cloud:#ffffff; --cloud-alpha:.9;
+  --sun:#fff1a8; --star:#ffffff; --star-alpha:0; --fog:rgba(255,255,255,0);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1411; --surface:#18201b; --surface-2:#212b25; --text:#e7efe9; --muted:#9caca1; --border:#2d3932;
+    --accent:#5cc493; --on-accent:#0c1d14; --danger:#ff7a6e; --glass:rgba(18,26,22,.82);
+    --toast-bg:#eef3ef; --toast-text:#13201a; --shadow:0 8px 24px rgba(0,0,0,.45);
+    --sky-top:#0a1230; --sky-bottom:#2b3b6e; --ground-top:#2f5a3c; --ground-bottom:#183424;
+    --hill-1:#22385a; --hill-2:#27503b; --grass:#4a8a58; --cloud:#9fb0e0; --cloud-alpha:.14;
+    --sun:#eef0ff; --star:#ffffff; --star-alpha:1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1411; --surface:#18201b; --surface-2:#212b25; --text:#e7efe9; --muted:#9caca1; --border:#2d3932;
+  --accent:#5cc493; --on-accent:#0c1d14; --danger:#ff7a6e; --glass:rgba(18,26,22,.82);
+  --toast-bg:#eef3ef; --toast-text:#13201a; --shadow:0 8px 24px rgba(0,0,0,.45);
+  --sky-top:#0a1230; --sky-bottom:#2b3b6e; --ground-top:#2f5a3c; --ground-bottom:#183424;
+  --hill-1:#22385a; --hill-2:#27503b; --grass:#4a8a58; --cloud:#9fb0e0; --cloud-alpha:.14;
+  --sun:#eef0ff; --star:#ffffff; --star-alpha:1;
+  color-scheme:dark;
+}
+/* Хэллоуин: включается атрибутом data-halloween у <html> */
+:root[data-halloween]{
+  --bg:#f4efe8; --surface:#ffffff; --surface-2:#f7eee4; --text:#24192e; --muted:#6b5a75; --border:#e6d8c8;
+  --accent:#d9620f; --on-accent:#ffffff; --danger:#c2453b; --glass:rgba(255,250,244,.86);
+  --toast-bg:#2a1d36; --toast-text:#ffffff; --shadow:0 8px 24px rgba(60,30,70,.16);
+  --sky-top:#4b3576; --sky-bottom:#f39a5b; --ground-top:#7ea35d; --ground-bottom:#4a7340;
+  --hill-1:#6b5b8e; --hill-2:#4f6e45; --grass:#3f6b37; --cloud:#ffe2cc; --cloud-alpha:.35;
+  --sun:#fff3c4; --star:#ffffff; --star-alpha:.55; --fog:rgba(255,240,255,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-halloween]:not([data-theme="light"]){
+    --bg:#100c15; --surface:#1b1622; --surface-2:#251e2e; --text:#eee7f5; --muted:#a898b5; --border:#342a40;
+    --accent:#ff9a3c; --on-accent:#1d1206; --danger:#ff7a6e; --glass:rgba(24,18,32,.82);
+    --toast-bg:#f3ecfa; --toast-text:#1d1426; --shadow:0 8px 24px rgba(0,0,0,.5);
+    --sky-top:#07051a; --sky-bottom:#3b1d52; --ground-top:#2a3a2b; --ground-bottom:#121b14;
+    --hill-1:#21173a; --hill-2:#1b2b20; --grass:#3d6a45; --cloud:#9d8cc9; --cloud-alpha:.12;
+    --sun:#ffcf6b; --star:#ffffff; --star-alpha:1; --fog:rgba(170,150,230,.10);
+    color-scheme:dark;
+  }
+}
+:root[data-halloween][data-theme="dark"]{
+    --bg:#100c15; --surface:#1b1622; --surface-2:#251e2e; --text:#eee7f5; --muted:#a898b5; --border:#342a40;
+    --accent:#ff9a3c; --on-accent:#1d1206; --danger:#ff7a6e; --glass:rgba(24,18,32,.82);
+    --toast-bg:#f3ecfa; --toast-text:#1d1426; --shadow:0 8px 24px rgba(0,0,0,.5);
+    --sky-top:#07051a; --sky-bottom:#3b1d52; --ground-top:#2a3a2b; --ground-bottom:#121b14;
+    --hill-1:#21173a; --hill-2:#1b2b20; --grass:#3d6a45; --cloud:#9d8cc9; --cloud-alpha:.12;
+    --sun:#ffcf6b; --star:#ffffff; --star-alpha:1; --fog:rgba(170,150,230,.10);
+    color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  height:100%;margin:0;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--bg);color:var(--text);
+  font-family:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+button{font:inherit;color:inherit}
+input{font:inherit;color:inherit;user-select:text;-webkit-user-select:text}
+[hidden]{display:none !important}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h2{margin:0;font-size:1.12rem;font-weight:900}
+
+/* шапка */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:1.15rem;letter-spacing:-.01em}
+.logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff7cc,#f2b632 60%,#8f6100);color:#fff;font-size:14px;
+  box-shadow:0 0 0 3px rgba(242,182,50,.25)}
+.wallet{display:flex;align-items:center;gap:7px;padding:6px 12px 6px 7px;border-radius:999px;border:1px solid var(--border);background:var(--surface)}
+.coins{font-weight:900;font-variant-numeric:tabular-nums}
+.wallet small{font-weight:800;color:var(--muted);font-size:.78rem}
+.coin{display:inline-block;flex:none;width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff3b0,#f2b632 55%,#a86f00);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.coin.sm{width:15px;height:15px;vertical-align:-2px}
+.bump{animation:bump .5s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+/* экраны */
+.screens{position:relative;flex:1;min-height:0}
+.screen{position:absolute;inset:0;display:none}
+.screen.active{display:flex;flex-direction:column}
+.scroll{overflow-y:auto;overscroll-behavior:contain;padding:2px 12px 16px;gap:12px}
+
+/* охота */
+.stage{position:relative;flex:1;min-height:0;margin:0 10px;border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+#game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.info{position:absolute;top:10px;left:10px;right:10px;display:flex;align-items:center;gap:10px;
+  padding:8px 8px 8px 14px;border-radius:16px;background:var(--glass);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.info-main{flex:1;min-width:0}
+.name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cname{font-weight:900;font-size:1.05rem}
+.line{margin-top:1px;font-size:.8rem;line-height:1.3;color:var(--muted);font-weight:700}
+.line b{color:var(--text);font-weight:900}
+.line.far,.line.far b{color:var(--danger)}
+.skip{flex:none;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:1.15rem;cursor:pointer}
+.orbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:8px 10px}
+.orb-btn{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:4px 2px 6px;
+  border-radius:14px;border:2px solid var(--border);background:var(--surface);cursor:pointer;transition:border-color .15s ease}
+.orb-btn canvas{width:38px;height:38px}
+.orb-btn.sel{border-color:var(--accent);background:var(--surface-2)}
+.orb-btn:disabled{opacity:.4;cursor:not-allowed}
+.orb-mult{font-size:.72rem;font-weight:900;color:var(--muted)}
+.orb-count{position:absolute;top:3px;right:6px;font-size:.72rem;font-weight:900}
+
+/* нижнее меню */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 8px 8px;border-top:1px solid var(--border);background:var(--surface)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:0;border-radius:12px;background:none;
+  color:var(--muted);font-weight:800;font-size:.76rem;cursor:pointer}
+.tab svg{width:24px;height:24px}
+.tab.active{color:var(--accent);background:var(--surface-2)}
+
+/* карточки, списки, кнопки */
+.card{flex:none;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pill{padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted);font-weight:800;font-size:.8rem;white-space:nowrap}
+.sub{margin:4px 0 0;color:var(--muted);font-weight:700;font-size:.86rem;line-height:1.4}
+.sub b{color:var(--text);font-weight:900}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 12px;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface-2);font-weight:800;font-size:.86rem;cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{background:none;border-color:var(--danger);color:var(--danger)}
+.btn.wide{width:100%;margin-top:10px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.row-btns .btn{flex:1 1 auto}
+#penCanvas{display:block;width:100%;height:220px;margin-top:10px;border-radius:14px;touch-action:pan-y}
+.list{display:grid;gap:8px;margin-top:10px}
+.item{display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:10px;row-gap:6px;align-items:center;
+  padding:8px 10px 10px 8px;border-radius:14px;background:var(--surface-2)}
+.item canvas{width:52px;height:52px;grid-row:1 / span 2;align-self:start}
+.item-name{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-weight:900}
+.item-meta{margin-top:2px;color:var(--muted);font-weight:700;font-size:.8rem;line-height:1.35}
+.item-actions{display:flex;flex-wrap:wrap;gap:6px}
+.item-actions .btn{padding:7px 10px;font-size:.8rem}
+.empty{margin:6px 0 0;color:var(--muted);font-weight:700}
+.bar{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0 6px}
+.bar i{height:10px;border-radius:4px;background:var(--surface-2);border:1px solid var(--border)}
+.bar i.on{background:var(--accent);border-color:var(--accent)}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px}
+.mon{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px 10px;border-radius:14px;background:var(--surface-2);text-align:center}
+.mon canvas{width:72px;height:72px}
+.mon-name{font-weight:900;font-size:.86rem}
+.mon-meta{color:var(--muted);font-weight:700;font-size:.74rem}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;background:var(--badge,#6b7a6d);color:var(--badge-text,#fff);
+  box-shadow:inset 0 0 0 1px var(--badge-ring,transparent);font-size:.7rem;font-weight:800;white-space:nowrap}
+.formula{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-weight:800;line-height:1.45}
+.formula span{color:var(--muted);font-weight:700;font-size:.86rem}
+.table-wrap{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{color:var(--muted);font-weight:800}
+td{font-weight:700}
+.note{margin:10px 0 0;color:var(--muted);font-size:.86rem;line-height:1.5;font-weight:700}
+
+.toast{position:fixed;left:50%;top:70px;z-index:30;max-width:min(90vw,440px);padding:8px 15px;border-radius:18px;
+  background:var(--toast-bg);color:var(--toast-text);font-weight:800;font-size:.9rem;line-height:1.3;text-align:center;
+  opacity:0;transform:translate(-50%,-6px);transition:opacity .2s ease,transform .2s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.good{background:#2b9a5c;color:#fff}
+.toast.bad{background:#c2453b;color:#fff}
+:root[data-halloween] .toast.good{background:#6b3fb5}
+.logo.pumpkin{background:none;box-shadow:none;font-size:24px}
+.pass-row{display:flex;gap:8px;margin-top:10px}
+.pass-row input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);font-weight:700;font-size:1rem}
+.pass-row input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px}
+.mini{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 10px;border-radius:14px;background:var(--surface-2);text-align:center}
+.mini canvas{width:56px;height:56px}
+.mini .btn{margin-top:2px;padding:6px 10px;font-size:.78rem}
+@media (prefers-reduced-motion: reduce){ .bump{animation:none} .toast{transition:none} }
+</style>
+</head>
+<body>
+<header class="top" id="top">
+  <div class="brand"><span class="logo" aria-hidden="true">✦</span>Сферолов</div>
+  <div class="wallet" id="wallet"><span class="coin" aria-hidden="true"></span><span class="coins" id="coins">0</span><small id="income">+0/с</small></div>
+</header>
+
+<main class="screens">
+  <section class="screen active" id="scr-hunt" aria-label="Охота">
+    <div class="stage" id="stage">
+      <canvas id="game" role="img" aria-label="Поляна со зверьком. Смахни сферу вверх, чтобы бросить её."></canvas>
+      <div class="info" id="info">
+        <div class="info-main">
+          <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span></div>
+          <div class="line" id="cChance"></div>
+          <div class="line" id="cDist"></div>
+        </div>
+        <button class="skip" id="skipBtn" type="button" title="Искать другого зверька" aria-label="Искать другого зверька">↻</button>
+      </div>
+    </div>
+    <nav class="orbs" id="orbs" aria-label="Выбор сферы"></nav>
+  </section>
+
+  <section class="screen scroll" id="scr-farm" aria-label="Ферма">
+    <div class="card">
+      <div class="card-head"><h2>Загон</h2><span class="pill" id="penSlots"></span></div>
+      <canvas id="penCanvas" aria-label="Загон со зверьками"></canvas>
+      <p class="sub">Загон приносит <b id="penIncome">0</b> монет в секунду, даже когда игра закрыта (до 2 часов).</p>
+      <div class="row-btns"><button class="btn" id="penFill" type="button">Посадить лучших</button><span id="penUpWrap" style="display:contents"></span></div>
+    </div>
+    <div class="card">
+      <h2>Твои зверьки</h2>
+      <p class="sub">Сажай зверьков в загон, чтобы они приносили монеты. Лишних можно продать.</p>
+      <div class="list" id="petList"></div>
+    </div>
+  </section>
+
+  <section class="screen scroll" id="scr-shop" aria-label="Магазин">
+    <div class="card">
+      <h2>Сферы</h2>
+      <p class="sub">Чем лучше сфера, тем выше шанс поимки. Промах сферу не тратит.</p>
+      <div class="list" id="shopOrbs"></div>
+    </div>
+    <div class="card" id="armCard"></div>
+    <div class="card" id="penShopCard"></div>
+    <div class="card" id="adminCard">
+      <h2>Панель администратора</h2>
+      <div id="adminLock">
+        <p class="sub">Введи пароль, чтобы открыть панель.</p>
+        <div class="pass-row">
+          <input id="adminPass" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Пароль" aria-label="Пароль">
+          <button class="btn" id="adminEye" type="button" aria-label="Показать пароль">👁</button>
+        </div>
+        <button class="btn primary wide" id="adminLogin" type="button">Войти</button>
+      </div>
+      <div id="adminBody" hidden>
+        <p class="sub">Панель открыта. Здесь можно выдать себе монеты и любых зверьков.</p>
+        <button class="btn primary wide" id="adminCoins" type="button">Добавить 10 000 монет</button>
+        <p class="sub" style="margin-top:14px">Получить зверька:</p>
+        <div class="mini-grid" id="adminPets"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen scroll" id="scr-album" aria-label="Альбом">
+    <div class="card">
+      <div class="card-head"><h2>Альбом зверьков</h2><span class="pill" id="albumCount"></span></div>
+      <div class="album" id="albumGrid"></div>
+    </div>
+    <div class="card">
+      <h2>Как устроена поимка</h2>
+      <p class="formula">шанс = база редкости × множитель сферы × бонус броска<br><span>не больше 100%</span></p>
+      <div class="table-wrap"><table id="rules"></table></div>
+      <p class="note" id="rulesNote"></p>
+    </div>
+    <button class="btn danger" id="resetBtn" type="button">Начать игру заново</button>
+  </section>
+</main>
+
+<nav class="tabs" role="tablist" aria-label="Разделы">
+  <button class="tab active" type="button" role="tab" aria-selected="true" data-tab="hunt">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+    <span>Охота</span>
+  </button>
+  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="farm">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V8l2-3 2 3v13M15 21V8l2-3 2 3v13M2 11h20M2 17h20"/></svg>
+    <span>Ферма</span>
+  </button>
+  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="shop">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    <span>Магазин</span>
+  </button>
+  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="album">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M9 9h6M9 13h4"/></svg>
+    <span>Альбом</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ======================= НАСТРОЙКИ БАЛАНСА ======================= */
+// base — базовый шанс поимки, flee — шанс побега после неудачи, weight — как часто встречается,
+// dist — на каком расстоянии стоит (метры), move — насколько бегает по поляне
+const HALLOWEEN = true; // false — выключить хэллоуинское оформление
+const RARITY_ORDER = ['common','uncommon','rare','epic','legendary','mythic','secret','divine','pet'];
+const RARITY = {
+  common:    { name:'Обычный',      many:'обычных',      base:0.65,  flee:0.05, weight:400, dist:[6,10],  move:0.00, color:'#6b7a6d', text:'#ffffff', aura:null },
+  uncommon:  { name:'Необычный',    many:'необычных',    base:0.45,  flee:0.08, weight:250, dist:[10,16], move:0.03, color:'#2e8b4a', text:'#ffffff', aura:null },
+  rare:      { name:'Редкий',       many:'редких',       base:0.30,  flee:0.12, weight:150, dist:[16,22], move:0.05, color:'#2f6fc7', text:'#ffffff', aura:'#2f6fc7' },
+  epic:      { name:'Эпический',    many:'эпических',    base:0.18,  flee:0.16, weight:90,  dist:[22,28], move:0.07, color:'#8a3fc6', text:'#ffffff', aura:'#8a3fc6' },
+  legendary: { name:'Легендарный',  many:'легендарных',  base:0.10,  flee:0.22, weight:50,  dist:[28,34], move:0.09, color:'#f0b429', text:'#2a1d00', aura:'#f0b429' },
+  mythic:    { name:'Мифический',   many:'мифических',   base:0.05,  flee:0.28, weight:30,  dist:[34,44], move:0.10, color:'#e0413a', text:'#ffffff', aura:'#ff5a4f' },
+  secret:    { name:'Секретный',    many:'секретных',    base:0.025, flee:0.34, weight:18,  dist:[44,54], move:0.11, color:'#2a2440', text:'#e3d9ff', ring:'#8f7cff', aura:'#7c4dff' },
+  divine:    { name:'Божественный', many:'божественных', base:0.01,  flee:0.40, weight:12,  dist:[54,64], move:0.12,
+               color:'linear-gradient(90deg,#ffd54f,#ff8a65,#ba68c8,#4fc3f7)', text:'#1d1430', aura:'#fff59d' },
+  pet:       { name:'Любимчик',     many:'любимчиков',   base:0.008, flee:0.30, weight:8,   dist:[64,70], move:0.12,
+               color:'linear-gradient(90deg,#ff5f9e,#ff9a6b)', text:'#ffffff', aura:'#ff7eb6' },
+};
+
+// 20 зверьков. income — сколько монет в секунду приносит в загоне
+const SPECIES = [
+  { id:'puff',    name:'Пухляш',     rarity:'common',    income:1,   body:'#f6c7d7', belly:'#fff1f6', feat:'ears' },
+  { id:'rock',    name:'Камушек',    rarity:'common',    income:1,   body:'#b4bcc4', belly:'#e3e7eb', feat:'rock' },
+  { id:'mush',    name:'Грибочек',   rarity:'common',    income:2,   body:'#f3e0c0', belly:'#fff8ec', feat:'cap' },
+  { id:'bubble',  name:'Пузырёк',    rarity:'common',    income:2,   body:'#a7d8f0', belly:'#ebf8ff', feat:'bubbles' },
+  { id:'leaf',    name:'Листохвост', rarity:'uncommon',  income:3,   body:'#9bd68f', belly:'#ecf9e3', feat:'leaf' },
+  { id:'firefly', name:'Светлячок',  rarity:'uncommon',  income:4,   body:'#cfe39a', belly:'#f6fbe6', feat:'antennae' },
+  { id:'shell',   name:'Ракушонок',  rarity:'uncommon',  income:3,   body:'#ffcc80', belly:'#fff3e0', feat:'shell' },
+  { id:'flame',   name:'Огонёк',     rarity:'uncommon',  income:4,   body:'#ffab91', belly:'#fff1ea', feat:'flame' },
+  { id:'spark',   name:'Искрокрыл',  rarity:'rare',      income:7,   body:'#86c8ff', belly:'#e6f4ff', feat:'wings' },
+  { id:'fin',     name:'Плавничок',  rarity:'rare',      income:8,   body:'#80cbc4', belly:'#e0f2f1', feat:'fins' },
+  { id:'spiky',   name:'Колючик',    rarity:'rare',      income:7,   body:'#c8b6ae', belly:'#f3eeeb', feat:'spikes' },
+  { id:'mist',    name:'Туманорог',  rarity:'epic',      income:16,  body:'#bda8f2', belly:'#f1ebff', feat:'horn' },
+  { id:'crystal', name:'Кристаллик', rarity:'epic',      income:18,  body:'#b3e5fc', belly:'#e9f8ff', feat:'crystal' },
+  { id:'storm',   name:'Громовик',   rarity:'epic',      income:17,  body:'#a3b4bd', belly:'#eef2f4', feat:'cloud' },
+  { id:'star',    name:'Звездогрив', rarity:'legendary', income:40,  body:'#ffd86e', belly:'#fff7d6', feat:'mane' },
+  { id:'moon',    name:'Лунохвост',  rarity:'legendary', income:45,  body:'#c5cae9', belly:'#f4f5ff', feat:'moon' },
+  { id:'dragon',  name:'Драконыш',   rarity:'mythic',    income:110, body:'#ef9a9a', belly:'#fff0f0', feat:'dragon' },
+  { id:'phoenix', name:'Фениксик',   rarity:'mythic',    income:125, body:'#ffb74d', belly:'#fff8e1', feat:'phoenix' },
+  { id:'shadow',  name:'Теневик',    rarity:'secret',    income:320, body:'#4a4458', belly:'#6d6585', feat:'shadow', eyes:'#e6c7ff' },
+  { id:'divine',  name:'Светозар',   rarity:'divine',    income:800, body:'#fff8dc', belly:'#ffffff', feat:'halo' },
+  // Любимчики: настоящие коты хозяина игры
+  { id:'dezya',    name:'Дезя',    rarity:'pet', income:1500, body:'#c5c9cf', belly:'#eceef1', feat:'cat', face:'cat',
+    cat:{ ears:'up', tabby:true, stripe:'#4b4f58', eye:'#d8a92a', nose:'#c98f8f', lid:-0.3, lidY:0.9, muzzle:'#eef0f2' } },
+  { id:'makarsha', name:'Макарша', rarity:'pet', income:1500, body:'#8f9bad', belly:'#a9b4c3', feat:'cat', face:'cat',
+    cat:{ ears:'fold', fluffy:true, eye:'#c77d2e', nose:'#5f6877', bigEyes:true, roundPupil:true, lid:0.22, lidY:1.12 } },
+];
+const SPECIES_BY_ID = Object.fromEntries(SPECIES.map(s => [s.id, s]));
+
+// Сферы продаются в магазине. mult — множитель шанса, guaranteed — поимка 100%
+const ORBS = [
+  { id:'copper',  name:'Медная',     mult:1,   price:10,   label:'×1',   c1:'#ffe0c2', c2:'#d9773a', c3:'#7a3510', ring:'#f3b27c', glow:'#ffb27a' },
+  { id:'silver',  name:'Серебряная', mult:1.5, price:35,   label:'×1,5', c1:'#ffffff', c2:'#a3b6ca', c3:'#4a5c70', ring:'#e3ecf7', glow:'#bcd7ff' },
+  { id:'gold',    name:'Золотая',    mult:2.5, price:120,  label:'×2,5', c1:'#fff7cc', c2:'#f2b632', c3:'#8f6100', ring:'#ffe07a', glow:'#ffd34d' },
+  { id:'diamond', name:'Алмазная',   mult:4,   price:450,  label:'×4',   c1:'#ffffff', c2:'#7fdcf0', c3:'#16708f', ring:'#c9f6ff', glow:'#9ef0ff' },
+  { id:'star',    name:'Звёздная',   mult:1,   price:4000, label:'100%', guaranteed:true, c1:'#f3e8ff', c2:'#8a5cf6', c3:'#341785', ring:'#e9dbff', glow:'#c49bff' },
+];
+
+// Бонус за точность: расстояние от центра зверька в долях его размера
+const THROW_BONUS = [
+  { maxDist:0.35, mult:1.5,  label:'Отличный бросок!' },
+  { maxDist:0.70, mult:1.25, label:'Хороший бросок!' },
+];
+
+// Рука: дальность броска растёт на 6 м за уровень
+const ARM_MAX = 10;
+const armReach = lvl => 16 + (lvl - 1) * 6;
+const ARM_COST = [60, 150, 400, 1000, 2500, 6000, 14000, 30000, 60000];
+
+// Загон: 3 места, каждое расширение даёт ещё одно
+const PEN_MAX = 10;
+const penSlots = lvl => 3 + (lvl - 1);
+const PEN_COST = [150, 400, 1000, 2500, 6000, 15000, 35000, 80000, 180000];
+
+const CATCH_REWARD = 15;   // монет за поимку = доход зверька × 15
+const SELL_MULT = 25;      // цена продажи = доход зверька × 25
+const OFFLINE_CAP = 7200;  // ферма копит монеты без игры не дольше 2 часов
+const DIST_MIN = 6, DIST_MAX = 70;
+const IDEAL_SPEED = 1900;  // скорость свайпа (px/с), при которой сфера летит точно в зверька
+
+/* ======================= ЛОГИКА ПОИМКИ ======================= */
+function catchChance(rarityId, orbDef, throwBonus = 1) {
+  if (orbDef.guaranteed) return 1;
+  return Math.min(1, RARITY[rarityId].base * orbDef.mult * throwBonus);
+}
+function tryCatch(rarityId, orbDef, throwBonus = 1) {
+  const chance = catchChance(rarityId, orbDef, throwBonus);
+  const roll = Math.random();
+  return { success: roll < chance, chance, roll };
+}
+function tryFlee(rarityId) { return Math.random() < RARITY[rarityId].flee; }
+function throwBonusFor(ratio) {
+  for (const b of THROW_BONUS) if (ratio <= b.maxDist) return b;
+  return { mult:1, label:'' };
+}
+function pickSpecies() {
+  const total = RARITY_ORDER.reduce((s, k) => s + RARITY[k].weight, 0);
+  let x = Math.random() * total, rk = RARITY_ORDER[0];
+  for (const k of RARITY_ORDER) { x -= RARITY[k].weight; if (x < 0) { rk = k; break; } }
+  const pool = SPECIES.filter(s => s.rarity === rk);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+function rollDistance(sp) {
+  const [a, b] = RARITY[sp.rarity].dist;
+  return Math.round(a + Math.random() * (b - a));
+}
+
+/* ======================= УТИЛИТЫ ======================= */
+const TAU = Math.PI * 2;
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeIn = t => t * t * t;
+const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+function easeOutBounce(x) {
+  const n1 = 7.5625, d1 = 2.75;
+  if (x < 1 / d1) return n1 * x * x;
+  if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+  if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+  return n1 * (x -= 2.625 / d1) * x + 0.984375;
+}
+function pct(v) {
+  const p = v * 100;
+  if (p >= 10 || p === 0) return Math.round(p) + '%';
+  return p.toFixed(1).replace('.', ',').replace(/,0$/, '') + '%';
+}
+function fmt(n) {
+  n = Math.floor(n);
+  const short = (v, unit) => (v >= 100 ? Math.round(v) : v.toFixed(1)).toString().replace('.', ',').replace(/,0$/, '') + ' ' + unit;
+  if (n < 10000) return n.toLocaleString('ru-RU');
+  if (n < 1e6) return short(n / 1e3, 'тыс.');
+  if (n < 1e9) return short(n / 1e6, 'млн');
+  return short(n / 1e9, 'млрд');
+}
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = v => amt < 0 ? Math.round(v * (1 + amt)) : Math.round(v + (255 - v) * amt);
+  return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`;
+}
+function starPath(c, x, y, r, n = 5, inner = 0.45, rot = -Math.PI / 2) {
+  c.beginPath();
+  for (let i = 0; i < n * 2; i++) {
+    const rr = i % 2 ? r * inner : r, a = rot + i * Math.PI / n;
+    c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  c.closePath();
+}
+function blob(c, pts) { c.beginPath(); for (const [x, y, rr] of pts) { c.moveTo(x + rr, y); c.arc(x, y, rr, 0, TAU); } }
+function rng(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+
+/* ======================= СОХРАНЕНИЕ ======================= */
+const KEY = 'sferolov-v2', OLD_KEY = 'sferolov-v1';
+function freshSave() {
+  return { coins:100, orbs:Object.fromEntries(ORBS.map(o => [o.id, o.id === 'copper' ? 10 : 0])),
+           arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, last:Date.now() };
+}
+const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
+function fillPenBest(d) {
+  d.inPen = {};
+  let left = penSlots(d.pen);
+  const owned = SPECIES.filter(s => (d.pets[s.id] || 0) > 0).sort((a, b) => b.income - a.income);
+  for (const sp of owned) {
+    if (left <= 0) break;
+    const k = Math.min(left, d.pets[sp.id]);
+    d.inPen[sp.id] = k; left -= k;
+  }
+}
+function sanitize(d) {
+  for (const k of Object.keys(d.pets)) if (!SPECIES_BY_ID[k] || !((d.pets[k] | 0) > 0)) delete d.pets[k]; else d.pets[k] |= 0;
+  for (const k of Object.keys(d.inPen)) { const n = Math.min(d.inPen[k] | 0, d.pets[k] | 0); if (n > 0) d.inPen[k] = n; else delete d.inPen[k]; }
+  let over = penCount(d) - penSlots(d.pen);
+  while (over > 0) { const k = Object.keys(d.inPen)[0]; d.inPen[k]--; if (!d.inPen[k]) delete d.inPen[k]; over--; }
+  for (const o of ORBS) d.orbs[o.id] = Math.max(0, d.orbs[o.id] | 0);
+  if (!(d.coins >= 0)) d.coins = 0;
+  return d;
+}
+function loadSave() {
+  const d = freshSave();
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === 'object') {
+        d.coins = Number(s.coins) || 0;
+        Object.assign(d.orbs, s.orbs || {});
+        d.arm = clamp((s.arm | 0) || 1, 1, ARM_MAX);
+        d.pen = clamp((s.pen | 0) || 1, 1, PEN_MAX);
+        d.pets = s.pets || {}; d.inPen = s.inPen || {}; d.seen = s.seen || {};
+        d.caught = s.caught | 0; d.last = Number(s.last) || Date.now(); d.flags = s.flags || {};
+      }
+      return sanitize(d);
+    }
+    const old = localStorage.getItem(OLD_KEY);
+    if (old) {
+      const o = JSON.parse(old);
+      if (o && o.caught) {
+        for (const [id, n] of Object.entries(o.caught)) {
+          if (SPECIES_BY_ID[id] && n > 0) { const k = Math.min(10, n | 0); d.pets[id] = k; d.seen[id] = true; d.caught += k; }
+        }
+      }
+      if (o && o.orbs) for (const k of ['copper','silver','gold','star']) d.orbs[k] = (d.orbs[k] || 0) + Math.max(0, o.orbs[k] | 0);
+      fillPenBest(d);
+      d.migrated = true;
+    }
+  } catch (e) {}
+  return sanitize(d);
+}
+const save = loadSave();
+function persist() {
+  save.last = Date.now();
+  try { const { migrated, ...rest } = save; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {}
+}
+
+/* ======================= DOM И ОБЩЕЕ ======================= */
+const $ = id => document.getElementById(id);
+const stage = $('stage'), canvas = $('game'), ctx = canvas.getContext('2d');
+const toastEl = $('toast'), orbsNav = $('orbs'), coinsEl = $('coins'), incomeEl = $('income'), walletEl = $('wallet');
+const cName = $('cName'), cRarity = $('cRarity'), cChance = $('cChance'), cDist = $('cDist');
+const penCanvas = $('penCanvas'), pctx = penCanvas.getContext('2d');
+let tab = 'hunt';
+let curIncome = 0;
+const afford = { shop:[], farm:[] };
+
+let toastTimer = 0;
+function toast(msg, kind = '', ms = 2200) {
+  const anchor = tab === 'hunt' ? $('info').getBoundingClientRect().bottom : $('top').getBoundingClientRect().bottom;
+  toastEl.style.top = Math.round(anchor + 8) + 'px';
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show ' + kind;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toastEl.className = 'toast ' + kind; }, ms);
+}
+
+function badgeEl(rk) {
+  const r = RARITY[rk], b = document.createElement('span');
+  b.className = 'badge'; b.textContent = r.name;
+  b.style.cssText = `--badge:${r.color};--badge-text:${r.text};--badge-ring:${r.ring || 'transparent'}`;
+  return b;
+}
+function setBadge(el, rk) {
+  const r = RARITY[rk];
+  el.textContent = r.name;
+  el.style.cssText = `--badge:${r.color};--badge-text:${r.text};--badge-ring:${r.ring || 'transparent'}`;
+}
+function makeBtn(label, cls, onClick, cost) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn ' + (cls || '');
+  if (cost != null) {
+    if (label) b.append(document.createTextNode(label));
+    const ci = document.createElement('span'); ci.className = 'coin sm'; ci.setAttribute('aria-hidden', 'true');
+    b.append(ci, document.createTextNode(fmt(cost)));
+    b.setAttribute('aria-label', `${label} за ${fmt(cost)} монет`);
+  } else b.textContent = label;
+  b.addEventListener('click', onClick);
+  return b;
+}
+function iconCanvas(size, drawFn) {
+  const d = Math.min(window.devicePixelRatio || 1, 2.5);
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(size * d); cv.height = Math.round(size * d);
+  const c = cv.getContext('2d'); c.scale(d, d);
+  drawFn(c, size);
+  return cv;
+}
+function creatureIcon(sp, size, silhouette = false) {
+  return iconCanvas(size, (c, s) => {
+    drawCreature(c, sp, s / 2, s * 0.56, s * 0.27, 0.5, { shadow:false });
+    if (silhouette) {
+      c.globalCompositeOperation = 'source-in';
+      c.fillStyle = 'rgba(120,132,124,0.55)'; c.fillRect(0, 0, s, s);
+      c.globalCompositeOperation = 'source-over';
+    }
+  });
+}
+function orbIcon(def, size) { return iconCanvas(size, (c, s) => drawOrb(c, s / 2, s / 2, s * 0.24, def, 0.6, 0, 1)); }
+
+let shownCoins = -1;
+function refreshWallet(bump) {
+  const c = Math.floor(save.coins);
+  if (c !== shownCoins) { shownCoins = c; coinsEl.textContent = fmt(c); refreshAffordability(); }
+  if (bump) { walletEl.classList.remove('bump'); void walletEl.offsetWidth; walletEl.classList.add('bump'); }
+}
+function refreshIncome() {
+  curIncome = SPECIES.reduce((s, sp) => s + (save.inPen[sp.id] || 0) * sp.income, 0);
+  incomeEl.textContent = `+${fmt(curIncome)}/с`;
+}
+function refreshAffordability() {
+  for (const k in afford) for (const a of afford[k]) a.el.disabled = a.blocked || save.coins < a.cost;
+}
+function spend(cost) {
+  if (save.coins < cost) { toast('Не хватает монет', 'bad'); return false; }
+  save.coins -= cost; refreshWallet(); return true;
+}
+
+/* ======================= ЦВЕТА СЦЕНЫ ======================= */
+let C = {};
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  const v = k => cs.getPropertyValue('--' + k).trim();
+  C = {
+    skyTop:v('sky-top'), skyBottom:v('sky-bottom'), groundTop:v('ground-top'), groundBottom:v('ground-bottom'),
+    hill1:v('hill-1'), hill2:v('hill-2'), grass:v('grass'), cloud:v('cloud'),
+    cloudAlpha:parseFloat(v('cloud-alpha')) || 0, sun:v('sun'), star:v('star'), starAlpha:parseFloat(v('star-alpha')) || 0,
+  };
+  C.fog = v('fog') || 'rgba(255,255,255,0)';
+  C.sunGlow = /^#[0-9a-f]{6}$/i.test(C.sun) ? hexA(C.sun, 0.45) : 'rgba(255,255,255,0.4)';
+}
+
+/* ======================= РИСОВАНИЕ: ЗВЕРЬКИ ======================= */
+const FEAT = {
+  ears: { back(c, sp, r) {
+    for (const s of [-1, 1]) {
+      c.fillStyle = sp.body; c.beginPath(); c.ellipse(s * r * 0.48, -r * 0.88, r * 0.2, r * 0.38, s * 0.45, 0, TAU); c.fill(); c.stroke();
+      c.fillStyle = '#ffd1de'; c.beginPath(); c.ellipse(s * r * 0.48, -r * 0.86, r * 0.1, r * 0.24, s * 0.45, 0, TAU); c.fill();
+    }
+  } },
+  rock: {
+    back(c, sp, r) { c.fillStyle = '#7cb342'; blob(c, [[-r * 0.16, -r * 0.86, r * 0.14], [r * 0.04, -r * 0.95, r * 0.16], [r * 0.22, -r * 0.85, r * 0.12]]); c.fill(); },
+    front(c, sp, r) {
+      c.fillStyle = shade(sp.body, -0.18);
+      for (const [x, y, a, b, rot] of [[-0.62, -0.3, 0.13, 0.09, 0.4], [0.56, -0.46, 0.1, 0.07, -0.3], [0.72, 0.2, 0.08, 0.06, 0]]) {
+        c.beginPath(); c.ellipse(x * r, y * r, a * r, b * r, rot, 0, TAU); c.fill();
+      }
+    },
+  },
+  cap: { front(c, sp, r) {
+    c.fillStyle = '#e8453c'; c.strokeStyle = '#9e1f17';
+    c.beginPath(); c.moveTo(-r * 1.08, -r * 0.42);
+    c.quadraticCurveTo(-r * 1.05, -r * 1.28, 0, -r * 1.3); c.quadraticCurveTo(r * 1.05, -r * 1.28, r * 1.08, -r * 0.42);
+    c.quadraticCurveTo(0, -r * 0.6, -r * 1.08, -r * 0.42); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = '#ffffff'; blob(c, [[-r * 0.55, -r * 0.86, r * 0.13], [r * 0.05, -r * 1.06, r * 0.11], [r * 0.6, -r * 0.8, r * 0.12], [-r * 0.12, -r * 0.72, r * 0.07]]); c.fill();
+  } },
+  bubbles: { front(c, sp, r, t) {
+    c.lineWidth = Math.max(1, r * 0.03);
+    for (let i = 0; i < 4; i++) {
+      const ph = (t * 0.35 + i * 0.25) % 1, side = i % 2 ? 1 : -1;
+      const bx = side * (0.95 + 0.12 * Math.sin(t * 2 + i)) * r, by = r * 0.35 - ph * 1.7 * r, br = r * (0.07 + 0.04 * (i % 3));
+      const a = Math.sin(ph * Math.PI);
+      c.fillStyle = `rgba(255,255,255,${0.3 * a})`; c.strokeStyle = `rgba(255,255,255,${0.9 * a})`;
+      c.beginPath(); c.arc(bx, by, br, 0, TAU); c.fill(); c.stroke();
+    }
+    c.fillStyle = 'rgba(255,255,255,0.55)'; c.beginPath(); c.ellipse(-r * 0.45, -r * 0.5, r * 0.16, r * 0.08, -0.7, 0, TAU); c.fill();
+  } },
+  leaf: { back(c, sp, r, t) {
+    c.save(); c.translate(r * 0.75, r * 0.35); c.rotate(-0.8 + Math.sin(t * 2) * 0.15);
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(r * 0.45, 0); c.stroke();
+    c.fillStyle = '#4caf50'; c.strokeStyle = '#2e7d32';
+    c.beginPath(); c.ellipse(r * 0.85, 0, r * 0.45, r * 0.22, 0, 0, TAU); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(r * 0.45, 0); c.lineTo(r * 1.2, 0); c.stroke();
+    c.restore();
+    c.save(); c.translate(0, -r * 0.84); c.rotate(Math.sin(t * 1.7) * 0.12);
+    c.strokeStyle = '#2e7d32'; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -r * 0.22); c.stroke();
+    c.fillStyle = '#5cbf60';
+    c.beginPath(); c.ellipse(r * 0.13, -r * 0.27, r * 0.16, r * 0.08, -0.5, 0, TAU); c.fill(); c.stroke();
+    c.beginPath(); c.ellipse(-r * 0.12, -r * 0.24, r * 0.13, r * 0.07, 0.5, 0, TAU); c.fill(); c.stroke();
+    c.restore();
+  } },
+  antennae: { back(c, sp, r, t, ol) {
+    const glow = 0.6 + 0.4 * Math.sin(t * 3);
+    const g = c.createRadialGradient(r * 0.85, r * 0.5, 0, r * 0.85, r * 0.5, r * 0.5);
+    g.addColorStop(0, `rgba(255,241,118,${0.9 * glow})`); g.addColorStop(1, 'rgba(255,241,118,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(r * 0.85, r * 0.5, r * 0.5, 0, TAU); c.fill();
+    c.fillStyle = '#fff59d'; c.beginPath(); c.arc(r * 0.85, r * 0.5, r * 0.2, 0, TAU); c.fill(); c.stroke();
+    for (const s of [-1, 1]) {
+      c.beginPath(); c.moveTo(s * r * 0.2, -r * 0.8); c.quadraticCurveTo(s * r * 0.28, -r * 1.2, s * r * 0.48, -r * 1.3); c.stroke();
+      c.fillStyle = '#fff59d'; c.beginPath(); c.arc(s * r * 0.48, -r * 1.3, r * 0.09, 0, TAU); c.fill();
+    }
+  } },
+  shell: { back(c, sp, r) {
+    c.save(); c.translate(r * 0.78, -r * 0.3);
+    c.fillStyle = '#b08a78'; c.strokeStyle = '#5d4037';
+    c.beginPath(); c.arc(0, 0, r * 0.58, 0, TAU); c.fill(); c.stroke();
+    c.beginPath();
+    for (let a = 0; a <= Math.PI * 5; a += 0.15) {
+      const rr = r * 0.5 * (1 - a / (Math.PI * 5.4));
+      if (a === 0) c.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); else c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    c.stroke(); c.restore();
+  } },
+  flame: { back(c, sp, r, t) {
+    const f = Math.sin(t * 12) * 0.06 * r + Math.sin(t * 7.3) * 0.04 * r;
+    const g = c.createLinearGradient(0, -r * 0.7, 0, -r * 1.65);
+    g.addColorStop(0, '#ff7043'); g.addColorStop(1, '#ffd54f');
+    c.fillStyle = g; c.strokeStyle = '#d84315';
+    c.beginPath(); c.moveTo(-r * 0.34, -r * 0.72);
+    c.quadraticCurveTo(-r * 0.52, -r * 1.2, -r * 0.08 + f, -r * 1.64);
+    c.quadraticCurveTo(r * 0.04, -r * 1.28, r * 0.2 + f * 0.5, -r * 1.2);
+    c.quadraticCurveTo(r * 0.44, -r * 1.0, r * 0.34, -r * 0.72);
+    c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = '#fff59d'; c.beginPath(); c.ellipse(f * 0.3, -r * 0.98, r * 0.12, r * 0.22, 0, 0, TAU); c.fill();
+  } },
+  wings: { back(c, sp, r, t, ol) {
+    const flap = Math.sin(t * 10) * 0.3;
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.6, -r * 0.15); c.rotate(s * (-0.6 + flap));
+      c.fillStyle = 'rgba(234,247,255,0.92)';
+      c.beginPath(); c.ellipse(s * r * 0.5, 0, r * 0.6, r * 0.3, 0, 0, TAU); c.fill(); c.stroke();
+      c.restore();
+    }
+    c.beginPath(); c.moveTo(0, -r * 0.8); c.quadraticCurveTo(r * 0.05, -r * 1.15, r * 0.22, -r * 1.25); c.stroke();
+    const gl = c.createRadialGradient(r * 0.22, -r * 1.25, 0, r * 0.22, -r * 1.25, r * 0.3);
+    gl.addColorStop(0, 'rgba(255,230,102,0.9)'); gl.addColorStop(1, 'rgba(255,230,102,0)');
+    c.fillStyle = gl; c.beginPath(); c.arc(r * 0.22, -r * 1.25, r * 0.3, 0, TAU); c.fill();
+    c.fillStyle = '#ffe066'; c.beginPath(); c.arc(r * 0.22, -r * 1.25, r * 0.09, 0, TAU); c.fill();
+  } },
+  fins: { back(c, sp, r, t) {
+    const sw = Math.sin(t * 3) * 0.15;
+    c.fillStyle = shade(sp.body, -0.14);
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.85, r * 0.15); c.rotate(s * (0.5 + sw));
+      c.beginPath(); c.moveTo(0, -r * 0.2); c.quadraticCurveTo(s * r * 0.55, -r * 0.1, s * r * 0.5, r * 0.35);
+      c.quadraticCurveTo(s * r * 0.2, r * 0.15, 0, r * 0.2); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+    }
+    c.beginPath(); c.moveTo(-r * 0.3, -r * 0.82); c.quadraticCurveTo(r * 0.05, -r * 1.5, r * 0.45, -r * 1.25);
+    c.quadraticCurveTo(r * 0.25, -r * 1.0, r * 0.3, -r * 0.8); c.closePath(); c.fill(); c.stroke();
+  } },
+  spikes: { back(c, sp, r) {
+    c.fillStyle = '#8d6e63'; c.strokeStyle = '#5d4037';
+    for (let i = 0; i < 9; i++) {
+      const a = -Math.PI * 0.95 + i * (Math.PI * 0.9 / 8), b1 = a - 0.17, b2 = a + 0.17;
+      c.beginPath(); c.moveTo(Math.cos(b1) * r * 0.85, Math.sin(b1) * r * 0.8);
+      c.lineTo(Math.cos(a) * r * 1.4, Math.sin(a) * r * 1.32);
+      c.lineTo(Math.cos(b2) * r * 0.85, Math.sin(b2) * r * 0.8); c.closePath(); c.fill(); c.stroke();
+    }
+  } },
+  horn: { back(c, sp, r, t) {
+    c.fillStyle = 'rgba(255,255,255,0.45)';
+    for (let i = 0; i < 3; i++) {
+      const a = t * 0.9 + i * 2.094;
+      c.beginPath(); c.arc(Math.cos(a) * r * 1.25, r * 0.45 + Math.sin(a) * r * 0.25, r * 0.22, 0, TAU); c.fill();
+    }
+    const g = c.createLinearGradient(0, -r * 1.55, 0, -r * 0.78);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#d9c8ff');
+    c.fillStyle = g;
+    c.beginPath(); c.moveTo(-r * 0.15, -r * 0.78);
+    c.quadraticCurveTo(-r * 0.05, -r * 1.2, r * 0.05, -r * 1.55);
+    c.quadraticCurveTo(r * 0.08, -r * 1.15, r * 0.15, -r * 0.78);
+    c.closePath(); c.fill(); c.stroke();
+  } },
+  crystal: { back(c, sp, r, t) {
+    const shard = (x, y, h, w, rot) => {
+      c.save(); c.translate(x, y); c.rotate(rot);
+      const g = c.createLinearGradient(0, -h, 0, 0); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#4fc3f7');
+      c.fillStyle = g; c.strokeStyle = '#0277bd';
+      c.beginPath(); c.moveTo(-w, 0); c.lineTo(-w * 0.8, -h * 0.7); c.lineTo(0, -h); c.lineTo(w * 0.8, -h * 0.7); c.lineTo(w, 0);
+      c.closePath(); c.fill(); c.stroke(); c.restore();
+    };
+    shard(-r * 0.38, -r * 0.66, r * 0.5, r * 0.12, -0.45);
+    shard(r * 0.38, -r * 0.66, r * 0.5, r * 0.12, 0.45);
+    shard(0, -r * 0.76, r * 0.78, r * 0.16, 0);
+    c.fillStyle = `rgba(255,255,255,${0.5 + 0.5 * Math.sin(t * 4)})`; starPath(c, r * 0.32, -r * 1.4, r * 0.11, 4, 0.3); c.fill();
+  } },
+  cloud: { front(c, sp, r, t) {
+    const cy = -r * 1.42 + Math.sin(t * 1.5) * r * 0.05;
+    if (Math.sin(t * 2.7) > 0.55) {
+      c.fillStyle = '#ffeb3b'; c.strokeStyle = '#f9a825';
+      c.beginPath(); c.moveTo(r * 0.06, cy + r * 0.12); c.lineTo(-r * 0.12, cy + r * 0.44); c.lineTo(r * 0.02, cy + r * 0.42);
+      c.lineTo(-r * 0.08, cy + r * 0.72); c.lineTo(r * 0.18, cy + r * 0.34); c.lineTo(r * 0.04, cy + r * 0.36); c.closePath(); c.fill(); c.stroke();
+    }
+    c.fillStyle = '#78909c';
+    blob(c, [[-r * 0.32, cy, r * 0.24], [0, cy - r * 0.1, r * 0.3], [r * 0.32, cy, r * 0.22], [r * 0.05, cy + r * 0.08, r * 0.22]]); c.fill();
+    c.fillStyle = 'rgba(255,255,255,0.25)'; c.beginPath(); c.ellipse(-r * 0.08, cy - r * 0.2, r * 0.16, r * 0.07, 0, 0, TAU); c.fill();
+  } },
+  mane: {
+    back(c, sp, r, t, ol) {
+      const layer = (r1, r2, rot, color) => {
+        const n = 12; c.beginPath();
+        for (let i = 0; i < n * 2; i++) { const a = rot + i * Math.PI / n, rr = i % 2 ? r1 : r2; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+        c.closePath(); c.fillStyle = color; c.fill(); c.stroke();
+      };
+      layer(r * 0.95, r * 1.4, t * 0.25, '#ffb347');
+      layer(r * 0.9, r * 1.2, -t * 0.2 + 0.26, '#ffd27a');
+    },
+    front(c, sp, r) { c.fillStyle = '#ff8a00'; starPath(c, 0, -r * 0.5, r * 0.13); c.fill(); },
+  },
+  moon: {
+    back(c, sp, r, t) {
+      for (const s of [-1, 1]) {
+        c.save(); c.translate(s * r * 0.5, r * 0.45); c.rotate(s * (0.6 + Math.sin(t * 2 + s) * 0.1));
+        c.fillStyle = sp.body; c.beginPath(); c.ellipse(0, -r * 0.55, r * 0.28, r * 0.62, 0, 0, TAU); c.fill(); c.stroke();
+        c.fillStyle = '#ffffff'; c.beginPath(); c.ellipse(0, -r * 0.98, r * 0.17, r * 0.2, 0, 0, TAU); c.fill();
+        c.restore();
+      }
+      for (const s of [-1, 1]) {
+        c.fillStyle = sp.body; c.beginPath(); c.moveTo(s * r * 0.22, -r * 0.78); c.lineTo(s * r * 0.6, -r * 1.34); c.lineTo(s * r * 0.78, -r * 0.5); c.closePath(); c.fill(); c.stroke();
+        c.fillStyle = '#e8eaf6'; c.beginPath(); c.moveTo(s * r * 0.36, -r * 0.8); c.lineTo(s * r * 0.58, -r * 1.15); c.lineTo(s * r * 0.66, -r * 0.66); c.closePath(); c.fill();
+      }
+    },
+    front(c, sp, r) {
+      c.fillStyle = '#ffd54f'; c.beginPath(); c.arc(0, -r * 0.52, r * 0.14, 0, TAU); c.fill();
+      c.fillStyle = sp.body; c.beginPath(); c.arc(r * 0.07, -r * 0.57, r * 0.12, 0, TAU); c.fill();
+    },
+  },
+  dragon: { back(c, sp, r, t, ol) {
+    const flap = Math.sin(t * 6) * 0.18;
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.55, -r * 0.25); c.rotate(s * (-0.35 + flap));
+      c.fillStyle = '#d84343'; c.strokeStyle = '#7f1d1d';
+      c.beginPath(); c.moveTo(0, 0); c.lineTo(s * r * 1.05, -r * 0.6);
+      c.quadraticCurveTo(s * r * 0.9, -r * 0.25, s * r * 0.95, r * 0.05);
+      c.quadraticCurveTo(s * r * 0.75, -r * 0.1, s * r * 0.62, r * 0.18);
+      c.quadraticCurveTo(s * r * 0.45, 0, 0, r * 0.25); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+      c.fillStyle = '#fff3e0'; c.strokeStyle = ol;
+      c.beginPath(); c.moveTo(s * r * 0.22, -r * 0.82); c.quadraticCurveTo(s * r * 0.32, -r * 1.22, s * r * 0.55, -r * 1.3);
+      c.quadraticCurveTo(s * r * 0.45, -r * 1.0, s * r * 0.45, -r * 0.72); c.closePath(); c.fill(); c.stroke();
+    }
+  } },
+  phoenix: { back(c, sp, r, t) {
+    const f = Math.sin(t * 10) * 0.05 * r;
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.6, -r * 0.1); c.rotate(s * (-0.25 + Math.sin(t * 5) * 0.12));
+      const g = c.createLinearGradient(0, 0, s * r * 1.2, -r * 0.6); g.addColorStop(0, '#ff7043'); g.addColorStop(1, '#ffee58');
+      c.fillStyle = g; c.strokeStyle = '#e65100';
+      c.beginPath(); c.moveTo(0, r * 0.15);
+      c.quadraticCurveTo(s * r * 0.7, -r * 0.2, s * r * 1.25, -r * 0.75 + f);
+      c.quadraticCurveTo(s * r * 1.0, -r * 0.35, s * r * 1.15, -r * 0.2);
+      c.quadraticCurveTo(s * r * 0.85, -r * 0.1, s * r * 0.95, r * 0.15);
+      c.quadraticCurveTo(s * r * 0.6, r * 0.05, 0, r * 0.25); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+    }
+    for (const i of [-1, 0, 1]) {
+      c.save(); c.translate(i * r * 0.16, -r * 0.82); c.rotate(i * 0.35);
+      const g = c.createLinearGradient(0, 0, 0, -r * 0.6); g.addColorStop(0, '#ff7043'); g.addColorStop(1, '#ffee58');
+      c.fillStyle = g; c.strokeStyle = '#e65100';
+      c.beginPath(); c.moveTo(-r * 0.07, 0); c.quadraticCurveTo(-r * 0.1, -r * 0.35, 0, -r * (i ? 0.5 : 0.62) + f);
+      c.quadraticCurveTo(r * 0.1, -r * 0.35, r * 0.07, 0); c.closePath(); c.fill(); c.stroke();
+      c.restore();
+    }
+  } },
+  shadow: { back(c, sp, r, t) {
+    for (let i = 0; i < 5; i++) {
+      const a = t * 0.7 + i * 1.2566, px = Math.cos(a) * r * 1.15, py = Math.sin(a) * r * 0.55 + r * 0.2;
+      const g = c.createRadialGradient(px, py, 0, px, py, r * 0.38);
+      g.addColorStop(0, 'rgba(124,77,255,0.5)'); g.addColorStop(1, 'rgba(124,77,255,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(px, py, r * 0.38, 0, TAU); c.fill();
+    }
+    for (const s of [-1, 1]) {
+      c.fillStyle = sp.body; c.beginPath(); c.moveTo(s * r * 0.28, -r * 0.78); c.lineTo(s * r * 0.52, -r * 1.28); c.lineTo(s * r * 0.7, -r * 0.58); c.closePath(); c.fill(); c.stroke();
+    }
+  } },
+  halo: { back(c, sp, r, t) {
+    c.save(); c.rotate(t * 0.2); c.fillStyle = 'rgba(255,224,130,0.22)';
+    for (let i = 0; i < 12; i++) {
+      c.rotate(Math.PI / 6);
+      c.beginPath(); c.moveTo(-r * 0.09, -r * 0.9); c.lineTo(0, -r * 2.0); c.lineTo(r * 0.09, -r * 0.9); c.closePath(); c.fill();
+    }
+    c.restore();
+    const flap = Math.sin(t * 3) * 0.12;
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.6, -r * 0.15); c.rotate(s * (-0.45 + flap));
+      c.fillStyle = '#ffffff'; c.strokeStyle = '#cdbb7a';
+      for (let k = 0; k < 3; k++) {
+        c.beginPath(); c.ellipse(s * (r * 0.35 + k * r * 0.22), -k * r * 0.08 + r * 0.05, r * 0.42 - k * r * 0.08, r * 0.16, s * (-0.25 + k * 0.18), 0, TAU);
+        c.fill(); c.stroke();
+      }
+      c.restore();
+    }
+    const hy = -r * 1.32 + Math.sin(t * 2) * r * 0.05;
+    c.lineWidth = r * 0.22; c.strokeStyle = 'rgba(255,224,130,0.35)';
+    c.beginPath(); c.ellipse(0, hy, r * 0.5, r * 0.14, 0, 0, TAU); c.stroke();
+    c.lineWidth = Math.max(1.5, r * 0.08); c.strokeStyle = '#ffc107';
+    c.beginPath(); c.ellipse(0, hy, r * 0.5, r * 0.14, 0, 0, TAU); c.stroke();
+  } },
+  cat: {
+    back(c, sp, r, t, ol) {
+      const k = sp.cat, sway = Math.sin(t * 1.6) * 0.12, tr = r * (k.fluffy ? 0.16 : 0.12);
+      const pts = [];
+      for (let i = 0; i <= 9; i++) {
+        const u = i / 9, a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, d = u * u;
+        pts.push([a * 0.55 * r + b * 1.5 * r + d * (1.22 + sway) * r, a * 0.62 * r + b * 0.78 * r - d * 0.32 * r]);
+      }
+      c.fillStyle = ol;
+      for (const [x, y] of pts) { c.beginPath(); c.arc(x, y, tr + Math.max(1, r * 0.04), 0, TAU); c.fill(); }
+      pts.forEach(([x, y], i) => { c.fillStyle = k.tabby && i % 2 ? k.stripe : sp.body; c.beginPath(); c.arc(x, y, tr, 0, TAU); c.fill(); });
+      if (k.ears === 'up') {
+        for (const s of [-1, 1]) {
+          c.fillStyle = sp.body;
+          c.beginPath(); c.moveTo(s * r * 0.18, -r * 0.8);
+          c.quadraticCurveTo(s * r * 0.48, -r * 1.4, s * r * 0.72, -r * 1.3);
+          c.quadraticCurveTo(s * r * 0.88, -r * 0.95, s * r * 0.84, -r * 0.5);
+          c.closePath(); c.fill(); c.stroke();
+          c.fillStyle = '#e8b4ad';
+          c.beginPath(); c.moveTo(s * r * 0.34, -r * 0.82);
+          c.quadraticCurveTo(s * r * 0.54, -r * 1.22, s * r * 0.68, -r * 1.16);
+          c.quadraticCurveTo(s * r * 0.76, -r * 0.92, s * r * 0.74, -r * 0.64);
+          c.closePath(); c.fill();
+        }
+      }
+      if (k.fluffy) {
+        c.fillStyle = sp.body;
+        for (let i = 0; i < 24; i++) {
+          const a = i / 24 * TAU;
+          c.beginPath(); c.arc(Math.cos(a) * r * 0.97, Math.sin(a) * r * 0.87, r * 0.13, 0, TAU); c.fill(); c.stroke();
+        }
+      }
+    },
+    front(c, sp, r, t) {
+      const k = sp.cat;
+      if (k.tabby) {
+        c.save();
+        c.beginPath(); c.ellipse(0, 0, r, r * 0.9, 0, 0, TAU); c.clip();
+        c.strokeStyle = k.stripe; c.lineWidth = r * 0.075; c.lineCap = 'round';
+        for (const dx of [-0.17, -0.06, 0.06, 0.17]) {
+          c.beginPath(); c.moveTo(dx * r, -r * 0.86); c.quadraticCurveTo(dx * r * 1.4, -r * 0.62, dx * r * 0.9, -r * 0.44); c.stroke();
+        }
+        for (const s of [-1, 1]) {
+          c.beginPath(); c.moveTo(s * r * 0.56, -r * 0.02); c.quadraticCurveTo(s * r * 0.78, -r * 0.08, s * r * 1.0, r * 0.02); c.stroke();
+          c.beginPath(); c.moveTo(s * r * 0.58, r * 0.16); c.quadraticCurveTo(s * r * 0.8, r * 0.14, s * r * 1.0, r * 0.24); c.stroke();
+          for (let j = 0; j < 3; j++) {
+            c.beginPath();
+            c.ellipse(s * r * 1.08, r * 0.5, r * (0.22 + j * 0.15), r * (0.26 + j * 0.15), 0,
+                      s < 0 ? -Math.PI / 2 : Math.PI / 2, s < 0 ? Math.PI / 2 : Math.PI * 1.5);
+            c.stroke();
+          }
+        }
+        c.restore();
+      }
+      if (k.ears === 'fold') {
+        for (const s of [-1, 1]) {
+          c.fillStyle = shade(sp.body, -0.08);
+          c.beginPath(); c.ellipse(s * r * 0.42, -r * 0.74, r * 0.23, r * 0.13, s * 0.5, 0, TAU); c.fill(); c.stroke();
+          c.beginPath(); c.moveTo(s * r * 0.27, -r * 0.71); c.quadraticCurveTo(s * r * 0.42, -r * 0.62, s * r * 0.58, -r * 0.7); c.stroke();
+        }
+      }
+      if (k.muzzle) { c.fillStyle = k.muzzle; c.beginPath(); c.ellipse(0, r * 0.12, r * 0.3, r * 0.17, 0, 0, TAU); c.fill(); }
+      if (sp.rarity === 'pet') {
+        for (let i = 0; i < 3; i++) {
+          const ph = (t * 0.4 + i / 3) % 1, a = Math.sin(ph * Math.PI);
+          c.fillStyle = `rgba(255,110,170,${0.85 * a})`;
+          heartPath(c, Math.sin(i * 2.1 + t * 0.8) * r, -r * 0.95 - ph * r * 0.9, r * 0.13 * (0.7 + ph * 0.5)); c.fill();
+        }
+      }
+    },
+  },
+};
+
+function heartPath(c, x, y, s) {
+  c.beginPath(); c.moveTo(x, y + s * 0.35);
+  c.bezierCurveTo(x - s * 1.1, y - s * 0.35, x - s * 0.55, y - s * 1.15, x, y - s * 0.45);
+  c.bezierCurveTo(x + s * 0.55, y - s * 1.15, x + s * 1.1, y - s * 0.35, x, y + s * 0.35);
+  c.closePath();
+}
+
+function drawCatFace(c, sp, r, t) {
+  const k = sp.cat;
+  const blink = (t % 4.2) < 0.13 ? 0.12 : 1;
+  const ew = r * (k.bigEyes ? 0.15 : 0.13), eh = r * (k.bigEyes ? 0.17 : 0.14);
+  for (const s of [-1, 1]) {
+    const ex = s * r * 0.32, ey = -r * 0.16;
+    c.fillStyle = k.eye; c.strokeStyle = '#2b2b33'; c.lineWidth = Math.max(1, r * 0.03);
+    c.beginPath(); c.ellipse(ex, ey, ew, eh * blink, 0, 0, TAU); c.fill(); c.stroke();
+    if (blink > 0.5) {
+      c.fillStyle = '#15151b';
+      c.beginPath(); c.ellipse(ex, ey + eh * 0.05, ew * (k.roundPupil ? 0.55 : 0.3), eh * 0.78, 0, 0, TAU); c.fill();
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(ex - ew * 0.35, ey - eh * 0.42, Math.max(0.8, r * 0.035), 0, TAU); c.fill();
+      if (k.lid) {
+        c.fillStyle = sp.body;
+        c.beginPath(); c.ellipse(ex, ey - eh * k.lidY, ew * 1.3, eh * 0.6, s * k.lid, 0, TAU); c.fill();
+        c.beginPath(); c.ellipse(ex, ey - eh * k.lidY, ew * 1.3, eh * 0.6, s * k.lid, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+      }
+    }
+  }
+  c.fillStyle = k.nose;
+  c.beginPath(); c.moveTo(-r * 0.075, r * 0.03); c.lineTo(r * 0.075, r * 0.03); c.lineTo(0, r * 0.12); c.closePath(); c.fill();
+  c.strokeStyle = '#3a3a44'; c.lineWidth = Math.max(1, r * 0.03);
+  c.beginPath();
+  c.moveTo(0, r * 0.12); c.quadraticCurveTo(-r * 0.03, r * 0.2, -r * 0.11, r * 0.17);
+  c.moveTo(0, r * 0.12); c.quadraticCurveTo(r * 0.03, r * 0.2, r * 0.11, r * 0.17);
+  c.stroke();
+  c.strokeStyle = 'rgba(255,255,255,0.92)'; c.lineWidth = Math.max(0.7, r * 0.02);
+  for (const s of [-1, 1]) for (const [dy, sl] of [[0.07, -0.14], [0.13, 0], [0.19, 0.14]]) {
+    c.beginPath(); c.moveTo(s * r * 0.24, r * dy); c.lineTo(s * r * 0.98, r * (dy + sl)); c.stroke();
+  }
+}
+
+
+function drawFace(c, sp, r, t) {
+  const blink = (t % 3.6) < 0.13 ? 0.12 : 1;
+  const glow = sp.eyes;
+  for (const s of [-1, 1]) {
+    const ex = s * r * 0.3, ey = -r * 0.12;
+    if (glow) {
+      const g = c.createRadialGradient(ex, ey, 0, ex, ey, r * 0.3);
+      g.addColorStop(0, hexA(glow, 0.7)); g.addColorStop(1, hexA(glow, 0));
+      c.fillStyle = g; c.beginPath(); c.arc(ex, ey, r * 0.3, 0, TAU); c.fill();
+    }
+    c.fillStyle = glow || '#22202a';
+    c.beginPath(); c.ellipse(ex, ey, r * 0.105, r * 0.15 * blink, 0, 0, TAU); c.fill();
+    if (!glow) {
+      if (blink > 0.5) { c.fillStyle = '#ffffff'; c.beginPath(); c.arc(ex - r * 0.035, -r * 0.18, r * 0.04, 0, TAU); c.fill(); }
+      c.fillStyle = 'rgba(255,110,140,0.4)'; c.beginPath(); c.ellipse(s * r * 0.56, r * 0.08, r * 0.11, r * 0.065, 0, 0, TAU); c.fill();
+    }
+  }
+  c.strokeStyle = glow || '#22202a'; c.lineWidth = Math.max(1.2, r * 0.04);
+  c.beginPath(); c.arc(0, r * 0.02, r * 0.08, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+}
+
+function drawCreature(c, sp, x, y, r, t, o = {}) {
+  const scale = o.scale ?? 1, alpha = o.alpha ?? 1, shadow = o.shadow !== false;
+  if (scale <= 0.01 || alpha <= 0.01 || r <= 0.5) return;
+  const rar = RARITY[sp.rarity], f = FEAT[sp.feat] || {};
+  const bob = Math.sin(t * 2.4) * r * 0.05;
+  c.save(); c.globalAlpha = alpha;
+  if (shadow) {
+    c.fillStyle = 'rgba(0,0,0,0.18)';
+    c.beginPath(); c.ellipse(x, y + r * 0.95 * scale, r * 0.8 * scale, r * 0.18 * scale, 0, 0, TAU); c.fill();
+  }
+  c.translate(x, y + bob * scale); c.scale(scale, scale);
+  if (rar.aura) {
+    const a = c.createRadialGradient(0, 0, r * 0.5, 0, 0, r * 1.8);
+    a.addColorStop(0, hexA(rar.aura, 0.42)); a.addColorStop(1, hexA(rar.aura, 0));
+    c.fillStyle = a; c.beginPath(); c.arc(0, 0, r * 1.8, 0, TAU); c.fill();
+  }
+  const ol = shade(sp.body, -0.38);
+  c.lineWidth = Math.max(1.2, r * 0.055); c.strokeStyle = ol; c.lineJoin = 'round'; c.lineCap = 'round';
+  if (f.back) { c.save(); f.back(c, sp, r, t, ol); c.restore(); }
+
+  c.fillStyle = sp.body; c.beginPath(); c.ellipse(0, 0, r, r * 0.9, 0, 0, TAU); c.fill(); c.stroke();
+  c.fillStyle = shade(sp.body, -0.1);
+  for (const s of [-1, 1]) { c.beginPath(); c.ellipse(s * r * 0.42, r * 0.84, r * 0.2, r * 0.11, 0, 0, TAU); c.fill(); c.stroke(); }
+  c.fillStyle = sp.belly; c.beginPath(); c.ellipse(0, r * 0.34, r * 0.55, r * 0.42, 0, 0, TAU); c.fill();
+
+  if (f.front) { c.save(); f.front(c, sp, r, t, ol); c.restore(); }
+  if (sp.face === 'cat') drawCatFace(c, sp, r, t); else drawFace(c, sp, r, t);
+  c.restore();
+}
+
+/* ======================= РИСОВАНИЕ: СФЕРА ======================= */
+function drawOrb(c, x, y, R0, def, spin, rot = 0, alpha = 1) {
+  if (alpha <= 0.01 || R0 <= 0.5) return;
+  c.save(); c.globalAlpha = alpha;
+  c.translate(x, y + R0); c.rotate(rot); c.translate(0, -R0);
+  const gl = c.createRadialGradient(0, 0, R0 * 0.7, 0, 0, R0 * 1.9);
+  gl.addColorStop(0, hexA(def.glow, 0.5)); gl.addColorStop(1, hexA(def.glow, 0));
+  c.fillStyle = gl; c.beginPath(); c.arc(0, 0, R0 * 1.9, 0, TAU); c.fill();
+  const tilt = -0.38;
+  c.lineWidth = Math.max(1.2, R0 * 0.13); c.lineCap = 'round';
+  c.strokeStyle = hexA(def.ring, 0.55);
+  c.beginPath(); c.ellipse(0, 0, R0 * 1.5, R0 * 0.4, tilt, Math.PI, TAU); c.stroke();
+  const g = c.createRadialGradient(-R0 * 0.35, -R0 * 0.4, R0 * 0.08, 0, 0, R0);
+  g.addColorStop(0, def.c1); g.addColorStop(0.6, def.c2); g.addColorStop(1, def.c3);
+  c.fillStyle = g; c.beginPath(); c.arc(0, 0, R0, 0, TAU); c.fill();
+  c.save(); c.beginPath(); c.arc(0, 0, R0, 0, TAU); c.clip();
+  c.strokeStyle = 'rgba(255,255,255,0.22)'; c.lineWidth = Math.max(1, R0 * 0.06);
+  for (let i = 0; i < 3; i++) {
+    const k = Math.cos(spin + i * 1.05);
+    c.beginPath(); c.ellipse(0, 0, Math.abs(k) * R0 * 0.95 + 0.5, R0 * 0.97, 0, 0, TAU); c.stroke();
+  }
+  c.restore();
+  c.fillStyle = 'rgba(255,255,255,0.8)';
+  c.beginPath(); c.ellipse(-R0 * 0.38, -R0 * 0.42, R0 * 0.22, R0 * 0.12, -0.6, 0, TAU); c.fill();
+  if (def.guaranteed) { c.fillStyle = '#ffffff'; starPath(c, 0, 0, R0 * 0.5, 4, 0.28, spin * 0.5); c.fill(); }
+  if (def.id === 'diamond') { c.fillStyle = 'rgba(255,255,255,0.7)'; starPath(c, R0 * 0.3, R0 * 0.25, R0 * 0.22, 4, 0.3, spin); c.fill(); }
+  c.strokeStyle = def.ring;
+  c.beginPath(); c.ellipse(0, 0, R0 * 1.5, R0 * 0.4, tilt, 0, Math.PI); c.stroke();
+  c.restore();
+}
+
+/* ======================= ОХОТА: СЦЕНА ======================= */
+let W = 0, H = 0, DPR = 1, horizon = 0, R = 50, ORB_R = 26;
+const rest = { x:0, y:0 };
+let state = 'init', stT = 0, T = 0;
+const MOVING = new Set(['spawning','ready','dragging','flying','miss','returning']);
+let cr = null;
+const orb = { x:0, y:0, scale:1, alpha:0, rot:0, spin:0, pop:0, defIdx:0 };
+let throwInfo = null, attempt = null, capFrom = null, capOrb = null, breakFrom = null, retFrom = null;
+let missV = { x:0, y:0 }, dropFrom = 0, groundY = 0;
+let trail = [], dragId = null, hintDone = false;
+const parts = [];
+let selected = 0;
+const scenery = { stars:[], tufts:[], flowers:[], clouds:[] };
+function setState(s) { state = s; stT = 0; }
+
+const depthT = d => clamp((d - DIST_MIN) / (DIST_MAX - DIST_MIN), 0, 1);
+const footYFor = d => lerp(H * 0.70, horizon + H * 0.05, Math.pow(depthT(d), 0.8));
+const scaleFor = d => lerp(1.12, 0.42, depthT(d));
+
+function placeCreature() {
+  if (!cr) return;
+  cr.r = R * scaleFor(cr.dist);
+  cr.baseY = footYFor(cr.dist) - cr.r * 0.95;
+}
+function creatureX() {
+  const amp = Math.max(0, Math.min(W * RARITY[cr.sp.rarity].move, W / 2 - cr.r * 1.8));
+  return W / 2 + Math.sin(cr.mt * cr.freq + cr.ph) * amp;
+}
+
+function buildScenery() {
+  const r = rng(7);
+  scenery.stars = Array.from({ length:60 }, () => ({ x:r(), y:r() * 0.92, s:r() < 0.15 ? 2 : 1.2, sp:1 + r() * 2, ph:r() * 6 }));
+  scenery.tufts = Array.from({ length:Math.max(12, Math.round(W / 16)) }, () => ({ x:r(), y:r(), s:0.7 + r() * 0.6 }));
+  const fc = HALLOWEEN ? ['#ffa94d', '#c3a6ff', '#ffffff'] : ['#ffffff', '#ffd54f', '#ff8fab'];
+  scenery.flowers = Array.from({ length:Math.max(6, Math.round(W / 45)) }, (_, i) => ({ x:r(), y:r(), c:fc[i % 3] }));
+  scenery.clouds = [{ x:0.1, y:0.3, s:1 }, { x:0.55, y:0.14, s:0.8 }, { x:0.9, y:0.42, s:0.6 }];
+  scenery.bats = Array.from({ length:5 }, () => ({ x:r(), y:0.12 + r() * 0.5, sp:0.025 + r() * 0.03, s:0.7 + r() * 0.6, ph:r() * 6, dir:r() < 0.5 ? -1 : 1 }));
+  scenery.pumpkins = [[0.1, 0.22], [0.88, 0.3], [0.16, 0.62], [0.84, 0.74], [0.05, 0.92]].map(([x, y]) => ({ x, y, ph:r() * 6 }));
+  scenery.graves = [[0.3, 0.04], [0.66, 0.07], [0.74, 0.02]].map(([x, y]) => ({ x, y }));
+}
+
+
+/* ======================= ХЭЛЛОУИН: ДЕКОРАЦИИ ======================= */
+function drawPumpkin(c, x, y, s, t, ph) {
+  c.save(); c.translate(x, y - s * 0.55);
+  const fl = 0.75 + 0.25 * Math.sin(t * 9 + ph) * Math.sin(t * 5.3 + ph * 2);
+  const g = c.createRadialGradient(0, 0, s * 0.2, 0, 0, s * 1.6);
+  g.addColorStop(0, `rgba(255,170,40,${0.35 * fl})`); g.addColorStop(1, 'rgba(255,170,40,0)');
+  c.fillStyle = g; c.beginPath(); c.arc(0, 0, s * 1.6, 0, TAU); c.fill();
+  c.fillStyle = '#e8741c'; c.strokeStyle = '#9c4510'; c.lineWidth = Math.max(1, s * 0.05);
+  for (const [dx, w] of [[-0.42, 0.42], [0.42, 0.42], [0, 0.5]]) { c.beginPath(); c.ellipse(dx * s, 0, w * s, 0.55 * s, 0, 0, TAU); c.fill(); c.stroke(); }
+  c.fillStyle = '#4f7a2a';
+  c.beginPath(); c.moveTo(-s * 0.07, -s * 0.5); c.quadraticCurveTo(-s * 0.05, -s * 0.75, s * 0.12, -s * 0.82); c.lineTo(s * 0.1, -s * 0.62); c.lineTo(s * 0.07, -s * 0.5); c.closePath(); c.fill();
+  c.fillStyle = `rgba(255,214,90,${0.75 + 0.25 * fl})`;
+  c.beginPath(); c.moveTo(-s * 0.38, -s * 0.08); c.lineTo(-s * 0.2, -s * 0.3); c.lineTo(-s * 0.08, -s * 0.08); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(s * 0.08, -s * 0.08); c.lineTo(s * 0.2, -s * 0.3); c.lineTo(s * 0.38, -s * 0.08); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(-s * 0.4, s * 0.1); c.quadraticCurveTo(0, s * 0.48, s * 0.4, s * 0.1);
+  c.lineTo(s * 0.26, s * 0.16); c.lineTo(s * 0.18, s * 0.08); c.lineTo(s * 0.08, s * 0.18); c.lineTo(0, s * 0.1);
+  c.lineTo(-s * 0.08, s * 0.18); c.lineTo(-s * 0.18, s * 0.08); c.lineTo(-s * 0.26, s * 0.16); c.closePath(); c.fill();
+  c.restore();
+}
+function drawBat(c, x, y, s, flap) {
+  c.save(); c.translate(x, y); c.fillStyle = '#1b1325';
+  for (const d of [-1, 1]) {
+    c.beginPath(); c.moveTo(0, 0);
+    c.quadraticCurveTo(d * s * 0.6, -s * (0.7 + flap * 0.6), d * s * 1.4, -s * (0.2 + flap * 0.5));
+    c.quadraticCurveTo(d * s * 1.1, s * 0.05, d * s * 0.95, s * 0.25);
+    c.quadraticCurveTo(d * s * 0.75, s * 0.05, d * s * 0.55, s * 0.3);
+    c.quadraticCurveTo(d * s * 0.35, s * 0.1, 0, s * 0.2);
+    c.closePath(); c.fill();
+  }
+  c.beginPath(); c.ellipse(0, s * 0.05, s * 0.22, s * 0.3, 0, 0, TAU); c.fill();
+  c.beginPath(); c.moveTo(-s * 0.16, -s * 0.18); c.lineTo(-s * 0.1, -s * 0.42); c.lineTo(-s * 0.02, -s * 0.22); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(s * 0.16, -s * 0.18); c.lineTo(s * 0.1, -s * 0.42); c.lineTo(s * 0.02, -s * 0.22); c.closePath(); c.fill();
+  c.fillStyle = '#ffcc33';
+  c.beginPath(); c.arc(-s * 0.08, -s * 0.04, Math.max(0.8, s * 0.045), 0, TAU); c.fill();
+  c.beginPath(); c.arc(s * 0.08, -s * 0.04, Math.max(0.8, s * 0.045), 0, TAU); c.fill();
+  c.restore();
+}
+function drawGhost(c, x, y, s, t) {
+  c.save(); c.translate(x, y + Math.sin(t * 2) * s * 0.15); c.globalAlpha *= 0.85;
+  c.fillStyle = '#f4f1ff';
+  c.beginPath(); c.moveTo(-s * 0.5, s * 0.5); c.lineTo(-s * 0.5, -s * 0.1); c.arc(0, -s * 0.1, s * 0.5, Math.PI, 0); c.lineTo(s * 0.5, s * 0.5);
+  for (let i = 0; i < 4; i++) c.quadraticCurveTo(s * 0.5 - (i + 0.5) * s * 0.25, s * (i % 2 ? 0.66 : 0.34), s * 0.5 - (i + 1) * s * 0.25, s * 0.5);
+  c.closePath(); c.fill();
+  c.fillStyle = '#2a2238';
+  c.beginPath(); c.ellipse(-s * 0.17, -s * 0.12, s * 0.07, s * 0.1, 0, 0, TAU); c.fill();
+  c.beginPath(); c.ellipse(s * 0.17, -s * 0.12, s * 0.07, s * 0.1, 0, 0, TAU); c.fill();
+  c.beginPath(); c.ellipse(0, s * 0.08, s * 0.08, s * 0.06, 0, 0, TAU); c.fill();
+  c.restore();
+}
+function drawGrave(c, x, y, s) {
+  c.save(); c.translate(x, y);
+  c.fillStyle = '#8b8f99'; c.strokeStyle = '#5d616b'; c.lineWidth = Math.max(1, s * 0.06);
+  c.beginPath(); c.moveTo(-s * 0.4, 0); c.lineTo(-s * 0.4, -s * 0.75); c.arc(0, -s * 0.75, s * 0.4, Math.PI, 0); c.lineTo(s * 0.4, 0); c.closePath(); c.fill(); c.stroke();
+  c.beginPath(); c.moveTo(-s * 0.2, -s * 0.72); c.lineTo(s * 0.2, -s * 0.72); c.moveTo(-s * 0.2, -s * 0.52); c.lineTo(s * 0.2, -s * 0.52); c.stroke();
+  c.restore();
+}
+function drawMoon(sx, sy, sr) {
+  const g = ctx.createRadialGradient(sx, sy, sr * 0.8, sx, sy, sr * 3);
+  g.addColorStop(0, C.sunGlow); g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, sy, sr * 3, 0, TAU); ctx.fill();
+  ctx.fillStyle = C.sun; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, TAU); ctx.fill();
+  ctx.fillStyle = 'rgba(120,90,40,0.12)';
+  for (const [dx, dy, rr] of [[-0.3, -0.2, 0.22], [0.25, 0.15, 0.16], [-0.05, 0.4, 0.12], [0.35, -0.35, 0.1]]) {
+    ctx.beginPath(); ctx.arc(sx + dx * sr, sy + dy * sr, rr * sr, 0, TAU); ctx.fill();
+  }
+}
+
+function layout() {
+  const rect = stage.getBoundingClientRect();
+  if (rect.width < 10 || rect.height < 10) return;
+  W = rect.width; H = rect.height; DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  horizon = H * 0.36;
+  R = clamp(Math.min(W, H) * 0.12, 32, 66);
+  ORB_R = clamp(Math.min(W, H) * 0.062, 20, 29);
+  rest.x = W / 2; rest.y = H - ORB_R * 2.1;
+  placeCreature();
+  if (cr && MOVING.has(state)) cr.y = cr.baseY;
+  if (['ready','spawning','init'].includes(state)) { orb.x = rest.x; orb.y = rest.y; }
+  buildScenery();
+}
+
+function drawHill(color, base, amp, freq, phase) {
+  ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, base);
+  for (let x = 0; x <= W + 8; x += 8) ctx.lineTo(x, base - amp * (0.55 + 0.45 * Math.sin(x / W * TAU * freq + phase)));
+  ctx.lineTo(W, base); ctx.closePath(); ctx.fill();
+}
+function drawScene(t) {
+  let g = ctx.createLinearGradient(0, 0, 0, horizon);
+  g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon + 1);
+  if (C.starAlpha > 0) {
+    ctx.fillStyle = C.star;
+    for (const s of scenery.stars) {
+      ctx.globalAlpha = C.starAlpha * (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph)));
+      ctx.fillRect(s.x * W, s.y * horizon, s.s, s.s);
+    }
+    ctx.globalAlpha = 1;
+  }
+  if (HALLOWEEN) drawMoon(W * 0.8, horizon * 0.62, clamp(W * 0.075, 22, 42));
+  else {
+    const sx = W * 0.84, sy = horizon * 0.3, sr = clamp(W * 0.05, 16, 30);
+    const sg = ctx.createRadialGradient(sx, sy, sr * 0.6, sx, sy, sr * 2.6);
+    sg.addColorStop(0, C.sunGlow); sg.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(sx, sy, sr * 2.6, 0, TAU); ctx.fill();
+    ctx.fillStyle = C.sun; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = C.cloudAlpha; ctx.fillStyle = C.cloud;
+  for (const cl of scenery.clouds) {
+    const x = ((((cl.x + t * 0.008 * cl.s) % 1.3) + 1.3) % 1.3 - 0.15) * W, y = cl.y * horizon, s = cl.s * clamp(W / 400, 0.8, 1.6);
+    blob(ctx, [[x, y, 16 * s], [x + 15 * s, y - 7 * s, 13 * s], [x + 30 * s, y, 12 * s], [x - 14 * s, y + 2 * s, 11 * s]]); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  const zoom = clamp(W / 400, 0.8, 1.5);
+  if (HALLOWEEN) for (const b of scenery.bats) {
+    const x = ((((b.x + t * b.sp * b.dir) % 1.4) + 1.4) % 1.4 - 0.2) * W;
+    drawBat(ctx, x, b.y * horizon + Math.sin(t * 1.7 + b.ph) * 8, 9 * b.s * zoom, (Math.sin(t * 13 + b.ph) + 1) / 2);
+  }
+  drawHill(C.hill1, horizon + 1, H * 0.10, 1.3, 0.8);
+  drawHill(C.hill2, horizon + 1, H * 0.055, 2.1, 2.4);
+  if (HALLOWEEN) drawGhost(ctx, ((((0.15 + t * 0.012) % 1.3) + 1.3) % 1.3 - 0.15) * W, horizon * 0.8, clamp(W * 0.045, 14, 24), t);
+  g = ctx.createLinearGradient(0, horizon, 0, H);
+  g.addColorStop(0, C.groundTop); g.addColorStop(1, C.groundBottom);
+  ctx.fillStyle = g; ctx.fillRect(0, horizon, W, H - horizon);
+  if (HALLOWEEN) {
+    ctx.fillStyle = C.fog;
+    for (let i = 0; i < 4; i++) {
+      const fx = ((((i * 0.31 + t * 0.012 * (i % 2 ? 1 : -1)) % 1.5) + 1.5) % 1.5 - 0.25) * W;
+      ctx.beginPath(); ctx.ellipse(fx, horizon + H * (0.015 + i * 0.03), W * 0.4, H * 0.03, 0, 0, TAU); ctx.fill();
+    }
+    for (const gv of scenery.graves) drawGrave(ctx, gv.x * W, horizon + (H - horizon) * gv.y + 3, (7 + 14 * (0.1 + gv.y * 0.9)) * zoom);
+  }
+  ctx.strokeStyle = C.grass; ctx.lineCap = 'round';
+  for (const tf of scenery.tufts) {
+    const k = 0.1 + tf.y * 0.9, px = tf.x * W, py = horizon + (H - horizon) * k, s = (0.5 + k) * tf.s * 6;
+    ctx.lineWidth = 1 + k * 1.2;
+    ctx.beginPath();
+    ctx.moveTo(px - s * 0.5, py - s * 1.3); ctx.lineTo(px, py); ctx.lineTo(px, py - s * 1.8);
+    ctx.moveTo(px, py); ctx.lineTo(px + s * 0.5, py - s * 1.3);
+    ctx.stroke();
+  }
+  for (const f of scenery.flowers) {
+    const k = 0.15 + f.y * 0.85, px = f.x * W, py = horizon + (H - horizon) * k, s = 1.6 + k * 2.2;
+    ctx.fillStyle = f.c;
+    const petals = [];
+    for (let i = 0; i < 5; i++) petals.push([px + Math.cos(i * 1.2566) * s, py + Math.sin(i * 1.2566) * s, s * 0.75]);
+    blob(ctx, petals); ctx.fill();
+    ctx.fillStyle = '#ffcc33'; ctx.beginPath(); ctx.arc(px, py, s * 0.6, 0, TAU); ctx.fill();
+  }
+  if (HALLOWEEN) for (const p of scenery.pumpkins) {
+    drawPumpkin(ctx, p.x * W, horizon + (H - horizon) * p.y, (5 + 16 * (0.1 + p.y * 0.9)) * zoom, t, p.ph);
+  }
+}
+function roundRectPath(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.arcTo(x + w, y, x + w, y + r, r);
+  c.lineTo(x + w, y + h - r); c.arcTo(x + w, y + h, x + w - r, y + h, r);
+  c.lineTo(x + r, y + h); c.arcTo(x, y + h, x, y + h - r, r);
+  c.lineTo(x, y + r); c.arcTo(x, y, x + r, y, r); c.closePath();
+}
+function drawReachLine() {
+  const reach = armReach(save.arm);
+  if (reach >= DIST_MAX) return;
+  const y = footYFor(reach);
+  ctx.save();
+  ctx.setLineDash([8, 7]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.setLineDash([]);
+  ctx.font = '800 11px Nunito, ui-rounded, system-ui, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 4;
+  ctx.fillText(`докинешь до ${reach} м`, 10, y - 6);
+  ctx.restore();
+}
+function drawDistLabel() {
+  const far = cr.dist > armReach(save.arm);
+  const txt = `${cr.dist} м`;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, cr.scale);
+  ctx.font = '900 12px Nunito, ui-rounded, system-ui, sans-serif';
+  const w = ctx.measureText(txt).width + 14, x = cr.x - w / 2, y = cr.y - cr.r * 1.8 - 22;
+  ctx.fillStyle = far ? 'rgba(194,69,59,0.92)' : 'rgba(0,0,0,0.42)';
+  roundRectPath(ctx, x, y, w, 20, 10); ctx.fill();
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.fillText(txt, cr.x, y + 14.5);
+  ctx.restore();
+}
+
+/* ======================= ЧАСТИЦЫ ======================= */
+function burst(x, y, colors, n, spd) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = spd * (0.4 + Math.random() * 0.8);
+    parts.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - spd * 0.3, life:1, dur:0.6 + Math.random() * 0.6,
+      size:3 + Math.random() * 4, color:colors[i % colors.length], spin:Math.random() * 6 });
+  }
+}
+function updateParts(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.life -= dt / p.dur; p.vy += 260 * dt; p.vx *= 0.98; p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
+}
+function drawParts() {
+  for (const p of parts) {
+    ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color;
+    starPath(ctx, p.x, p.y, p.size * (0.6 + 0.4 * p.life), 4, 0.35, p.spin); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ======================= ОХОТА: ИГРОВАЯ ЛОГИКА ======================= */
+function resetOrb(pop) {
+  orb.x = rest.x; orb.y = rest.y; orb.scale = 1; orb.alpha = 1; orb.rot = 0; orb.defIdx = selected;
+  if (pop) orb.pop = 0;
+}
+
+function spawn() {
+  const sp = pickSpecies();
+  cr = { sp, dist:rollDistance(sp), x:W / 2, y:0, r:R, baseY:0, mt:0, freq:0.5 + Math.random() * 0.4,
+         ph:Math.random() * TAU, scale:0, alpha:1 };
+  placeCreature(); cr.y = cr.baseY; cr.x = creatureX();
+  resetOrb(orb.alpha < 0.99);
+  setState('spawning');
+  updateInfo();
+  const rr = RARITY[sp.rarity];
+  burst(cr.x, cr.y, ['#ffffff', rr.aura || '#9be38f'], 16, 130);
+  const msg = sp.rarity === 'pet' ? `Это же ${sp.name}! Любимчик рядом`
+    : { epic:'Рядом эпический зверёк!', legendary:'Ого, легендарный зверёк!', mythic:'Мифический зверёк! Такое бывает редко',
+        secret:'Секретный зверёк!', divine:'Божественный зверёк!!!' }[sp.rarity];
+  if (!ORBS.some(o => save.orbs[o.id] > 0)) toast('Сферы закончились. Купи новые в магазине', 'bad', 2600);
+  else if (msg) toast(msg, sp.rarity === 'epic' ? '' : 'good');
+}
+
+function throwOrb(vx, vy) {
+  const speed = -vy, power = speed / IDEAL_SPEED;
+  const sx = orb.x, sy = orb.y, reach = armReach(save.arm);
+  const tooFar = cr.dist > reach;
+  const ty = tooFar
+    ? footYFor(reach) - ORB_R * 0.3
+    : clamp(cr.y - (power - 1) * cr.r * 1.8, horizon - H * 0.1, H - ORB_R);
+  const dy = Math.max(40, sy - (tooFar ? ty : cr.y));
+  const tx = clamp(sx + (vx / speed) * dy, -W * 0.2, W * 1.2);
+  const tD = depthT(tooFar ? reach : cr.dist);
+  throwInfo = { sx, sy, tx, ty, tooFar, reach, orbIdx:orb.defIdx,
+                arc:Math.min(140, Math.max(30, (sy - ty) * 0.35)), dur:0.5 + 0.3 * tD, endScale:lerp(0.62, 0.3, tD) };
+  hintDone = true;
+  setState('flying');
+}
+
+function resolveThrow() {
+  const ti = throwInfo;
+  if (ti.tooFar) {
+    toast(`Не докинул: рука бросает только на ${ti.reach} м. Прокачай её в магазине`, 'bad', 3000);
+    missV = { x:(ti.tx - ti.sx) / ti.dur * 0.3, y:60 };
+    setState('miss');
+    return;
+  }
+  const hitR = Math.max(cr.r * 1.05, 24);
+  const d = Math.hypot(ti.tx - cr.x, ti.ty - cr.y);
+  if (d <= hitR) {
+    const bonus = throwBonusFor(d / hitR);
+    const def = ORBS[ti.orbIdx];
+    save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist();
+    ensureSelectable(); renderOrbs(); updateInfo();
+    const res = tryCatch(cr.sp.rarity, def, bonus.mult);
+    const shakes = def.guaranteed ? 1 : res.success ? 3 : (res.roll - res.chance < 0.15 ? 2 : 1);
+    attempt = { ...res, shakes, def };
+    toast(`${bonus.label || 'Попадание!'} Шанс ${pct(res.chance)}`);
+    capFrom = { x:cr.x, y:cr.y }; capOrb = { x:orb.x, y:orb.y };
+    burst(orb.x, orb.y, ['#ffffff', def.glow], 14, 150);
+    setState('capturing');
+  } else {
+    const dx = ti.tx - cr.x, dy = ti.ty - cr.y;
+    let msg;
+    if (Math.abs(dx) > hitR * 0.9) msg = 'Мимо, целься в центр';
+    else if (dy < 0) msg = 'Перелёт, бросай чуть мягче';
+    else msg = 'Недолёт, бросай резче';
+    toast(msg);
+    missV = { x:(ti.tx - ti.sx) / ti.dur * 0.5, y:dy < 0 ? -260 : 60 };
+    setState('miss');
+  }
+}
+
+function onCaught(sp) {
+  save.pets[sp.id] = (save.pets[sp.id] || 0) + 1;
+  const first = !save.seen[sp.id];
+  save.seen[sp.id] = true; save.caught++;
+  const reward = sp.income * CATCH_REWARD;
+  save.coins += reward;
+  let where = '';
+  if (penCount(save) < penSlots(save.pen)) {
+    save.inPen[sp.id] = (save.inPen[sp.id] || 0) + 1;
+    where = ' и уже в загоне';
+    refreshIncome(); refreshPenAnimals();
+  } else where = '. Загон полон, замени кого-нибудь на ферме';
+  persist(); refreshWallet(true);
+  toast(`${first ? 'Новый зверёк! ' : ''}${sp.name} пойман${where}. +${fmt(reward)} монет`, 'good', 3000);
+}
+
+function finishAttempt() {
+  if (attempt.success) {
+    onCaught(cr.sp);
+    burst(orb.x, orb.y, ['#ffffff', RARITY[cr.sp.rarity].aura || '#9be38f', '#ffe27a'], 34, 230);
+    setState('caught');
+  } else {
+    burst(orb.x, orb.y, ['#ffffff', attempt.def.glow], 22, 210);
+    breakFrom = { x:orb.x, y:orb.y };
+    setState('breakout');
+  }
+}
+
+function update(dt) {
+  stT += dt;
+  if (cr && MOVING.has(state)) { cr.mt += dt; cr.x = creatureX(); cr.y = cr.baseY; }
+  if (orb.pop < 1) orb.pop = Math.min(1, orb.pop + dt / 0.3);
+  orb.spin += dt * (state === 'flying' ? 10 : 0.9);
+  switch (state) {
+    case 'spawning': {
+      const u = Math.min(1, stT / 0.5);
+      cr.scale = easeOutBack(u); cr.alpha = 1;
+      if (u >= 1) setState('ready');
+      break;
+    }
+    case 'flying': {
+      const ti = throwInfo, u = Math.min(1, stT / ti.dur);
+      orb.x = lerp(ti.sx, ti.tx, u);
+      orb.y = lerp(ti.sy, ti.ty, u) - ti.arc * 4 * u * (1 - u);
+      orb.scale = lerp(1, ti.endScale, u);
+      if (u >= 1) resolveThrow();
+      break;
+    }
+    case 'miss': {
+      orb.x += missV.x * dt; orb.y += missV.y * dt; missV.y += 1400 * dt;
+      orb.scale *= Math.pow(0.35, dt); orb.alpha = Math.max(0, 1 - stT / 0.4);
+      if (stT >= 0.45) { resetOrb(true); setState('ready'); }
+      break;
+    }
+    case 'returning': {
+      const u = Math.min(1, stT / 0.22);
+      orb.x = lerp(retFrom.x, rest.x, easeOut(u)); orb.y = lerp(retFrom.y, rest.y, easeOut(u));
+      if (u >= 1) setState('ready');
+      break;
+    }
+    case 'capturing': {
+      const u = Math.min(1, stT / 0.55);
+      orb.y = capOrb.y - 22 * easeOut(Math.min(1, stT / 0.25));
+      cr.scale = 1 - easeIn(u); cr.alpha = 1 - 0.5 * u;
+      cr.x = lerp(capFrom.x, orb.x, easeIn(u)); cr.y = lerp(capFrom.y, orb.y, easeIn(u));
+      if (u >= 1) {
+        dropFrom = orb.y;
+        groundY = Math.max(footYFor(cr.dist) - ORB_R * throwInfo.endScale * 0.95, dropFrom + 6);
+        setState('dropping');
+      }
+      break;
+    }
+    case 'dropping': {
+      const u = Math.min(1, stT / 0.45);
+      orb.y = lerp(dropFrom, groundY, easeOutBounce(u));
+      if (u >= 1) setState('wobble');
+      break;
+    }
+    case 'wobble': {
+      const per = 0.8, k = Math.floor(stT / per);
+      if (k >= attempt.shakes) { orb.rot = 0; finishAttempt(); break; }
+      const local = stT - k * per;
+      orb.rot = local < 0.5 ? Math.sin(local / 0.5 * TAU) * 0.38 : 0;
+      break;
+    }
+    case 'caught': {
+      if (stT < 1.2 && Math.random() < dt * 16) {
+        parts.push({ x:orb.x + (Math.random() - 0.5) * ORB_R, y:orb.y, vx:(Math.random() - 0.5) * 40, vy:-120 - Math.random() * 80,
+          life:1, dur:0.9, size:3 + Math.random() * 3, color:Math.random() < 0.5 ? '#ffffff' : '#ffe27a', spin:Math.random() * 6 });
+      }
+      if (stT > 1.5) orb.alpha = Math.max(0, 1 - (stT - 1.5) / 0.4);
+      if (stT >= 2.0) spawn();
+      break;
+    }
+    case 'breakout': {
+      const u = Math.min(1, stT / 0.45);
+      cr.scale = easeOutBack(u); cr.alpha = 1;
+      cr.x = lerp(breakFrom.x, capFrom.x, easeOut(u)); cr.y = lerp(breakFrom.y, capFrom.y, easeOut(u));
+      orb.alpha = 1 - u; orb.scale = throwInfo.endScale + 0.4 * u;
+      if (u >= 1) {
+        if (tryFlee(cr.sp.rarity)) { toast(`${cr.sp.name} убегает…`, 'bad'); setState('fleeing'); }
+        else { toast(`Вырвался! Шанс был ${pct(attempt.chance)}, попробуй ещё`); resetOrb(true); setState('ready'); }
+      }
+      break;
+    }
+    case 'fleeing': {
+      const u = Math.min(1, stT / 0.6);
+      cr.y = capFrom.y - easeIn(u) * cr.r * 2.5; cr.alpha = 1 - u; cr.scale = 1 - 0.3 * u;
+      if (stT >= 1.0) spawn();
+      break;
+    }
+  }
+  updateParts(dt);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawScene(T);
+  drawReachLine();
+  if (cr && !['dropping','wobble','caught'].includes(state)) {
+    drawCreature(ctx, cr.sp, cr.x, cr.y, cr.r, T, { scale:cr.scale, alpha:cr.alpha, shadow:!['capturing','fleeing'].includes(state) });
+  }
+  if (cr && ['spawning','ready','dragging','flying','miss','returning'].includes(state)) drawDistLabel();
+  if (state === 'capturing') {
+    const u = Math.min(1, stT / 0.55);
+    ctx.save();
+    ctx.globalAlpha = 0.6 * (1 - u); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6 * (1 - u) + 1; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(orb.x, orb.y); ctx.lineTo(cr.x, cr.y); ctx.stroke();
+    const gr = ctx.createRadialGradient(cr.x, cr.y, 0, cr.x, cr.y, cr.r * 1.4 * (1 - 0.6 * u));
+    gr.addColorStop(0, 'rgba(255,255,255,0.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.globalAlpha = 1 - u; ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cr.x, cr.y, cr.r * 1.4, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  if (orb.alpha > 0.01) {
+    const ps = easeOutBack(orb.pop), sr = ORB_R * orb.scale * ps;
+    let sy = null;
+    if (['ready','spawning','returning'].includes(state)) sy = rest.y + ORB_R * 0.95;
+    else if (['dropping','wobble','caught','breakout'].includes(state)) sy = groundY + ORB_R * throwInfo.endScale * 0.95;
+    if (sy !== null && sr > 0.5) {
+      ctx.fillStyle = `rgba(0,0,0,${0.2 * orb.alpha})`;
+      ctx.beginPath(); ctx.ellipse(orb.x, sy, sr * 0.9, sr * 0.25, 0, 0, TAU); ctx.fill();
+    }
+    drawOrb(ctx, orb.x, orb.y, sr, ORBS[orb.defIdx], orb.spin, orb.rot, orb.alpha);
+  }
+  drawParts();
+  if (!hintDone && state === 'ready' && orb.pop >= 1) {
+    ctx.save();
+    ctx.globalAlpha = 0.65 + 0.35 * Math.sin(T * 4);
+    ctx.font = '800 15px Nunito, ui-rounded, system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 6;
+    ctx.fillText('Смахни сферу вверх ↑', rest.x, rest.y - ORB_R * 2.2);
+    ctx.restore();
+  }
+}
+
+/* ======================= ОХОТА: СВАЙП ======================= */
+function ptr(e) { const r = canvas.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top, t:performance.now() }; }
+function trimTrail(now) { while (trail.length > 2 && now - trail[0].t > 120) trail.shift(); }
+canvas.addEventListener('pointerdown', e => {
+  if (state !== 'ready') return;
+  const p = ptr(e);
+  if (Math.hypot(p.x - orb.x, p.y - orb.y) > ORB_R * 2.4) return;
+  if ((save.orbs[ORBS[orb.defIdx].id] || 0) <= 0) { toast('Таких сфер нет. Купи их в магазине', 'bad'); return; }
+  dragId = e.pointerId;
+  try { canvas.setPointerCapture(dragId); } catch (err) {}
+  trail = [p];
+  setState('dragging');
+  e.preventDefault();
+});
+canvas.addEventListener('pointermove', e => {
+  if (state !== 'dragging' || e.pointerId !== dragId) return;
+  const p = ptr(e);
+  orb.x = clamp(p.x, ORB_R, W - ORB_R);
+  orb.y = clamp(p.y, Math.max(cr.y + cr.r * 1.4, H * 0.5), H - ORB_R);
+  trail.push(p); trimTrail(p.t);
+});
+function release(e) {
+  if (state !== 'dragging' || e.pointerId !== dragId) return;
+  dragId = null;
+  const p = ptr(e); trail.push(p); trimTrail(p.t);
+  const a = trail[0], b = trail[trail.length - 1];
+  const dt = Math.max(16, b.t - a.t) / 1000;
+  const vx = (b.x - a.x) / dt, vy = (b.y - a.y) / dt;
+  if (vy > -450) {
+    retFrom = { x:orb.x, y:orb.y }; setState('returning');
+    if (Math.hypot(b.x - a.x, b.y - a.y) > 10) toast('Смахни вверх резче, чтобы бросить');
+    return;
+  }
+  throwOrb(vx, vy);
+}
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', e => {
+  if (state === 'dragging' && e.pointerId === dragId) { dragId = null; retFrom = { x:orb.x, y:orb.y }; setState('returning'); }
+});
+$('skipBtn').addEventListener('click', () => {
+  if (state !== 'ready' || !cr) return;
+  capFrom = { x:cr.x, y:cr.y };
+  setState('fleeing');
+});
+
+function ensureSelectable() {
+  if ((save.orbs[ORBS[selected].id] || 0) > 0) return;
+  let j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0 && !o.guaranteed);
+  if (j < 0) j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0);
+  if (j >= 0) selected = j;
+}
+function renderOrbs() {
+  orbsNav.innerHTML = '';
+  ORBS.forEach((def, i) => {
+    const n = save.orbs[def.id] || 0;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'orb-btn' + (i === selected ? ' sel' : '');
+    b.disabled = n <= 0;
+    b.setAttribute('aria-pressed', String(i === selected));
+    b.setAttribute('aria-label', `${def.name} сфера, ${def.guaranteed ? 'поимка 100%' : 'шанс ' + def.label}, осталось ${n}`);
+    const cnt = document.createElement('span'); cnt.className = 'orb-count'; cnt.textContent = n;
+    const ml = document.createElement('span'); ml.className = 'orb-mult'; ml.textContent = def.label;
+    b.append(cnt, orbIcon(def, 38), ml);
+    b.addEventListener('click', () => {
+      selected = i;
+      if (['ready','spawning'].includes(state)) orb.defIdx = i;
+      renderOrbs(); updateInfo();
+    });
+    orbsNav.append(b);
+  });
+}
+function updateInfo() {
+  if (!cr) return;
+  const sp = cr.sp, def = ORBS[selected], reach = armReach(save.arm);
+  cName.textContent = sp.name;
+  setBadge(cRarity, sp.rarity);
+  cChance.innerHTML = def.guaranteed
+    ? `${def.name} сфера: поимка <b>100%</b>`
+    : `${def.name}: шанс <b>${pct(catchChance(sp.rarity, def, 1))}</b>, в центр до <b>${pct(catchChance(sp.rarity, def, 1.5))}</b>`;
+  const far = cr.dist > reach;
+  cDist.innerHTML = far
+    ? `До него <b>${cr.dist} м</b>, а рука только на ${reach} м`
+    : `До него <b>${cr.dist} м</b>, рука бросает на ${reach} м`;
+  cDist.classList.toggle('far', far);
+}
+
+/* ======================= ФЕРМА ======================= */
+let pW = 0, pH = 0;
+const penTufts = [], penFloats = [];
+let penAnimals = [];
+function layoutPen() {
+  const r = penCanvas.getBoundingClientRect();
+  if (r.width < 10) return;
+  pW = r.width; pH = r.height;
+  const d = Math.min(window.devicePixelRatio || 1, 2.5);
+  penCanvas.width = Math.round(pW * d); penCanvas.height = Math.round(pH * d);
+  pctx.setTransform(d, 0, 0, d, 0, 0);
+  const g = rng(11); penTufts.length = 0;
+  for (let i = 0; i < Math.round(pW / 12); i++) penTufts.push({ x:g(), y:0.2 + g() * 0.75, s:0.7 + g() * 0.6 });
+}
+function newAnimal(sp) {
+  return { sp, x:Math.random(), y:Math.random(), tx:Math.random(), ty:Math.random(), wait:Math.random() * 1.5,
+           coinT:2 + Math.random() * 3, acc:0, t0:Math.random() * 10, float:0 };
+}
+function refreshPenAnimals() {
+  const pool = penAnimals.slice(), next = [];
+  for (const sp of SPECIES) {
+    for (let i = 0; i < (save.inPen[sp.id] || 0); i++) {
+      const j = pool.findIndex(a => a.sp === sp);
+      next.push(j >= 0 ? pool.splice(j, 1)[0] : newAnimal(sp));
+    }
+  }
+  penAnimals = next;
+}
+function updatePen(dt) {
+  for (const a of penAnimals) {
+    if (a.wait > 0) a.wait -= dt;
+    else {
+      const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy), step = 0.11 * dt;
+      if (d <= step) { a.x = a.tx; a.y = a.ty; a.tx = Math.random(); a.ty = Math.random(); a.wait = 0.8 + Math.random() * 2.2; }
+      else { a.x += dx / d * step; a.y += dy / d * step; }
+    }
+    a.acc += dt; a.coinT -= dt;
+    if (a.coinT <= 0) { a.float = a.sp.income * a.acc; a.acc = 0; a.coinT = 3 + Math.random() * 2; }
+  }
+}
+function picketRow(c, y, x0, x1, h) {
+  c.fillStyle = '#b98b5e'; c.strokeStyle = '#7a5534'; c.lineWidth = 1.2;
+  for (const ry of [y + h * 0.3, y + h * 0.66]) { c.fillRect(x0, ry, x1 - x0, 4); c.strokeRect(x0, ry, x1 - x0, 4); }
+  for (let x = x0 + 4; x <= x1 - 4; x += 24) {
+    c.beginPath(); c.moveTo(x - 4, y + h); c.lineTo(x - 4, y + 5); c.lineTo(x, y); c.lineTo(x + 4, y + 5); c.lineTo(x + 4, y + h);
+    c.closePath(); c.fill(); c.stroke();
+  }
+}
+function drawPen(dt) {
+  if (!pW) return;
+  const c = pctx;
+  const g = c.createLinearGradient(0, 0, 0, pH);
+  g.addColorStop(0, C.groundTop); g.addColorStop(1, C.groundBottom);
+  c.fillStyle = g; c.fillRect(0, 0, pW, pH);
+  c.strokeStyle = C.grass; c.lineCap = 'round'; c.lineWidth = 1.6;
+  for (const tf of penTufts) {
+    const px = tf.x * pW, py = tf.y * pH, s = 5 * tf.s;
+    c.beginPath(); c.moveTo(px - s * 0.5, py - s * 1.3); c.lineTo(px, py); c.lineTo(px, py - s * 1.8);
+    c.moveTo(px, py); c.lineTo(px + s * 0.5, py - s * 1.3); c.stroke();
+  }
+  picketRow(c, 6, 6, pW - 6, 30);
+  c.fillStyle = '#b98b5e'; c.strokeStyle = '#7a5534';
+  for (const x of [6, pW - 10]) { c.fillRect(x, 20, 4, pH - 40); c.strokeRect(x, 20, 4, pH - 40); }
+  if (HALLOWEEN) { drawPumpkin(c, 30, 50, 11, T, 1); drawPumpkin(c, pW - 30, 50, 11, T, 2); }
+
+  const r = clamp(pH * 0.095, 14, 22);
+  const x0 = 20 + r * 1.3, x1 = pW - 20 - r * 1.3, y0 = 42 + r * 1.9, y1 = pH - 32;
+  const list = penAnimals.map(a => ({ a, px:lerp(x0, x1, a.x), py:lerp(y0, y1, a.y) })).sort((p, q) => p.py - q.py);
+  for (const { a, px, py } of list) {
+    drawCreature(c, a.sp, px, py - r * 0.95, r, T + a.t0, {});
+    if (a.float > 0) { penFloats.push({ x:px, y:py - r * 2.4, txt:'+' + fmt(Math.max(1, a.float)), life:1 }); a.float = 0; }
+  }
+  picketRow(c, pH - 30, 6, pW - 6, 26);
+  if (HALLOWEEN) { drawPumpkin(c, 30, pH - 4, 13, T, 3); drawPumpkin(c, pW - 30, pH - 4, 13, T, 4); }
+
+  c.font = '900 12px Nunito, ui-rounded, system-ui, sans-serif'; c.textAlign = 'center';
+  for (let i = penFloats.length - 1; i >= 0; i--) {
+    const f = penFloats[i];
+    f.life -= dt / 1.3; f.y -= 22 * dt;
+    if (f.life <= 0) { penFloats.splice(i, 1); continue; }
+    c.globalAlpha = Math.min(1, f.life * 1.5);
+    const w = c.measureText(f.txt).width;
+    c.fillStyle = '#f2b632'; c.beginPath(); c.arc(f.x - w / 2 - 7, f.y - 4, 5, 0, TAU); c.fill();
+    c.fillStyle = '#ffffff'; c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 3;
+    c.fillText(f.txt, f.x + 2, f.y); c.shadowBlur = 0;
+  }
+  c.globalAlpha = 1;
+  if (!penAnimals.length) {
+    c.save(); c.textAlign = 'center'; c.fillStyle = '#ffffff'; c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur = 4;
+    c.font = '900 16px Nunito, ui-rounded, system-ui, sans-serif'; c.fillText('Загон пуст', pW / 2, pH / 2 - 4);
+    c.font = '700 13px Nunito, ui-rounded, system-ui, sans-serif'; c.fillText('Посади сюда зверьков из списка ниже', pW / 2, pH / 2 + 16);
+    c.restore();
+  }
+}
+
+function penUpgradeButton(list) {
+  if (save.pen >= PEN_MAX) {
+    const b = makeBtn('Загон уже самый большой', 'primary', () => {}); b.disabled = true; return b;
+  }
+  const cost = PEN_COST[save.pen - 1];
+  const b = makeBtn(`Расширить до ${penSlots(save.pen + 1)} мест за `, 'primary', upgradePen, cost);
+  list.push({ el:b, cost, blocked:false });
+  b.disabled = save.coins < cost;
+  return b;
+}
+function upgradePen() {
+  if (save.pen >= PEN_MAX) return;
+  if (!spend(PEN_COST[save.pen - 1])) return;
+  save.pen++; persist();
+  toast(`Загон расширен, теперь в нём ${penSlots(save.pen)} мест`, 'good');
+  rerenderCurrent();
+}
+function movePet(id, delta) {
+  const n = save.pets[id] || 0, inp = save.inPen[id] || 0;
+  if (delta > 0) {
+    if (inp >= n) return;
+    if (penCount(save) >= penSlots(save.pen)) { toast('Загон полон. Расширь его или убери кого-нибудь', 'bad'); return; }
+    save.inPen[id] = inp + 1;
+  } else {
+    if (inp <= 0) return;
+    if (inp === 1) delete save.inPen[id]; else save.inPen[id] = inp - 1;
+  }
+  persist(); refreshIncome(); refreshPenAnimals(); renderFarm();
+}
+function sellPet(id) {
+  const sp = SPECIES_BY_ID[id], n = save.pets[id] || 0, inp = save.inPen[id] || 0;
+  if (n - inp <= 0) return;
+  const price = sp.income * SELL_MULT;
+  if (n === 1) delete save.pets[id]; else save.pets[id] = n - 1;
+  save.coins += price;
+  persist(); refreshWallet(true); renderFarm();
+  toast(`${sp.name} продан за ${fmt(price)} монет`);
+}
+function renderFarm() {
+  afford.farm = [];
+  const slots = penSlots(save.pen), used = penCount(save);
+  $('penSlots').textContent = `${used} из ${slots} мест`;
+  $('penIncome').textContent = fmt(curIncome);
+  const wrap = $('penUpWrap'); wrap.innerHTML = ''; wrap.append(penUpgradeButton(afford.farm));
+  $('penFill').disabled = !Object.keys(save.pets).length;
+  const list = $('petList'); list.innerHTML = '';
+  const owned = SPECIES.filter(s => (save.pets[s.id] || 0) > 0).sort((a, b) => b.income - a.income);
+  if (!owned.length) { list.innerHTML = '<p class="empty">Пока никого нет. Поймай зверька на вкладке «Охота».</p>'; return; }
+  const full = used >= slots;
+  for (const sp of owned) {
+    const n = save.pets[sp.id], inp = save.inPen[sp.id] || 0, free = n - inp;
+    const item = document.createElement('div'); item.className = 'item';
+    const top = document.createElement('div');
+    const nm = document.createElement('div'); nm.className = 'item-name';
+    nm.append(document.createTextNode(sp.name), badgeEl(sp.rarity));
+    const meta = document.createElement('div'); meta.className = 'item-meta';
+    meta.textContent = `Всего ${n}, в загоне ${inp}. Каждый приносит ${fmt(sp.income)} в секунду`;
+    top.append(nm, meta);
+    const act = document.createElement('div'); act.className = 'item-actions';
+    const bIn = makeBtn('В загон', 'primary', () => movePet(sp.id, 1)); bIn.disabled = free <= 0 || full;
+    const bOut = makeBtn('Убрать', '', () => movePet(sp.id, -1)); bOut.disabled = inp <= 0;
+    const bSell = makeBtn('Продать за ', '', () => sellPet(sp.id), sp.income * SELL_MULT); bSell.disabled = free <= 0;
+    if (free <= 0) bSell.title = 'Сначала убери зверька из загона';
+    act.append(bIn, bOut, bSell);
+    item.append(creatureIcon(sp, 52), top, act);
+    list.append(item);
+  }
+}
+$('penFill').addEventListener('click', () => {
+  fillPenBest(save); persist(); refreshIncome(); refreshPenAnimals(); renderFarm();
+  toast('В загоне самые доходные зверьки', 'good');
+});
+
+/* ======================= МАГАЗИН ======================= */
+function buyOrb(def, n) {
+  if (!spend(def.price * n)) return;
+  save.orbs[def.id] = (save.orbs[def.id] || 0) + n; persist();
+  if (!(save.orbs[ORBS[selected].id] > 0) || !ORBS.some((o, i) => i !== selected && save.orbs[o.id] > 0)) ensureSelectable();
+  if (['ready','spawning'].includes(state)) orb.defIdx = selected;
+  renderOrbs(); updateInfo(); renderShop();
+  toast(`Куплено: ${def.name.toLowerCase()} сфера × ${n}`, 'good');
+}
+function reachSummary(reach) {
+  const full = RARITY_ORDER.filter(k => RARITY[k].dist[1] <= reach);
+  const part = RARITY_ORDER.find(k => RARITY[k].dist[0] < reach && RARITY[k].dist[1] > reach);
+  let s = full.length ? `Достаёшь всех до ${RARITY[full[full.length - 1]].many}` : 'Пока достаёшь только ближних';
+  if (part) s += ` и часть ${RARITY[part].many}`;
+  return s;
+}
+function upgradeArm() {
+  if (save.arm >= ARM_MAX) return;
+  if (!spend(ARM_COST[save.arm - 1])) return;
+  save.arm++; persist();
+  toast(`Рука стала сильнее! Теперь бросаешь на ${armReach(save.arm)} м`, 'good');
+  updateInfo(); renderShop();
+}
+function renderShop() {
+  afford.shop = [];
+  const list = $('shopOrbs'); list.innerHTML = '';
+  for (const def of ORBS) {
+    const item = document.createElement('div'); item.className = 'item';
+    const top = document.createElement('div');
+    const nm = document.createElement('div'); nm.className = 'item-name'; nm.textContent = `${def.name} сфера`;
+    const meta = document.createElement('div'); meta.className = 'item-meta';
+    meta.textContent = (def.guaranteed ? 'Ловит любого зверька с первого раза.' : `Шанс поимки ${def.label}.`) + ` У тебя: ${save.orbs[def.id] || 0}`;
+    top.append(nm, meta);
+    const act = document.createElement('div'); act.className = 'item-actions';
+    const b1 = makeBtn('Купить ', 'primary', () => buyOrb(def, 1), def.price);
+    const b10 = makeBtn('10 шт. ', '', () => buyOrb(def, 10), def.price * 10);
+    for (const [b, cost] of [[b1, def.price], [b10, def.price * 10]]) { afford.shop.push({ el:b, cost, blocked:false }); b.disabled = save.coins < cost; }
+    act.append(b1, b10);
+    item.append(orbIcon(def, 52), top, act);
+    list.append(item);
+  }
+
+  const arm = $('armCard'); arm.innerHTML = '';
+  const reach = armReach(save.arm);
+  const h = document.createElement('div'); h.className = 'card-head';
+  h.innerHTML = `<h2>Тренажёр руки</h2><span class="pill">Уровень ${save.arm} из ${ARM_MAX}</span>`;
+  const p = document.createElement('p'); p.className = 'sub';
+  p.textContent = 'Редкие зверьки стоят далеко. Чем сильнее рука, тем дальше летит сфера.';
+  const bar = document.createElement('div'); bar.className = 'bar'; bar.setAttribute('aria-hidden', 'true');
+  for (let i = 1; i <= ARM_MAX; i++) { const s = document.createElement('i'); if (i <= save.arm) s.className = 'on'; bar.append(s); }
+  const st = document.createElement('p'); st.className = 'sub';
+  st.innerHTML = `Бросаешь на <b>${reach} м</b>. ${reachSummary(reach)}.`;
+  arm.append(h, p, bar, st);
+  if (save.arm < ARM_MAX) {
+    const cost = ARM_COST[save.arm - 1];
+    const nx = document.createElement('p'); nx.className = 'sub';
+    nx.innerHTML = `Следующий уровень: <b>${armReach(save.arm + 1)} м</b>. ${reachSummary(armReach(save.arm + 1))}.`;
+    const b = makeBtn('Тренировать руку за ', 'primary wide', upgradeArm, cost);
+    afford.shop.push({ el:b, cost, blocked:false }); b.disabled = save.coins < cost;
+    arm.append(nx, b);
+  } else {
+    const done = document.createElement('p'); done.className = 'sub'; done.innerHTML = '<b>Рука прокачана до максимума!</b>';
+    arm.append(done);
+  }
+
+  const pc = $('penShopCard'); pc.innerHTML = '';
+  const ph = document.createElement('div'); ph.className = 'card-head';
+  ph.innerHTML = `<h2>Расширение загона</h2><span class="pill">${penSlots(save.pen)} мест</span>`;
+  const pp = document.createElement('p'); pp.className = 'sub';
+  pp.textContent = 'Каждое расширение добавляет в загон ещё одно место для зверька.';
+  const pb = penUpgradeButton(afford.shop); pb.classList.add('wide');
+  pc.append(ph, pp, pb);
+}
+
+/* ======================= АЛЬБОМ ======================= */
+function renderAlbum() {
+  const seenN = SPECIES.filter(s => save.seen[s.id]).length;
+  $('albumCount').textContent = `${seenN} из ${SPECIES.length}`;
+  const grid = $('albumGrid'); grid.innerHTML = '';
+  for (const sp of SPECIES) {
+    const seen = !!save.seen[sp.id], rr = RARITY[sp.rarity];
+    const card = document.createElement('div'); card.className = 'mon';
+    const nm = document.createElement('div'); nm.className = 'mon-name'; nm.textContent = seen ? sp.name : '???';
+    const meta = document.createElement('div'); meta.className = 'mon-meta';
+    meta.textContent = `${rr.dist[0]}–${rr.dist[1]} м`;
+    card.append(creatureIcon(sp, 72, !seen), nm, badgeEl(sp.rarity));
+    if (seen) { const inc = document.createElement('div'); inc.className = 'mon-meta'; inc.textContent = `+${fmt(sp.income)} в сек.`; card.append(inc); }
+    card.append(meta);
+    grid.append(card);
+  }
+  const total = RARITY_ORDER.reduce((s, k) => s + RARITY[k].weight, 0);
+  const rows = RARITY_ORDER.map(k => {
+    const r = RARITY[k];
+    return `<tr><td><span class="badge" style="--badge:${r.color};--badge-text:${r.text};--badge-ring:${r.ring || 'transparent'}">${r.name}</span></td>` +
+           `<td>${pct(r.base)}</td><td>${pct(r.flee)}</td><td>${pct(r.weight / total)}</td><td>${r.dist[0]}–${r.dist[1]} м</td></tr>`;
+  }).join('');
+  $('rules').innerHTML = `<thead><tr><th>Редкость</th><th>Шанс</th><th>Побег</th><th>Встречается</th><th>Стоит на</th></tr></thead><tbody>${rows}</tbody>`;
+  $('rulesNote').textContent =
+    'Множители сфер: медная ×1, серебряная ×1,5, золотая ×2,5, алмазная ×4, звёздная ловит всегда. ' +
+    'Бросок в самый центр даёт ещё ×1,5, рядом с центром ×1,25. Промах сферу не тратит. ' +
+    'Если зверёк стоит дальше, чем бросает рука, сфера не долетит: прокачай руку в магазине.';
+}
+let resetArmed = 0;
+$('resetBtn').addEventListener('click', () => {
+  const b = $('resetBtn');
+  if (Date.now() - resetArmed < 3000) {
+    const f = freshSave();
+    for (const k of Object.keys(save)) delete save[k];
+    Object.assign(save, f);
+    try { localStorage.removeItem(OLD_KEY); } catch (e) {}
+    persist();
+    selected = 0; ensureSelectable(); refreshIncome(); refreshPenAnimals(); renderOrbs(); renderAlbum(); refreshWallet(true);
+    spawn();
+    b.textContent = 'Начать игру заново'; resetArmed = 0;
+    toast('Игра начата заново');
+  } else {
+    resetArmed = Date.now();
+    b.textContent = 'Точно? Нажми ещё раз';
+    setTimeout(() => { if (Date.now() - resetArmed >= 2900) b.textContent = 'Начать игру заново'; }, 3000);
+  }
+});
+
+
+/* ======================= ПАНЕЛЬ АДМИНИСТРАТОРА ======================= */
+const ADMIN_PASSWORD = 'я люблю пчелок'; // «ё» и «е», большие и маленькие буквы считаются одинаково
+const normPass = s => s.toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+function adminLogin() {
+  const inp = $('adminPass');
+  if (normPass(inp.value) === ADMIN_PASSWORD) {
+    inp.value = ''; inp.blur();
+    $('adminLock').hidden = true; $('adminBody').hidden = false;
+    renderAdminPets();
+    toast('Панель администратора открыта', 'good');
+  } else toast('Неверный пароль', 'bad');
+}
+function adminGivePet(sp) {
+  save.pets[sp.id] = (save.pets[sp.id] || 0) + 1;
+  save.seen[sp.id] = true; save.caught++;
+  let where = '';
+  if (penCount(save) < penSlots(save.pen)) { save.inPen[sp.id] = (save.inPen[sp.id] || 0) + 1; where = ', сидит в загоне'; }
+  persist(); refreshIncome(); refreshPenAnimals();
+  toast(`Получен зверёк: ${sp.name}${where}`, 'good');
+}
+function renderAdminPets() {
+  const grid = $('adminPets'); grid.innerHTML = '';
+  for (const sp of SPECIES) {
+    const card = document.createElement('div'); card.className = 'mini';
+    const nm = document.createElement('div'); nm.className = 'mon-name'; nm.textContent = sp.name;
+    card.append(creatureIcon(sp, 56), nm, badgeEl(sp.rarity), makeBtn('Получить', 'primary', () => adminGivePet(sp)));
+    grid.append(card);
+  }
+}
+$('adminLogin').addEventListener('click', adminLogin);
+$('adminPass').addEventListener('keydown', e => { if (e.key === 'Enter') adminLogin(); });
+$('adminEye').addEventListener('click', () => { const i = $('adminPass'); i.type = i.type === 'password' ? 'text' : 'password'; });
+$('adminCoins').addEventListener('click', () => { save.coins += 10000; persist(); refreshWallet(true); toast('+10 000 монет', 'good'); });
+
+/* ======================= ВКЛАДКИ ======================= */
+const tabBtns = [...document.querySelectorAll('.tab')];
+function rerenderCurrent() {
+  if (tab === 'farm') renderFarm();
+  else if (tab === 'shop') renderShop();
+  else if (tab === 'album') renderAlbum();
+}
+function showTab(t) {
+  tab = t;
+  clearTimeout(toastTimer); toastEl.className = 'toast';
+  for (const b of tabBtns) { const on = b.dataset.tab === t; b.classList.toggle('active', on); b.setAttribute('aria-selected', String(on)); }
+  for (const s of document.querySelectorAll('.screen')) s.classList.toggle('active', s.id === 'scr-' + t);
+  if (t === 'hunt') { layout(); updateInfo(); }
+  if (t === 'farm') { layoutPen(); renderFarm(); }
+  if (t === 'shop') renderShop();
+  if (t === 'album') renderAlbum();
+}
+tabBtns.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+/* ======================= ГЛАВНЫЙ ЦИКЛ ======================= */
+let last = performance.now(), lastWall = Date.now(), saveTimer = 0;
+function frame(now) {
+  const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
+  const wall = Date.now(), away = (wall - lastWall) / 1000; lastWall = wall;
+  if (away > 0 && curIncome > 0) {
+    const earned = curIncome * Math.min(away, OFFLINE_CAP);
+    save.coins += earned;
+    if (away > 30) toast(`Пока тебя не было, ферма принесла ${fmt(earned)} монет`, 'good', 3200);
+  }
+  refreshWallet();
+  if (W > 0 && cr) { update(dt); if (tab === 'hunt') draw(); }
+  if (tab === 'farm') { updatePen(dt); drawPen(dt); }
+  saveTimer += dt;
+  if (saveTimer > 5) { saveTimer = 0; persist(); }
+  requestAnimationFrame(frame);
+}
+
+/* ======================= СТАРТ ======================= */
+if (HALLOWEEN) { const lg = document.querySelector('.logo'); lg.textContent = '🎃'; lg.classList.add('pumpkin'); }
+else document.documentElement.removeAttribute('data-halloween');
+readColors();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', readColors);
+new MutationObserver(readColors).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme','class'] });
+document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); });
+window.addEventListener('pagehide', persist);
+
+layout();
+refreshIncome();
+const offline = Math.min(Math.max(0, (Date.now() - save.last) / 1000), OFFLINE_CAP);
+const offlineEarned = Math.floor(curIncome * offline);
+if (offlineEarned > 0 && offline > 30) save.coins += offlineEarned;
+ensureSelectable(); renderOrbs(); refreshPenAnimals(); refreshWallet();
+spawn();
+if (save.migrated) toast('Твои зверьки из прошлой версии уже на ферме', 'good', 3200);
+else if (offlineEarned > 0 && offline > 30) toast(`Пока тебя не было, ферма принесла ${fmt(offlineEarned)} монет`, 'good', 3200);
+else if (HALLOWEEN && !save.flags.halloween) { save.flags.halloween = true; toast('С Хэллоуином! На поляну пришли тыквы, летучие мыши и привидение', 'good', 3400); }
+persist();
+new ResizeObserver(() => layout()).observe(stage);
+new ResizeObserver(() => { if (tab === 'farm') layoutPen(); }).observe(penCanvas);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
