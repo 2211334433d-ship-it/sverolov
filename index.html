@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сферолов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef3ec; --surface:#ffffff; --surface-2:#f1f5ef; --text:#1c2a20; --muted:#55665a; --border:#d3ddd0;
+  --accent:#2f7d5b; --on-accent:#ffffff; --glass:rgba(255,255,255,.82);
+  --toast-bg:#1f2a22; --toast-text:#ffffff; --shadow:0 8px 24px rgba(20,40,25,.14);
+  --sky-top:#8ccaf2; --sky-bottom:#e2f4ff; --ground-top:#a9db8c; --ground-bottom:#6cb65f;
+  --hill-1:#bfe0cf; --hill-2:#97cc8b; --grass:#4d9447; --cloud:#ffffff; --cloud-alpha:.9;
+  --sun:#fff1a8; --star:#ffffff; --star-alpha:0;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1411; --surface:#18201b; --surface-2:#212b25; --text:#e7efe9; --muted:#9caca1; --border:#2d3932;
+    --accent:#5cc493; --on-accent:#0c1d14; --glass:rgba(18,26,22,.8);
+    --toast-bg:#eef3ef; --toast-text:#13201a; --shadow:0 8px 24px rgba(0,0,0,.45);
+    --sky-top:#0a1230; --sky-bottom:#2b3b6e; --ground-top:#2f5a3c; --ground-bottom:#183424;
+    --hill-1:#22385a; --hill-2:#27503b; --grass:#4a8a58; --cloud:#9fb0e0; --cloud-alpha:.14;
+    --sun:#eef0ff; --star:#ffffff; --star-alpha:1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1411; --surface:#18201b; --surface-2:#212b25; --text:#e7efe9; --muted:#9caca1; --border:#2d3932;
+  --accent:#5cc493; --on-accent:#0c1d14; --glass:rgba(18,26,22,.8);
+  --toast-bg:#eef3ef; --toast-text:#13201a; --shadow:0 8px 24px rgba(0,0,0,.45);
+  --sky-top:#0a1230; --sky-bottom:#2b3b6e; --ground-top:#2f5a3c; --ground-bottom:#183424;
+  --hill-1:#22385a; --hill-2:#27503b; --grass:#4a8a58; --cloud:#9fb0e0; --cloud-alpha:.14;
+  --sun:#eef0ff; --star:#ffffff; --star-alpha:1;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  height:100%;margin:0;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--bg);color:var(--text);
+  font-family:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:1.2rem;letter-spacing:-.01em}
+.logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff7cc,#f2b632 60%,#8f6100);color:#fff;font-size:14px;
+  box-shadow:0 0 0 3px rgba(242,182,50,.25)}
+.chip{display:flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;border-radius:999px;border:1px solid var(--border);
+  background:var(--surface);font-weight:800;font-size:.92rem;cursor:pointer}
+.total{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:900}
+.total.bump{animation:bump .5s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+.stage{position:relative;flex:1;min-height:0;margin:0 10px;border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+#game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+
+.info{position:absolute;top:10px;left:10px;right:10px;display:flex;align-items:center;gap:10px;
+  padding:8px 8px 8px 14px;border-radius:16px;background:var(--glass);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.info-main{flex:1;min-width:0}
+.name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cname{font-weight:900;font-size:1.08rem}
+.chance{margin-top:2px;font-size:.84rem;color:var(--muted);font-weight:700}
+.chance b{color:var(--text);font-weight:900}
+.skip{flex:none;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font-size:1.15rem;cursor:pointer}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--badge,#6b7a6d);color:var(--badge-text,#fff);font-size:.74rem;font-weight:800}
+
+.toast{position:absolute;left:50%;top:80px;max-width:88%;padding:8px 15px;border-radius:999px;
+  background:var(--toast-bg);color:var(--toast-text);font-weight:800;font-size:.92rem;text-align:center;
+  opacity:0;transform:translate(-50%,-6px);transition:opacity .2s ease,transform .2s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.good{background:#2b9a5c;color:#fff}
+.toast.bad{background:#c2453b;color:#fff}
+
+.orbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px}
+.orb-btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;
+  padding:6px 4px 8px;border-radius:16px;border:2px solid var(--border);background:var(--surface);cursor:pointer;
+  transition:border-color .15s ease,background .15s ease}
+.orb-btn.sel{border-color:var(--accent);background:var(--surface-2)}
+.orb-btn:disabled{opacity:.42;cursor:not-allowed}
+.orb-btn canvas{width:44px;height:44px}
+.orb-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem;font-weight:800}
+.orb-mult{font-size:.74rem;font-weight:800;color:var(--muted)}
+.orb-count{position:absolute;top:5px;right:7px;font-size:.74rem;font-weight:900;color:var(--muted)}
+
+.backdrop{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45)}
+.backdrop[hidden]{display:none}
+.sheet{width:min(100%,520px);max-height:86%;overflow:auto;background:var(--surface);border-radius:22px 22px 0 0;
+  padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sheet h2{margin:0;font-size:1.3rem;font-weight:900}
+.sheet h3{margin:18px 0 6px;font-size:1rem;font-weight:900}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);cursor:pointer}
+.col-list{display:grid;gap:8px}
+.col-row{display:flex;align-items:center;gap:12px;padding:6px 12px 6px 6px;border-radius:16px;background:var(--surface-2)}
+.col-row canvas{width:56px;height:56px;flex:none}
+.col-info{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.col-name{font-weight:900}
+.col-row.unknown .col-name{color:var(--muted)}
+.col-count{margin-left:auto;font-weight:900;font-size:1.05rem}
+.formula{margin:0;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-weight:800;line-height:1.45}
+.formula span{color:var(--muted);font-weight:700;font-size:.88rem}
+.table-wrap{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{color:var(--muted);font-weight:800}
+td{font-weight:700}
+.note{margin:10px 0 0;color:var(--muted);font-size:.88rem;line-height:1.5;font-weight:700}
+.primary{width:100%;margin-top:16px;padding:13px;border:0;border-radius:14px;background:var(--accent);color:var(--on-accent);font-weight:900;font-size:1rem;cursor:pointer}
+@media (prefers-reduced-motion: reduce){ .total.bump{animation:none} .toast{transition:none} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo" aria-hidden="true">✦</span>Сферолов</div>
+  <button class="chip" id="colBtn" type="button">Коллекция <span class="total" id="total">0</span></button>
+</header>
+
+<main class="stage" id="stage">
+  <canvas id="game" role="img" aria-label="Поляна со зверьком. Смахни сферу вверх, чтобы бросить её."></canvas>
+  <div class="info">
+    <div class="info-main">
+      <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span></div>
+      <div class="chance" id="cChance"></div>
+    </div>
+    <button class="skip" id="skipBtn" type="button" title="Искать другого зверька" aria-label="Искать другого зверька">↻</button>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+
+<nav class="orbs" id="orbs" aria-label="Выбор сферы"></nav>
+
+<div class="backdrop" id="sheet" hidden>
+  <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head">
+      <h2 id="sheetTitle">Коллекция</h2>
+      <button class="icon-btn" id="closeSheet" type="button" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="col-list" id="colList"></div>
+    <h3>Как считается шанс</h3>
+    <p class="formula">шанс = база редкости × множитель сферы × бонус броска<br><span>не больше 100%</span></p>
+    <div class="table-wrap"><table id="rules"></table></div>
+    <p class="note" id="orbNote"></p>
+    <button class="primary" id="refill" type="button">Пополнить сферы</button>
+  </section>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ===================== НАСТРОЙКИ БАЛАНСА ===================== */
+// base — базовый шанс поимки, flee — шанс побега после неудачи,
+// weight — как часто встречается, move — насколько зверёк бегает по поляне
+const RARITY = {
+  common:    { name:'Обычный',     base:0.60, flee:0.05, weight:45, move:0.00, color:'#6b7a6d', text:'#ffffff', aura:false },
+  uncommon:  { name:'Необычный',   base:0.40, flee:0.08, weight:28, move:0.03, color:'#2e8b4a', text:'#ffffff', aura:false },
+  rare:      { name:'Редкий',      base:0.22, flee:0.12, weight:16, move:0.08, color:'#2f6fc7', text:'#ffffff', aura:true  },
+  epic:      { name:'Эпический',   base:0.10, flee:0.18, weight:8,  move:0.12, color:'#8a3fc6', text:'#ffffff', aura:true  },
+  legendary: { name:'Легендарный', base:0.04, flee:0.25, weight:3,  move:0.16, color:'#f0b429', text:'#2a1d00', aura:true  },
+};
+
+// Уровни сфер: mult — множитель шанса, guaranteed — поимка 100%
+const ORBS = [
+  { id:'copper', name:'Медная',     mult:1.0, start:30, label:'×1',   c1:'#ffe0c2', c2:'#d9773a', c3:'#7a3510', ring:'#f3b27c', glow:'#ffb27a' },
+  { id:'silver', name:'Серебряная', mult:1.5, start:15, label:'×1,5', c1:'#ffffff', c2:'#a3b6ca', c3:'#4a5c70', ring:'#e3ecf7', glow:'#bcd7ff' },
+  { id:'gold',   name:'Золотая',    mult:2.0, start:8,  label:'×2',   c1:'#fff7cc', c2:'#f2b632', c3:'#8f6100', ring:'#ffe07a', glow:'#ffd34d' },
+  { id:'star',   name:'Звёздная',   mult:1.0, start:2,  label:'100%', guaranteed:true, c1:'#f3e8ff', c2:'#8a5cf6', c3:'#341785', ring:'#e9dbff', glow:'#c49bff' },
+];
+
+const SPECIES = [
+  { id:'puff',  name:'Пухляш',     rarity:'common',    body:'#f6c7d7', belly:'#fff1f6', feature:'ears'  },
+  { id:'leaf',  name:'Листохвост', rarity:'uncommon',  body:'#9bd68f', belly:'#ecf9e3', feature:'leaf'  },
+  { id:'spark', name:'Искрокрыл',  rarity:'rare',      body:'#86c8ff', belly:'#e6f4ff', feature:'wings' },
+  { id:'mist',  name:'Туманорог',  rarity:'epic',      body:'#bda8f2', belly:'#f1ebff', feature:'horn'  },
+  { id:'star',  name:'Звездогрив', rarity:'legendary', body:'#ffd86e', belly:'#fff7d6', feature:'mane'  },
+];
+
+// Бонус за точность: расстояние от центра зверька в долях его радиуса
+const THROW_BONUS = [
+  { maxDist:0.35, mult:1.5,  label:'Отличный бросок!' },
+  { maxDist:0.70, mult:1.25, label:'Хороший бросок!' },
+];
+const IDEAL_SPEED = 1900; // скорость свайпа (px/с), при которой сфера летит точно в зверька
+const FLIGHT = 0.55;      // время полёта сферы, с
+
+/* ===================== ЛОГИКА ПОИМКИ ===================== */
+function catchChance(rarityId, orbDef, throwBonus = 1) {
+  if (orbDef.guaranteed) return 1;
+  return Math.min(1, RARITY[rarityId].base * orbDef.mult * throwBonus);
+}
+function tryCatch(rarityId, orbDef, throwBonus = 1) {
+  const chance = catchChance(rarityId, orbDef, throwBonus);
+  const roll = Math.random();
+  return { success: roll < chance, chance, roll };
+}
+function tryFlee(rarityId) { return Math.random() < RARITY[rarityId].flee; }
+function throwBonusFor(distRatio) {
+  for (const b of THROW_BONUS) if (distRatio <= b.maxDist) return b;
+  return { mult:1, label:'' };
+}
+function pickSpecies() {
+  const total = SPECIES.reduce((s, sp) => s + RARITY[sp.rarity].weight, 0);
+  let x = Math.random() * total;
+  for (const sp of SPECIES) { x -= RARITY[sp.rarity].weight; if (x < 0) return sp; }
+  return SPECIES[0];
+}
+
+/* ===================== СОХРАНЕНИЕ ===================== */
+const KEY = 'sferolov-v1';
+function defaultSave() { return { orbs:Object.fromEntries(ORBS.map(o => [o.id, o.start])), caught:{}, total:0 }; }
+function loadSave() {
+  const d = defaultSave();
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === 'object') {
+        if (s.orbs) d.orbs = Object.assign(d.orbs, s.orbs);
+        if (s.caught) d.caught = s.caught;
+        d.total = Number(s.total) || 0;
+      }
+    }
+  } catch (e) {}
+  return d;
+}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
+const save = loadSave();
+
+/* ===================== УТИЛИТЫ ===================== */
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeIn = t => t * t * t;
+const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+function easeOutBounce(x) {
+  const n1 = 7.5625, d1 = 2.75;
+  if (x < 1 / d1) return n1 * x * x;
+  if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+  if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+  return n1 * (x -= 2.625 / d1) * x + 0.984375;
+}
+const pct = v => Math.round(v * 100) + '%';
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = v => amt < 0 ? Math.round(v * (1 + amt)) : Math.round(v + (255 - v) * amt);
+  return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`;
+}
+function starPath(c, x, y, r, n = 5, inner = 0.45, rot = -Math.PI / 2) {
+  c.beginPath();
+  for (let i = 0; i < n * 2; i++) {
+    const rr = i % 2 ? r * inner : r, a = rot + i * Math.PI / n;
+    c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  c.closePath();
+}
+function rng(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+
+/* ===================== DOM ===================== */
+const $ = id => document.getElementById(id);
+const stage = $('stage'), canvas = $('game'), ctx = canvas.getContext('2d');
+const toastEl = $('toast'), orbsNav = $('orbs'), totalEl = $('total');
+const cName = $('cName'), cRarity = $('cRarity'), cChance = $('cChance');
+const sheet = $('sheet'), colList = $('colList');
+
+let toastTimer = 0;
+function toast(msg, kind = '') {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show ' + kind;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toastEl.className = 'toast ' + kind; }, 2000);
+}
+
+/* ===================== СОСТОЯНИЕ ИГРЫ ===================== */
+let W = 0, H = 0, DPR = 1, horizon = 0, R = 50, ORB_R = 26;
+const home = { x:0, y:0 }, rest = { x:0, y:0 };
+let state = 'init', stT = 0, T = 0;
+const MOVING = new Set(['spawning','ready','dragging','flying','miss','returning']);
+let cr = null;
+const orb = { x:0, y:0, scale:1, alpha:0, rot:0, spin:0, pop:0, defIdx:0 };
+let throwInfo = null, attempt = null, capFrom = null, capOrb = null, breakFrom = null, retFrom = null;
+let missV = { x:0, y:0 }, dropFrom = 0, groundY = 0;
+let trail = [], dragId = null, hintDone = false;
+const parts = [];
+let selected = 0;
+let C = {};
+const scenery = { stars:[], tufts:[], flowers:[], clouds:[] };
+
+function setState(s) { state = s; stT = 0; }
+
+/* ===================== ЦВЕТА И РАЗМЕРЫ ===================== */
+function readColors() {
+  const cs = getComputedStyle(document.documentElement);
+  const v = k => cs.getPropertyValue('--' + k).trim();
+  C = {
+    skyTop:v('sky-top'), skyBottom:v('sky-bottom'), groundTop:v('ground-top'), groundBottom:v('ground-bottom'),
+    hill1:v('hill-1'), hill2:v('hill-2'), grass:v('grass'), cloud:v('cloud'),
+    cloudAlpha:parseFloat(v('cloud-alpha')) || 0, sun:v('sun'), star:v('star'), starAlpha:parseFloat(v('star-alpha')) || 0,
+  };
+  C.sunGlow = /^#[0-9a-f]{6}$/i.test(C.sun) ? hexA(C.sun, 0.45) : 'rgba(255,255,255,0.4)';
+}
+
+function buildScenery() {
+  const r = rng(7);
+  scenery.stars = Array.from({ length:60 }, () => ({ x:r(), y:r() * 0.92, s:r() < 0.15 ? 2 : 1.2, sp:1 + r() * 2, ph:r() * 6 }));
+  scenery.tufts = Array.from({ length:Math.max(12, Math.round(W / 16)) }, () => ({ x:r(), y:r(), s:0.7 + r() * 0.6 }));
+  const fc = ['#ffffff', '#ffd54f', '#ff8fab'];
+  scenery.flowers = Array.from({ length:Math.max(6, Math.round(W / 45)) }, (_, i) => ({ x:r(), y:r(), c:fc[i % 3] }));
+  scenery.clouds = [{ x:0.1, y:0.3, s:1 }, { x:0.55, y:0.14, s:0.8 }, { x:0.9, y:0.42, s:0.6 }];
+}
+
+function layout() {
+  const rect = stage.getBoundingClientRect();
+  if (rect.width < 10 || rect.height < 10) return;
+  W = rect.width; H = rect.height; DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  horizon = H * 0.38;
+  R = clamp(Math.min(W, H) * 0.13, 34, 72);
+  ORB_R = clamp(Math.min(W, H) * 0.065, 20, 30);
+  home.x = W / 2; home.y = H * 0.47;
+  rest.x = W / 2; rest.y = H - ORB_R * 2.1;
+  if (['ready','spawning','init'].includes(state)) { orb.x = rest.x; orb.y = rest.y; }
+  buildScenery();
+}
+
+/* ===================== РИСОВАНИЕ: ФОН ===================== */
+function drawHill(color, base, amp, freq, phase) {
+  ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, base);
+  for (let x = 0; x <= W + 8; x += 8) ctx.lineTo(x, base - amp * (0.55 + 0.45 * Math.sin(x / W * Math.PI * 2 * freq + phase)));
+  ctx.lineTo(W, base); ctx.closePath(); ctx.fill();
+}
+function drawCloud(x, y, s) {
+  ctx.beginPath();
+  for (const [dx, dy, rr] of [[0,0,16],[15,-7,13],[30,0,12],[-14,2,11]]) {
+    ctx.moveTo(x + dx * s + rr * s, y + dy * s);
+    ctx.arc(x + dx * s, y + dy * s, rr * s, 0, Math.PI * 2);
+  }
+  ctx.fill();
+}
+function drawScene(t) {
+  let g = ctx.createLinearGradient(0, 0, 0, horizon);
+  g.addColorStop(0, C.skyTop); g.addColorStop(1, C.skyBottom);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon + 1);
+
+  if (C.starAlpha > 0) {
+    ctx.fillStyle = C.star;
+    for (const s of scenery.stars) {
+      ctx.globalAlpha = C.starAlpha * (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph)));
+      ctx.fillRect(s.x * W, s.y * horizon, s.s, s.s);
+    }
+    ctx.globalAlpha = 1;
+  }
+  const sx = W * 0.84, sy = horizon * 0.3, sr = clamp(W * 0.05, 16, 30);
+  const sg = ctx.createRadialGradient(sx, sy, sr * 0.6, sx, sy, sr * 2.6);
+  sg.addColorStop(0, C.sunGlow); sg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(sx, sy, sr * 2.6, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = C.sun; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+
+  ctx.globalAlpha = C.cloudAlpha; ctx.fillStyle = C.cloud;
+  for (const cl of scenery.clouds) {
+    const x = (((cl.x + t * 0.008 * cl.s) % 1.3) + 1.3) % 1.3 - 0.15;
+    drawCloud(x * W, cl.y * horizon, cl.s * clamp(W / 400, 0.8, 1.6));
+  }
+  ctx.globalAlpha = 1;
+
+  drawHill(C.hill1, horizon + 1, H * 0.10, 1.3, 0.8);
+  drawHill(C.hill2, horizon + 1, H * 0.055, 2.1, 2.4);
+
+  g = ctx.createLinearGradient(0, horizon, 0, H);
+  g.addColorStop(0, C.groundTop); g.addColorStop(1, C.groundBottom);
+  ctx.fillStyle = g; ctx.fillRect(0, horizon, W, H - horizon);
+
+  ctx.strokeStyle = C.grass; ctx.lineCap = 'round';
+  for (const tf of scenery.tufts) {
+    const k = 0.1 + tf.y * 0.9, px = tf.x * W, py = horizon + (H - horizon) * k, s = (0.5 + k) * tf.s * 6;
+    ctx.lineWidth = 1 + k * 1.2;
+    ctx.beginPath();
+    ctx.moveTo(px - s * 0.5, py - s * 1.3); ctx.lineTo(px, py); ctx.lineTo(px, py - s * 1.8);
+    ctx.moveTo(px, py); ctx.lineTo(px + s * 0.5, py - s * 1.3);
+    ctx.stroke();
+  }
+  for (const f of scenery.flowers) {
+    const k = 0.15 + f.y * 0.85, px = f.x * W, py = horizon + (H - horizon) * k, s = 1.6 + k * 2.2;
+    ctx.fillStyle = f.c;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const a = i * 1.2566, fx = px + Math.cos(a) * s, fy = py + Math.sin(a) * s;
+      ctx.moveTo(fx + s * 0.75, fy); ctx.arc(fx, fy, s * 0.75, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    ctx.fillStyle = '#ffcc33'; ctx.beginPath(); ctx.arc(px, py, s * 0.6, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+/* ===================== РИСОВАНИЕ: ЗВЕРЬКИ ===================== */
+const FEATURES = {
+  ears(c, sp, r) {
+    for (const s of [-1, 1]) {
+      c.fillStyle = sp.body; c.beginPath(); c.ellipse(s * r * 0.48, -r * 0.88, r * 0.2, r * 0.38, s * 0.45, 0, Math.PI * 2); c.fill(); c.stroke();
+      c.fillStyle = '#ffd1de'; c.beginPath(); c.ellipse(s * r * 0.48, -r * 0.86, r * 0.1, r * 0.24, s * 0.45, 0, Math.PI * 2); c.fill();
+    }
+  },
+  leaf(c, sp, r, t) {
+    c.save(); c.translate(r * 0.75, r * 0.35); c.rotate(-0.8 + Math.sin(t * 2) * 0.15);
+    c.beginPath(); c.moveTo(0, 0); c.lineTo(r * 0.45, 0); c.stroke();
+    c.fillStyle = '#4caf50'; c.strokeStyle = '#2e7d32';
+    c.beginPath(); c.ellipse(r * 0.85, 0, r * 0.45, r * 0.22, 0, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(r * 0.45, 0); c.lineTo(r * 1.2, 0); c.stroke();
+    c.restore();
+    c.save(); c.translate(0, -r * 0.84); c.rotate(Math.sin(t * 1.7) * 0.12);
+    c.strokeStyle = '#2e7d32'; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -r * 0.22); c.stroke();
+    c.fillStyle = '#5cbf60';
+    c.beginPath(); c.ellipse(r * 0.13, -r * 0.27, r * 0.16, r * 0.08, -0.5, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.beginPath(); c.ellipse(-r * 0.12, -r * 0.24, r * 0.13, r * 0.07, 0.5, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.restore();
+  },
+  wings(c, sp, r, t, ol) {
+    const flap = Math.sin(t * 10) * 0.3;
+    for (const s of [-1, 1]) {
+      c.save(); c.translate(s * r * 0.6, -r * 0.15); c.rotate(s * (-0.6 + flap));
+      c.fillStyle = hexA('#eaf7ff', 0.9);
+      c.beginPath(); c.ellipse(s * r * 0.5, 0, r * 0.6, r * 0.3, 0, 0, Math.PI * 2); c.fill(); c.stroke();
+      c.restore();
+    }
+    c.strokeStyle = ol;
+    c.beginPath(); c.moveTo(0, -r * 0.8); c.quadraticCurveTo(r * 0.05, -r * 1.15, r * 0.22, -r * 1.25); c.stroke();
+    const gl = c.createRadialGradient(r * 0.22, -r * 1.25, 0, r * 0.22, -r * 1.25, r * 0.3);
+    gl.addColorStop(0, 'rgba(255,230,102,0.9)'); gl.addColorStop(1, 'rgba(255,230,102,0)');
+    c.fillStyle = gl; c.beginPath(); c.arc(r * 0.22, -r * 1.25, r * 0.3, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#ffe066'; c.beginPath(); c.arc(r * 0.22, -r * 1.25, r * 0.09, 0, Math.PI * 2); c.fill();
+  },
+  horn(c, sp, r, t) {
+    c.fillStyle = 'rgba(255,255,255,0.45)';
+    for (let i = 0; i < 3; i++) {
+      const a = t * 0.9 + i * 2.094;
+      c.beginPath(); c.arc(Math.cos(a) * r * 1.25, r * 0.45 + Math.sin(a) * r * 0.25, r * 0.22, 0, Math.PI * 2); c.fill();
+    }
+    const g = c.createLinearGradient(0, -r * 1.55, 0, -r * 0.78);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#d9c8ff');
+    c.fillStyle = g;
+    c.beginPath(); c.moveTo(-r * 0.15, -r * 0.78);
+    c.quadraticCurveTo(-r * 0.05, -r * 1.2, r * 0.05, -r * 1.55);
+    c.quadraticCurveTo(r * 0.08, -r * 1.15, r * 0.15, -r * 0.78);
+    c.closePath(); c.fill(); c.stroke();
+  },
+  mane(c, sp, r, t, ol) {
+    const layer = (r1, r2, rot, color) => {
+      const n = 12; c.beginPath();
+      for (let i = 0; i < n * 2; i++) {
+        const a = rot + i * Math.PI / n, rr = i % 2 ? r1 : r2;
+        c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+      }
+      c.closePath(); c.fillStyle = color; c.fill(); c.strokeStyle = ol; c.stroke();
+    };
+    layer(r * 0.95, r * 1.4, t * 0.25, '#ffb347');
+    layer(r * 0.9, r * 1.2, -t * 0.2 + 0.26, '#ffd27a');
+  },
+};
+
+function drawCreature(c, sp, x, y, r, t, o = {}) {
+  const scale = o.scale ?? 1, alpha = o.alpha ?? 1, shadow = o.shadow !== false;
+  if (scale <= 0.01 || alpha <= 0.01) return;
+  const rar = RARITY[sp.rarity];
+  const bob = Math.sin(t * 2.4) * r * 0.05;
+  c.save(); c.globalAlpha = alpha;
+  if (shadow) {
+    c.fillStyle = 'rgba(0,0,0,0.18)';
+    c.beginPath(); c.ellipse(x, y + r * 0.95 * scale, r * 0.8 * scale, r * 0.18 * scale, 0, 0, Math.PI * 2); c.fill();
+  }
+  c.translate(x, y + bob * scale); c.scale(scale, scale);
+  if (rar.aura) {
+    const a = c.createRadialGradient(0, 0, r * 0.5, 0, 0, r * 1.75);
+    a.addColorStop(0, hexA(rar.color, 0.4)); a.addColorStop(1, hexA(rar.color, 0));
+    c.fillStyle = a; c.beginPath(); c.arc(0, 0, r * 1.75, 0, Math.PI * 2); c.fill();
+  }
+  const ol = shade(sp.body, -0.38);
+  c.lineWidth = Math.max(1.5, r * 0.055); c.strokeStyle = ol; c.lineJoin = 'round'; c.lineCap = 'round';
+  c.save(); FEATURES[sp.feature](c, sp, r, t, ol); c.restore();
+
+  c.fillStyle = sp.body; c.beginPath(); c.ellipse(0, 0, r, r * 0.9, 0, 0, Math.PI * 2); c.fill(); c.stroke();
+  c.fillStyle = shade(sp.body, -0.1);
+  for (const s of [-1, 1]) { c.beginPath(); c.ellipse(s * r * 0.42, r * 0.84, r * 0.2, r * 0.11, 0, 0, Math.PI * 2); c.fill(); c.stroke(); }
+  c.fillStyle = sp.belly; c.beginPath(); c.ellipse(0, r * 0.34, r * 0.55, r * 0.42, 0, 0, Math.PI * 2); c.fill();
+
+  const blink = (t % 3.6) < 0.13 ? 0.12 : 1;
+  for (const s of [-1, 1]) {
+    c.fillStyle = '#22202a'; c.beginPath(); c.ellipse(s * r * 0.3, -r * 0.12, r * 0.105, r * 0.15 * blink, 0, 0, Math.PI * 2); c.fill();
+    if (blink > 0.5) { c.fillStyle = '#ffffff'; c.beginPath(); c.arc(s * r * 0.3 - r * 0.035, -r * 0.18, r * 0.04, 0, Math.PI * 2); c.fill(); }
+    c.fillStyle = 'rgba(255,110,140,0.4)'; c.beginPath(); c.ellipse(s * r * 0.56, r * 0.08, r * 0.11, r * 0.065, 0, 0, Math.PI * 2); c.fill();
+  }
+  c.strokeStyle = '#22202a'; c.lineWidth = Math.max(1.2, r * 0.04);
+  c.beginPath(); c.arc(0, r * 0.02, r * 0.08, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+  if (sp.feature === 'mane') { c.fillStyle = '#ff8a00'; starPath(c, 0, -r * 0.5, r * 0.13); c.fill(); }
+  c.restore();
+}
+
+/* ===================== РИСОВАНИЕ: СФЕРА ===================== */
+function drawOrb(c, x, y, R0, def, spin, rot = 0, alpha = 1) {
+  if (alpha <= 0.01 || R0 <= 0.5) return;
+  c.save(); c.globalAlpha = alpha;
+  c.translate(x, y + R0); c.rotate(rot); c.translate(0, -R0);
+  const gl = c.createRadialGradient(0, 0, R0 * 0.7, 0, 0, R0 * 1.9);
+  gl.addColorStop(0, hexA(def.glow, 0.5)); gl.addColorStop(1, hexA(def.glow, 0));
+  c.fillStyle = gl; c.beginPath(); c.arc(0, 0, R0 * 1.9, 0, Math.PI * 2); c.fill();
+
+  const tilt = -0.38;
+  c.lineWidth = Math.max(1.2, R0 * 0.13); c.lineCap = 'round';
+  c.strokeStyle = hexA(def.ring, 0.55);
+  c.beginPath(); c.ellipse(0, 0, R0 * 1.5, R0 * 0.4, tilt, Math.PI, Math.PI * 2); c.stroke();
+
+  const g = c.createRadialGradient(-R0 * 0.35, -R0 * 0.4, R0 * 0.08, 0, 0, R0);
+  g.addColorStop(0, def.c1); g.addColorStop(0.6, def.c2); g.addColorStop(1, def.c3);
+  c.fillStyle = g; c.beginPath(); c.arc(0, 0, R0, 0, Math.PI * 2); c.fill();
+
+  c.save(); c.beginPath(); c.arc(0, 0, R0, 0, Math.PI * 2); c.clip();
+  c.strokeStyle = 'rgba(255,255,255,0.22)'; c.lineWidth = Math.max(1, R0 * 0.06);
+  for (let i = 0; i < 3; i++) {
+    const k = Math.cos(spin + i * 1.05);
+    c.beginPath(); c.ellipse(0, 0, Math.abs(k) * R0 * 0.95 + 0.5, R0 * 0.97, 0, 0, Math.PI * 2); c.stroke();
+  }
+  c.restore();
+
+  c.fillStyle = 'rgba(255,255,255,0.8)';
+  c.beginPath(); c.ellipse(-R0 * 0.38, -R0 * 0.42, R0 * 0.22, R0 * 0.12, -0.6, 0, Math.PI * 2); c.fill();
+  if (def.guaranteed) { c.fillStyle = '#ffffff'; starPath(c, 0, 0, R0 * 0.5, 4, 0.28, spin * 0.5); c.fill(); }
+
+  c.strokeStyle = def.ring;
+  c.beginPath(); c.ellipse(0, 0, R0 * 1.5, R0 * 0.4, tilt, 0, Math.PI); c.stroke();
+  c.restore();
+}
+
+/* ===================== ЧАСТИЦЫ ===================== */
+function burst(x, y, colors, n, spd) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, v = spd * (0.4 + Math.random() * 0.8);
+    parts.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - spd * 0.3, life:1, dur:0.6 + Math.random() * 0.6,
+      size:3 + Math.random() * 4, color:colors[i % colors.length], spin:Math.random() * 6 });
+  }
+}
+function updateParts(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.life -= dt / p.dur; p.vy += 260 * dt; p.vx *= 0.98; p.x += p.vx * dt; p.y += p.vy * dt;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
+}
+function drawParts() {
+  for (const p of parts) {
+    ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color;
+    starPath(ctx, p.x, p.y, p.size * (0.6 + 0.4 * p.life), 4, 0.35, p.spin); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ===================== ИГРОВОЙ ЦИКЛ ===================== */
+function resetOrb(pop) {
+  orb.x = rest.x; orb.y = rest.y; orb.scale = 1; orb.alpha = 1; orb.rot = 0; orb.defIdx = selected;
+  if (pop) orb.pop = 0;
+}
+
+function spawn() {
+  const sp = pickSpecies();
+  cr = { sp, x:home.x, y:home.y, mt:0, freq:0.55 + Math.random() * 0.5, ph:Math.random() * Math.PI * 2, scale:0, alpha:1 };
+  cr.x = home.x + Math.sin(cr.ph) * W * RARITY[sp.rarity].move;
+  resetOrb(orb.alpha < 0.99);
+  setState('spawning');
+  updateInfo();
+  burst(cr.x, cr.y, ['#ffffff', RARITY[sp.rarity].color], 16, 130);
+  if (!ORBS.some(o => (save.orbs[o.id] || 0) > 0)) toast('Сферы закончились — пополни запас в «Коллекции»', 'bad');
+  else if (sp.rarity === 'legendary') toast('Ого, легендарный зверёк!', 'good');
+  else if (sp.rarity === 'epic') toast('Рядом эпический зверёк!');
+}
+
+function throwOrb(vx, vy) {
+  const speed = -vy;
+  const power = speed / IDEAL_SPEED;
+  const sx = orb.x, sy = orb.y;
+  const dy = Math.max(40, sy - home.y);
+  const tx = clamp(sx + (vx / speed) * dy, -W * 0.2, W * 1.2);              // направление свайпа = прицел
+  const ty = clamp(home.y - (power - 1) * R * 1.8, home.y - H * 0.4, H - ORB_R); // сила свайпа = дальность
+  throwInfo = { sx, sy, tx, ty, arc:Math.min(120, dy * 0.35), orbIdx:orb.defIdx };
+  hintDone = true;
+  setState('flying');
+}
+
+function resolveThrow() {
+  const ti = throwInfo;
+  const d = Math.hypot(ti.tx - cr.x, ti.ty - cr.y);
+  if (d <= R * 1.05) {
+    const bonus = throwBonusFor(d / R);
+    const def = ORBS[ti.orbIdx];
+    save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist();
+    ensureSelectable(); renderOrbs(); updateInfo();
+    const res = tryCatch(cr.sp.rarity, def, bonus.mult);
+    const shakes = def.guaranteed ? 1 : res.success ? 3 : (res.roll - res.chance < 0.15 ? 2 : 1);
+    attempt = { ...res, shakes, def };
+    toast(`${bonus.label || 'Попадание!'} Шанс ${pct(res.chance)}`);
+    capFrom = { x:cr.x, y:cr.y }; capOrb = { x:orb.x, y:orb.y };
+    burst(orb.x, orb.y, ['#ffffff', def.glow], 14, 150);
+    setState('capturing');
+  } else {
+    const dx = ti.tx - cr.x, dy = ti.ty - cr.y;
+    let msg;
+    if (Math.abs(dx) > R * 0.9) msg = 'Мимо — целься в центр';
+    else if (dy < 0) msg = 'Перелёт — бросай чуть мягче';
+    else msg = 'Недолёт — бросай резче';
+    toast(msg);
+    missV = { x:(ti.tx - ti.sx) / FLIGHT * 0.5, y:dy < 0 ? -260 : 60 };
+    setState('miss');
+  }
+}
+
+function finishAttempt() {
+  if (attempt.success) {
+    save.caught[cr.sp.id] = (save.caught[cr.sp.id] || 0) + 1;
+    save.total = (save.total || 0) + 1; persist(); updateTotal(true);
+    burst(orb.x, orb.y, ['#ffffff', RARITY[cr.sp.rarity].color, '#ffe27a'], 34, 230);
+    toast(`Пойман! ${cr.sp.name} теперь в коллекции`, 'good');
+    setState('caught');
+  } else {
+    burst(orb.x, orb.y, ['#ffffff', attempt.def.glow], 22, 210);
+    breakFrom = { x:orb.x, y:orb.y };
+    setState('breakout');
+  }
+}
+
+function update(dt) {
+  stT += dt;
+  if (cr && MOVING.has(state)) {
+    cr.mt += dt;
+    cr.x = home.x + Math.sin(cr.mt * cr.freq + cr.ph) * W * RARITY[cr.sp.rarity].move;
+    cr.y = home.y;
+  }
+  if (orb.pop < 1) orb.pop = Math.min(1, orb.pop + dt / 0.3);
+  orb.spin += dt * (state === 'flying' ? 10 : 0.9);
+
+  switch (state) {
+    case 'spawning': {
+      const u = Math.min(1, stT / 0.5);
+      cr.scale = easeOutBack(u); cr.alpha = 1;
+      if (u >= 1) setState('ready');
+      break;
+    }
+    case 'flying': {
+      const ti = throwInfo, u = Math.min(1, stT / FLIGHT);
+      orb.x = lerp(ti.sx, ti.tx, u);
+      orb.y = lerp(ti.sy, ti.ty, u) - ti.arc * 4 * u * (1 - u);
+      orb.scale = lerp(1, 0.55, u);
+      if (u >= 1) resolveThrow();
+      break;
+    }
+    case 'miss': {
+      orb.x += missV.x * dt; orb.y += missV.y * dt; missV.y += 1400 * dt;
+      orb.scale *= Math.pow(0.35, dt); orb.alpha = Math.max(0, 1 - stT / 0.4);
+      if (stT >= 0.45) { resetOrb(true); setState('ready'); }
+      break;
+    }
+    case 'returning': {
+      const u = Math.min(1, stT / 0.22);
+      orb.x = lerp(retFrom.x, rest.x, easeOut(u)); orb.y = lerp(retFrom.y, rest.y, easeOut(u));
+      if (u >= 1) setState('ready');
+      break;
+    }
+    case 'capturing': {
+      const u = Math.min(1, stT / 0.55);
+      orb.y = capOrb.y - 26 * easeOut(Math.min(1, stT / 0.25));
+      cr.scale = 1 - easeIn(u); cr.alpha = 1 - 0.5 * u;
+      cr.x = lerp(capFrom.x, orb.x, easeIn(u)); cr.y = lerp(capFrom.y, orb.y, easeIn(u));
+      if (u >= 1) { dropFrom = orb.y; groundY = Math.max(home.y + R * 0.75, dropFrom + 8); setState('dropping'); }
+      break;
+    }
+    case 'dropping': {
+      const u = Math.min(1, stT / 0.45);
+      orb.y = lerp(dropFrom, groundY, easeOutBounce(u));
+      if (u >= 1) setState('wobble');
+      break;
+    }
+    case 'wobble': {
+      const per = 0.8, k = Math.floor(stT / per);
+      if (k >= attempt.shakes) { orb.rot = 0; finishAttempt(); break; }
+      const local = stT - k * per;
+      orb.rot = local < 0.5 ? Math.sin(local / 0.5 * Math.PI * 2) * 0.38 : 0;
+      break;
+    }
+    case 'caught': {
+      if (stT < 1.2 && Math.random() < dt * 16) {
+        parts.push({ x:orb.x + (Math.random() - 0.5) * ORB_R, y:orb.y, vx:(Math.random() - 0.5) * 40, vy:-120 - Math.random() * 80,
+          life:1, dur:0.9, size:3 + Math.random() * 3, color:Math.random() < 0.5 ? '#ffffff' : '#ffe27a', spin:Math.random() * 6 });
+      }
+      if (stT > 1.5) orb.alpha = Math.max(0, 1 - (stT - 1.5) / 0.4);
+      if (stT >= 2.0) spawn();
+      break;
+    }
+    case 'breakout': {
+      const u = Math.min(1, stT / 0.45);
+      cr.scale = easeOutBack(u); cr.alpha = 1;
+      cr.x = lerp(breakFrom.x, capFrom.x, easeOut(u)); cr.y = lerp(breakFrom.y, capFrom.y, easeOut(u));
+      orb.alpha = 1 - u; orb.scale = 0.55 + 0.4 * u;
+      if (u >= 1) {
+        if (tryFlee(cr.sp.rarity)) { toast(`${cr.sp.name} убегает…`, 'bad'); setState('fleeing'); }
+        else { toast(`Вырвался! Шанс был ${pct(attempt.chance)}, попробуй ещё`); resetOrb(true); setState('ready'); }
+      }
+      break;
+    }
+    case 'fleeing': {
+      const u = Math.min(1, stT / 0.6);
+      cr.y = capFrom.y - easeIn(u) * R * 2.5; cr.alpha = 1 - u; cr.scale = 1 - 0.3 * u;
+      if (stT >= 1.0) spawn();
+      break;
+    }
+  }
+  updateParts(dt);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawScene(T);
+
+  if (cr && !['dropping','wobble','caught'].includes(state)) {
+    drawCreature(ctx, cr.sp, cr.x, cr.y, R, T, { scale:cr.scale, alpha:cr.alpha, shadow:!['capturing','fleeing'].includes(state) });
+  }
+  if (state === 'capturing') {
+    const u = Math.min(1, stT / 0.55);
+    ctx.save();
+    ctx.globalAlpha = 0.6 * (1 - u); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6 * (1 - u) + 1; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(orb.x, orb.y); ctx.lineTo(cr.x, cr.y); ctx.stroke();
+    const gr = ctx.createRadialGradient(cr.x, cr.y, 0, cr.x, cr.y, R * 1.4 * (1 - 0.6 * u));
+    gr.addColorStop(0, 'rgba(255,255,255,0.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.globalAlpha = 1 - u; ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cr.x, cr.y, R * 1.4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  if (orb.alpha > 0.01) {
+    const ps = easeOutBack(orb.pop), sr = ORB_R * orb.scale * ps;
+    let sy = null;
+    if (['ready','spawning','returning'].includes(state)) sy = rest.y + ORB_R * 0.95;
+    else if (['dropping','wobble','caught','breakout'].includes(state)) sy = groundY + ORB_R * 0.55 * 0.95;
+    if (sy !== null && sr > 0.5) {
+      ctx.fillStyle = `rgba(0,0,0,${0.2 * orb.alpha})`;
+      ctx.beginPath(); ctx.ellipse(orb.x, sy, sr * 0.9, sr * 0.25, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    drawOrb(ctx, orb.x, orb.y, sr, ORBS[orb.defIdx], orb.spin, orb.rot, orb.alpha);
+  }
+
+  drawParts();
+
+  if (!hintDone && state === 'ready' && orb.pop >= 1) {
+    ctx.save();
+    ctx.globalAlpha = 0.65 + 0.35 * Math.sin(T * 4);
+    ctx.font = '800 15px Nunito, ui-rounded, system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 6;
+    ctx.fillText('Смахни сферу вверх ↑', rest.x, rest.y - ORB_R * 2.2);
+    ctx.restore();
+  }
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
+  if (W > 0 && cr) { update(dt); draw(); }
+  requestAnimationFrame(frame);
+}
+
+/* ===================== УПРАВЛЕНИЕ СВАЙПОМ ===================== */
+function ptr(e) { const r = canvas.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top, t:performance.now() }; }
+function trimTrail(now) { while (trail.length > 2 && now - trail[0].t > 120) trail.shift(); }
+
+canvas.addEventListener('pointerdown', e => {
+  if (state !== 'ready') return;
+  const p = ptr(e);
+  if (Math.hypot(p.x - orb.x, p.y - orb.y) > ORB_R * 2.4) return;
+  const def = ORBS[orb.defIdx];
+  if ((save.orbs[def.id] || 0) <= 0) { toast('Эти сферы закончились — выбери другие или пополни запас', 'bad'); return; }
+  dragId = e.pointerId;
+  try { canvas.setPointerCapture(dragId); } catch (err) {}
+  trail = [p];
+  setState('dragging');
+  e.preventDefault();
+});
+canvas.addEventListener('pointermove', e => {
+  if (state !== 'dragging' || e.pointerId !== dragId) return;
+  const p = ptr(e);
+  orb.x = clamp(p.x, ORB_R, W - ORB_R);
+  orb.y = clamp(p.y, home.y + R * 1.2, H - ORB_R);
+  trail.push(p); trimTrail(p.t);
+});
+function release(e) {
+  if (state !== 'dragging' || e.pointerId !== dragId) return;
+  dragId = null;
+  const p = ptr(e); trail.push(p); trimTrail(p.t);
+  const a = trail[0], b = trail[trail.length - 1];
+  const dt = Math.max(16, b.t - a.t) / 1000;
+  const vx = (b.x - a.x) / dt, vy = (b.y - a.y) / dt;
+  if (vy > -450) {
+    retFrom = { x:orb.x, y:orb.y }; setState('returning');
+    if (Math.hypot(b.x - a.x, b.y - a.y) > 10) toast('Смахни вверх резче, чтобы бросить');
+    return;
+  }
+  throwOrb(vx, vy);
+}
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', e => {
+  if (state === 'dragging' && e.pointerId === dragId) { dragId = null; retFrom = { x:orb.x, y:orb.y }; setState('returning'); }
+});
+
+/* ===================== ИНТЕРФЕЙС ===================== */
+function ensureSelectable() {
+  if ((save.orbs[ORBS[selected].id] || 0) > 0) return;
+  let j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0 && !o.guaranteed);
+  if (j < 0) j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0);
+  if (j >= 0) selected = j;
+}
+
+function updateInfo() {
+  if (!cr) return;
+  const sp = cr.sp, r = RARITY[sp.rarity], def = ORBS[selected];
+  cName.textContent = sp.name;
+  cRarity.textContent = r.name;
+  cRarity.style.setProperty('--badge', r.color);
+  cRarity.style.setProperty('--badge-text', r.text);
+  cChance.innerHTML = def.guaranteed
+    ? `${def.name} сфера: поимка <b>100%</b>`
+    : `${def.name} сфера: шанс <b>${pct(catchChance(sp.rarity, def, 1))}</b>, точный бросок до <b>${pct(catchChance(sp.rarity, def, 1.5))}</b>`;
+}
+
+function renderOrbs() {
+  orbsNav.innerHTML = '';
+  const d = Math.min(window.devicePixelRatio || 1, 2.5);
+  ORBS.forEach((def, i) => {
+    const n = save.orbs[def.id] || 0;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'orb-btn' + (i === selected ? ' sel' : '');
+    b.disabled = n <= 0;
+    b.setAttribute('aria-pressed', String(i === selected));
+    b.setAttribute('aria-label', `${def.name} сфера, ${def.guaranteed ? 'поимка 100%' : 'множитель ' + def.label}, осталось ${n}`);
+    const count = document.createElement('span'); count.className = 'orb-count'; count.textContent = n;
+    const cv = document.createElement('canvas'); cv.width = 44 * d; cv.height = 44 * d;
+    const c = cv.getContext('2d'); c.scale(d, d);
+    drawOrb(c, 22, 22, 10.5, def, 0.6, 0, 1);
+    const nm = document.createElement('span'); nm.className = 'orb-name'; nm.textContent = def.name;
+    const ml = document.createElement('span'); ml.className = 'orb-mult'; ml.textContent = def.label;
+    b.append(count, cv, nm, ml);
+    b.addEventListener('click', () => {
+      selected = i;
+      if (['ready','spawning'].includes(state)) orb.defIdx = i;
+      renderOrbs(); updateInfo();
+    });
+    orbsNav.append(b);
+  });
+}
+
+function updateTotal(bump) {
+  totalEl.textContent = save.total || 0;
+  if (bump) { totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump'); }
+}
+
+function renderCollection() {
+  colList.innerHTML = '';
+  const d = Math.min(window.devicePixelRatio || 1, 2.5);
+  for (const sp of SPECIES) {
+    const n = save.caught[sp.id] || 0, r = RARITY[sp.rarity];
+    const row = document.createElement('div'); row.className = 'col-row' + (n ? '' : ' unknown');
+    const cv = document.createElement('canvas'); cv.width = 56 * d; cv.height = 56 * d;
+    const c = cv.getContext('2d'); c.scale(d, d);
+    drawCreature(c, sp, 28, 29, 15, 0.5, { alpha:n ? 1 : 0.22, shadow:false });
+    const info = document.createElement('div'); info.className = 'col-info';
+    const nm = document.createElement('div'); nm.className = 'col-name'; nm.textContent = n ? sp.name : '???';
+    const bd = document.createElement('span'); bd.className = 'badge'; bd.textContent = r.name;
+    bd.style.setProperty('--badge', r.color); bd.style.setProperty('--badge-text', r.text);
+    info.append(nm, bd);
+    const cnt = document.createElement('div'); cnt.className = 'col-count'; cnt.textContent = '×' + n;
+    row.append(cv, info, cnt);
+    colList.append(row);
+  }
+}
+
+function renderRules() {
+  const total = Object.values(RARITY).reduce((s, r) => s + r.weight, 0);
+  $('rules').innerHTML =
+    '<thead><tr><th>Редкость</th><th>База</th><th>Побег</th><th>Встречается</th></tr></thead><tbody>' +
+    Object.values(RARITY).map(r =>
+      `<tr><td><span class="badge" style="--badge:${r.color};--badge-text:${r.text}">${r.name}</span></td><td>${pct(r.base)}</td><td>${pct(r.flee)}</td><td>${pct(r.weight / total)}</td></tr>`
+    ).join('') + '</tbody>';
+  $('orbNote').textContent =
+    'Множители сфер: Медная ×1, Серебряная ×1,5, Золотая ×2, Звёздная ловит всегда. ' +
+    'Бросок в самый центр зверька даёт ещё ×1,5, рядом с центром — ×1,25. Промах сферу не тратит.';
+}
+
+$('colBtn').addEventListener('click', () => { renderCollection(); sheet.hidden = false; $('closeSheet').focus(); });
+$('closeSheet').addEventListener('click', () => { sheet.hidden = true; });
+sheet.addEventListener('click', e => { if (e.target === sheet) sheet.hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') sheet.hidden = true; });
+$('refill').addEventListener('click', () => {
+  for (const o of ORBS) save.orbs[o.id] = Math.max(save.orbs[o.id] || 0, o.start);
+  persist(); ensureSelectable();
+  if (['ready','spawning'].includes(state)) orb.defIdx = selected;
+  renderOrbs(); updateInfo();
+  sheet.hidden = true;
+  toast('Сферы пополнены', 'good');
+});
+$('skipBtn').addEventListener('click', () => {
+  if (state !== 'ready' || !cr) return;
+  capFrom = { x:cr.x, y:cr.y };
+  setState('fleeing');
+});
+
+/* ===================== СТАРТ ===================== */
+readColors();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', readColors);
+new MutationObserver(readColors).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme','class'] });
+layout();
+ensureSelectable();
+renderOrbs();
+updateTotal(false);
+renderRules();
+spawn();
+new ResizeObserver(() => layout()).observe(stage);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
