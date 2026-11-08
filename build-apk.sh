@@ -49,11 +49,70 @@ android {
         versionCode = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int
         versionName = '1.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
     }
+    signingConfigs {
+        stable {
+            storeFile = file('sferolov.p12')
+            storeType = 'pkcs12'
+            storePassword = 'sferolov123'
+            keyAlias = 'sferolov'
+            keyPassword = 'sferolov123'
+        }
+    }
+    buildTypes {
+        debug { signingConfig = signingConfigs.stable }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+EOF
+
+# Постоянный ключ подписи: новые версии ставятся поверх старой без удаления
+base64 -d > "$P/app/sferolov.p12" <<'EOF'
+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
+XPsm8FmMWI8LOoXcrOHp7aOiNWQCAwGGoA==
 EOF
 
 cat > "$M/AndroidManifest.xml" <<'EOF'
