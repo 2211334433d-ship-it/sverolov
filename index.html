@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="sferolov-version" content="39">
+<meta name="sferolov-version" content="40">
 <title>Сферолов</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1211,7 +1211,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
             <button class="btn primary wide" id="mTutorial" type="button">🎓 Пройти обучение</button>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 39</p>
+          <p class="version">Версия игры 40</p>
         </div>
       </div>
     </div>
@@ -1429,7 +1429,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
       <label class="switch-row"><span>🔊 Звуковые эффекты</span><input type="checkbox" id="stSound"></label>
       <label class="switch-row"><span>🍂 Осеннее оформление</span><input type="checkbox" id="stAutumn"></label>
     </div>
-    <p class="start-ver">Версия игры 39</p>
+    <p class="start-ver">Версия игры 40</p>
   </div>
 </div>
 
@@ -2488,6 +2488,9 @@ function persist() {
 // Запас кончился: ферма стоит, пока ты не наиграешь 5 минут. Потом запас снова полный.
 let lastAct = 0;
 ['pointerdown', 'keydown'].forEach(n => document.addEventListener(n, () => { lastAct = Date.now(); }, true));
+// Ведёшь пальцем, не отрывая (ловушка в Звездопаде, прицел), — это тоже игра. В Звездопаде на компьютере
+// ловушку ведут мышью без нажатия, поэтому там считается любое движение
+document.addEventListener('pointermove', e => { if (e.buttons || (sf && sf.phase !== 'over')) lastAct = Date.now(); }, true);
 const isPlaying = () => !startOpen && Date.now() - lastAct < ACTIVE_WIN * 1000;
 function farmEarn(sec, playing) {
   if (!(sec > 0) || !(curIncome > 0)) return 0;
@@ -8973,7 +8976,7 @@ function resolveThrow() {
       : Math.abs(ti.slip || 0) > hitR * 0.4 ? 'Мимо: мокрая сфера соскользнула' : 'Мимо, целься в центр';
     else if (dy < 0) msg = 'Перелёт, бросай чуть мягче';
     else msg = 'Недолёт, бросай резче';
-    if (cr.sp.ab === 'echo') { cr.echo = 1; msg += '. Заяц запомнил промах: следующий бросок точнее'; }
+    if (cr.sp.ab === 'echo') { cr.echo = 1; msg += '. Заяц запомнил промах: следующий бросок поймает его на 25% легче'; }
     toast(msg);
     sfx('miss');
     if (cr.trait === 'sleepy') { cr.trait = null; msg += '. Зверёк проснулся!'; updateInfo(); toast(msg); }
@@ -12323,7 +12326,11 @@ const BOSSES = {
              phases:[{ model:'fox', el:'fire', mech:'dodge', name:'Лис Хитрюга' }, { model:'crow', el:'dark', mech:'steal', name:'Ворон Каркуша' }] },
   balloon: { name:'Пастух на воздушном шаре', face:'shep', base:{ hp:320, atk:22 }, turns:17, ko:6, loot:'bell',
              phases:[{ model:'balloon', el:'nature', mech:'sack' }] },
-  final:   { name:'Пастух в Ледяной крепости', face:'shep', base:{ hp:550, atk:28 }, turns:20, ko:7.5, loot:'frost',
+  // Финал из трёх частей, и у каждой свой приём (кража ходов, увороты, броня), поэтому ходов меньше, а команда держится дольше.
+  // При 20 ходах и ko 7,5 команда ★★★ в среднем по стихиям побеждала в 27% боёв (у других боссов 64–74%), на реванше в 18%,
+  // а без победы нет Ледяного кристалла для Звёздной сферы. Сейчас 67% и 56%: подходящая стихия побеждает почти всегда,
+  // неподходящая (Природа, Лёд) проигрывает, как у других боссов. Минимум hp и atk снижен так, чтобы порог слабой команды не поднялся
+  final:   { name:'Пастух в Ледяной крепости', face:'shep', base:{ hp:440, atk:23 }, turns:16, ko:9, loot:'frost',
              phases:[{ model:'shepCrow', el:'dark', mech:'steal', name:'Пастух и Каркуша' }, { model:'shepFox', el:'fire', mech:'dodge', name:'Пастух и Хитрюга' },
                      { model:'shepIce', el:'ice', mech:'armor', name:'Пастух в ледяных доспехах' }] },
 };
