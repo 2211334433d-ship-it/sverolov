@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="sferolov-version" content="38">
+<meta name="sferolov-version" content="39">
 <title>Сферолов</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1211,7 +1211,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
             <button class="btn primary wide" id="mTutorial" type="button">🎓 Пройти обучение</button>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 38</p>
+          <p class="version">Версия игры 39</p>
         </div>
       </div>
     </div>
@@ -1320,6 +1320,8 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
             <button class="btn" id="adminWeather" type="button">🌦 Сменить погоду</button>
             <button class="btn" id="adminShards" type="button">+5 осколков глитча</button>
             <button class="btn" id="adminDust" type="button">+100 звёздной пыли ✨</button>
+            <button class="btn" id="adminIdle" type="button">⏱ Показать фоновый таймер</button>
+            <button class="btn" id="adminIdleOff" type="button">⏱ Обнулить: ферма стоит</button>
           </div>
         </div>
         <div class="card">
@@ -1427,7 +1429,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
       <label class="switch-row"><span>🔊 Звуковые эффекты</span><input type="checkbox" id="stSound"></label>
       <label class="switch-row"><span>🍂 Осеннее оформление</span><input type="checkbox" id="stAutumn"></label>
     </div>
-    <p class="start-ver">Версия игры 38</p>
+    <p class="start-ver">Версия игры 39</p>
   </div>
 </div>
 
@@ -1967,7 +1969,10 @@ const penCost = lvl => niceNum(600 * Math.pow(3.4, lvl - 1));
 
 const CATCH_REWARD = 10;   // монет за поимку = доход зверька × 10
 const SELL_MULT = 25;      // цена продажи = доход зверька × 25
-const OFFLINE_CAP = 7200;  // ферма копит монеты без игры не дольше 2 часов
+const OFFLINE_CAP = 7200;  // за один раз без игры ферма не засчитывает больше 2 часов
+const IDLE_FREE = 3600;    // скрытый таймер: час фонового дохода, пока ты не играешь
+const IDLE_REFILL = 300;   // чтобы таймер включился заново, надо поиграть 5 минут (можно по частям)
+const ACTIVE_WIN = 20;     // «играешь», если что-то нажимал в последние 20 секунд
 const DIST_MIN = 6, DIST_MAX = 70;
 const IDEAL_SPEED = 1900;  // скорость свайпа (px/с), при которой сфера летит точно в зверька
 
@@ -2068,7 +2073,7 @@ const KEY = 'sferolov-v2', OLD_KEY = 'sferolov-v1';
 function freshSave() {
   return { coins:100, orbs:{ glitch:0 }, chain:{ t:0, dur:0, broken:false }, pot:{}, potOn:{}, orbV:4,
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', exped:[], ach:{}, quests:null,
-           stats:{ perfect:0, curve:0, merges:0, expeditions:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0,
+           stats:{ perfect:0, curve:0, merges:0, expeditions:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
@@ -2146,6 +2151,8 @@ function sanitize(d) {
   d.luck = d.luck || {}; d.evoMax = d.evoMax || {}; d.stolen = d.stolen || []; d.shards = Math.max(0, d.shards | 0);
   d.stats = d.stats || {}; d.ach = d.ach || {}; d.exped = d.exped || [];
   d.dust = Math.max(0, Math.floor(Number(d.dust) || 0)); d.spaceCaught = Math.max(0, d.spaceCaught | 0);
+  d.idleLeft = d.idleLeft == null || !Number.isFinite(+d.idleLeft) ? IDLE_FREE : clamp(+d.idleLeft, 0, IDLE_FREE);
+  d.actSec = d.actSec == null || !Number.isFinite(+d.actSec) ? 0 : clamp(+d.actSec, 0, IDLE_REFILL);
   d.arena = d.arena || { level:1 }; d.deco = d.deco || {}; d.mini = d.mini || {}; d.shinySeen = d.shinySeen || {}; d.promoUsed = d.promoUsed || {};
   const st = d.story = d.story || {};
   st.ch = clamp((st.ch | 0) || 1, 1, 7); for (const k of ['intro', 'beaten', 'rematch', 'loot']) if (!st[k] || typeof st[k] !== 'object') st[k] = {};
@@ -2199,7 +2206,7 @@ function loadSave() {
         d.stolen = Array.isArray(s.stolen) ? s.stolen.filter(x => x && parseKey(x.key).ok && x.until > 0) : [];
         d.loc = LOC_BY_ID[s.loc] ? s.loc : 'meadow';
         d.stats = Object.assign(d.stats, s.stats || {});
-        d.dust = s.dust; d.spaceCaught = s.spaceCaught;
+        d.dust = s.dust; d.spaceCaught = s.spaceCaught; d.idleLeft = s.idleLeft; d.actSec = s.actSec;
         d.ach = s.ach || {}; d.quests = s.quests || null; circleWas = Math.max(0, s.circle | 0);
         d.exped = Array.isArray(s.exped) ? s.exped.filter(x => x && parseKey(x.key).ok && x.end > 0) : [];
         d.arena = Object.assign(d.arena, s.arena || {}); d.mood = s.mood != null ? clamp(Number(s.mood) || 0, 0, 1) : 0.7;
@@ -2475,6 +2482,22 @@ function persist() {
   save.last = Date.now();
   try { const { migrated, ...rest } = save; localStorage.setItem(KEY, JSON.stringify(rest)); } catch (e) {}
   refreshPetsCount();
+}
+// ---- Фоновый доход (версия 39). Игрок таймер не видит.
+// Пока ты играешь, ферма платит без ограничений. Когда не играешь, она тратит скрытый запас в 1 час.
+// Запас кончился: ферма стоит, пока ты не наиграешь 5 минут. Потом запас снова полный.
+let lastAct = 0;
+['pointerdown', 'keydown'].forEach(n => document.addEventListener(n, () => { lastAct = Date.now(); }, true));
+const isPlaying = () => !startOpen && Date.now() - lastAct < ACTIVE_WIN * 1000;
+function farmEarn(sec, playing) {
+  if (!(sec > 0) || !(curIncome > 0)) return 0;
+  let paid = Math.min(sec, OFFLINE_CAP);
+  if (!playing) { paid = Math.min(paid, save.idleLeft); save.idleLeft -= paid; }
+  const e = curIncome * paid; save.coins += e; return e;
+}
+function playTick(sec) {
+  save.actSec += sec;
+  if (save.actSec >= IDLE_REFILL) { save.actSec = 0; save.idleLeft = IDLE_FREE; }
 }
 
 /* ======================= DOM И ОБЩЕЕ ======================= */
@@ -11100,6 +11123,7 @@ const RULES = [
     `Выпитое зелье действует ${POT_THROWS} бросков любой сферой. Разные зелья можно пить вместе, одинаковые складываются до ${POT_STACK} бросков.`,
     ...POTIONS.map(P => `${LOOT[P.loot].icon} ${P.title}: ${P.desc.charAt(0).toLowerCase() + P.desc.slice(1)}`)]],
   ['🍀', 'Невезение', ['Каждая неудача со зверьком одной редкости даёт +10% к шансу на эту редкость.', 'Бонус копится до +100% и сбрасывается после поимки.']],
+  ['🏡', 'Ферма и доход', ['Пока ты играешь, зверьки в загоне приносят монеты.', 'Когда тебя нет, ферма работает ещё какое-то время, потом отдыхает. Чтобы она заработала снова, зайди и немного поиграй.']],
   ['✨', 'Слияние', ['3 одинаковых обычных зверька → один ★★ с доходом ×4.', '3 зверька ★★ → один ★★★ с доходом ×16.', 'У каждого зверька своя эволюция: посмотри её в Коллекции.']],
   ['🌦', 'Локации и погода', ['Локации открываются по числу пойманных зверьков.', 'Погода меняется каждые 2,5 минуты: в дождь чаще водные зверьки, ночью ночные, в тумане туманные, в грозу грозовые.',
     `☀ Ясно: ${WX_RULES.clear.rule.charAt(0).toLowerCase() + WX_RULES.clear.rule.slice(1)}`, `🌧 Дождь и 🌨 снегопад: ${WX_RULES.rain.rule.charAt(0).toLowerCase() + WX_RULES.rain.rule.slice(1)}`,
@@ -11423,6 +11447,8 @@ function adminOpenSpace() {
 }
 $('adminLocs').addEventListener('click', () => { save.caught = Math.max(save.caught, ...LOCATIONS.filter(l => !l.map).map(l => l.need)); adminOpenSpace(); persist(); renderLocChips(); toast('Все локации открыты, и на Земле, и в космосе', 'good'); });
 $('adminSpace').addEventListener('click', () => { adminOpenSpace(); persist(); renderLocChips(); toast('🚀 Космос и все его места открыты', 'good'); });
+$('adminIdle').addEventListener('click', () => toast(`Фоновый запас: ${Math.round(save.idleLeft / 60)} мин из ${IDLE_FREE / 60}. Наиграно ${Math.round(save.actSec)} с из ${IDLE_REFILL}`, '', 4200));
+$('adminIdleOff').addEventListener('click', () => { save.idleLeft = 0; save.actSec = 0; persist(); toast('Запас обнулён: ферма стоит, пока не поиграешь 5 минут', 'good'); });
 $('adminDust').addEventListener('click', () => { save.dust = (save.dust || 0) + 100; persist(); updateScopeBtn(); toast('+100 ✨ звёздной пыли', 'good'); });
 $('adminMeteor').addEventListener('click', () => {
   closeAdmin(); showTab('hunt');
@@ -13893,10 +13919,11 @@ let last = performance.now(), lastWall = Date.now(), saveTimer = 0;
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
   const wall = Date.now(), away = (wall - lastWall) / 1000; lastWall = wall;
-  if (away > 0 && curIncome > 0) {
-    const earned = curIncome * Math.min(away, OFFLINE_CAP);
-    save.coins += earned;
-    if (away > 30) toast(`Пока тебя не было, ферма принесла ${fmt(earned)} монет`, 'good', 3200);
+  const playing = isPlaying();
+  if (away > 0) {
+    const earned = farmEarn(away, playing);
+    if (away > 30 && earned > 0) toast(`Пока тебя не было, ферма принесла ${fmt(earned)} монет`, 'good', 3200);
+    if (playing) playTick(Math.min(away, 1));
   }
   if (dlg) drawDlg(dt);
   if (startOpen) {
@@ -13963,8 +13990,7 @@ let guardRefund = 0;
   }
 }
 const offline = Math.min(Math.max(0, (Date.now() - save.last) / 1000), OFFLINE_CAP);
-const offlineEarned = Math.floor(curIncome * offline);
-if (offlineEarned > 0 && offline > 30) save.coins += offlineEarned;
+const offlineEarned = offline > 30 ? Math.floor(farmEarn(offline, false)) : 0;
 selected = orbUsable(ORBS[MAIN]) ? MAIN : COPPER; ensureSelectable(); renderOrbs(); updateShopDot(); refreshPenAnimals(); refreshWallet(); updateEvoDot(); refreshPetsCount();
 renderLocChips(); setWeather(WEATHERS[0]); ensureQuests(); updateQuestDot();
 spawn();
