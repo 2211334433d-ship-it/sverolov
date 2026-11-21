@@ -9616,7 +9616,7 @@ $('resetBtn').addEventListener('click', () => armReset($('resetBtn'), 'Нача�
 
 
 /* ======================= ПАНЕЛЬ АДМИНИСТРАТОРА ======================= */
-const ADMIN_PASSWORD = 'я люблю пчелок'; // «ё» и «е», большие и маленькие буквы считаются одинаково
+const ADMIN_HASH = '2ags565me9n'; // отпечаток пароля; «ё» и «е», большие и маленькие буквы и лишние пробелы не важны
 const normPass = s => s.toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 let adminOpen = false;
 function openAdmin() {
@@ -9629,7 +9629,7 @@ function openAdmin() {
 function closeAdmin() { $('adminSheet').hidden = true; rerenderCurrent(); }
 function adminLogin() {
   const inp = $('adminPass');
-  if (normPass(inp.value) === ADMIN_PASSWORD) {
+  if (cyrb53('adm:' + normPass(inp.value), 0x51a7e).toString(36) === ADMIN_HASH) {
     sfx('ok'); adminOpen = true; inp.value = ''; inp.blur();
     $('adminLock').hidden = true; $('adminPager').hidden = false;
     $('adminChip').textContent = '🛠 Админ';
