@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="sferolov-version" content="33">
+<meta name="sferolov-version" content="34">
 <title>Сферолов</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -836,7 +836,27 @@ html[data-hand="left"] .orb-pop{left:auto;right:12px}
 .orb-row-name{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .orb-row-name b{font-weight:900}
 .orb-row-name small{font-weight:700;font-size:.78rem;color:var(--muted)}
-.orb-row-count{font-weight:900;font-variant-numeric:tabular-nums}
+.orb-row-count{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.orb-row.locked{border-style:dashed}
+.orb-row.locked canvas{filter:grayscale(1) opacity(.7)}
+.orb-xp{display:block;height:4px;margin-top:4px;border-radius:3px;background:var(--border);overflow:hidden}
+.orb-xp i{display:block;height:100%;border-radius:3px;background:#8b5cf6}
+.orb-xp.max i{background:#f2b632}
+.new-tag{font-style:normal;font-size:.66rem;font-weight:900;padding:1px 6px;margin-left:4px;border-radius:999px;background:#ff4d6d;color:#fff;vertical-align:2px}
+.hud-count.lv{background:linear-gradient(160deg,#8b5cf6,#5b21b6)}
+.hud-xp{position:absolute;left:20%;right:20%;bottom:4px;height:4px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.hud-xp[hidden]{display:none}
+.hud-xp i{display:block;height:100%;border-radius:3px;background:#8b5cf6}
+.hud-orb.dot::after{content:'';position:absolute;top:-7px;left:-7px;width:14px;height:14px;border-radius:50%;background:#ff4d6d;box-shadow:0 0 0 2px #fff}
+.up-ico.orb{background:radial-gradient(circle at 50% 42%,var(--surface),var(--surface-2))}
+.up-ico.orb canvas{width:56px;height:56px}
+.orb-card.locked .up-ico canvas{filter:grayscale(.85) opacity(.75)}
+.orb-card.locked .up-lvl{background:color-mix(in srgb,#ff4d6d 16%,var(--surface))}
+.xp-block{display:flex;flex-direction:column;gap:6px}
+.xp-line{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:800;font-size:.84rem;color:var(--muted)}
+.xp-line b{color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.xp-block .prog i{background:#8b5cf6}
+.xp-block .prog.full i{background:#2b9a5c}
 /* локации: одна кнопка вместо ленты */
 .loc-btn{flex:1;min-width:0;display:flex;align-items:center;gap:6px;min-height:44px;padding:6px 14px;border-radius:14px;border:1px solid var(--border);
   background:var(--surface);color:var(--text);font-weight:900;font-size:.95rem;cursor:pointer;text-align:left}
@@ -948,13 +968,13 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
           <div class="line" id="cDist"></div>
         </div>
       </div>
-      <div class="hud hud-left"><button class="hud-btn hud-orb" id="hudOrb" type="button" aria-haspopup="true"><span class="hud-ico" id="hudOrbIco"></span><small>Сфера ▾</small><span class="hud-count" id="hudOrbCount">0</span></button></div>
+      <div class="hud hud-left"><button class="hud-btn hud-orb" id="hudOrb" type="button" aria-haspopup="true"><span class="hud-ico" id="hudOrbIco"></span><small>Сфера ▾</small><span class="hud-count" id="hudOrbCount">0</span><span class="hud-xp" id="hudOrbXp" aria-hidden="true"><i></i></span></button></div>
       <div class="hud hud-right"><button class="hud-btn hud-skip" id="skipBtn" type="button" title="Искать другого зверька"><span class="hud-sym" aria-hidden="true">↻</span><small>Другой</small></button></div>
       <div class="pop-back" id="orbBack" hidden></div>
       <div class="orb-pop" id="orbPop" role="dialog" aria-label="Выбор сферы" hidden>
         <div class="pop-head"><b>Выбери сферу</b><button class="btn" id="orbClose" type="button">✕ Закрыть</button></div>
         <nav class="list" id="orbs" aria-label="Сферы"></nav>
-        <button class="btn wide" id="orbShop" type="button">🛒 Купить сферы в магазине</button>
+        <button class="btn wide" id="orbShop" type="button">🔧 Прокачать сферы</button>
       </div>
     </div>
     <div class="pop-back" id="locBack" hidden></div>
@@ -1047,14 +1067,14 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
   <section class="screen" id="scr-shop" aria-label="Магазин">
     <div class="pager" id="shopPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Разделы магазина">
-        <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">🔮</span>Сферы</button>
+        <button class="chip" type="button" role="tab" id="chipOrbs"><span class="ci" aria-hidden="true">🔮</span>Сферы</button>
         <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">💪</span>Прокачка</button>
         <button class="chip" type="button" role="tab" id="chipSpecial"><span class="ci" aria-hidden="true">⚡</span>Особое</button>
       </div>
       <div class="pages">
         <div class="page" role="tabpanel">
-          <p class="hint-line">Чем сильнее сфера, тем выше шанс поимки. Сфера тратится только при попадании, промах её не тратит.</p>
-          <div class="shop-grid" id="shopOrbs"></div>
+          <p class="hint-line">Сферы не кончаются. Ловишь зверька — сфера получает опыт. Когда шкала опыта полна, улучши сферу за монеты, и ловить станет легче.</p>
+          <div class="list-gap" id="shopOrbs"></div>
         </div>
         <div class="page" role="tabpanel">
           <div class="up-card" id="armCard"></div>
@@ -1063,6 +1083,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
         </div>
         <div class="page" role="tabpanel">
           <div class="up-card" id="glitchCard"></div>
+          <div class="up-card" id="starCard"></div>
           <div class="up-card" id="circleCard"></div>
         </div>
       </div>
@@ -1093,7 +1114,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
         <div class="page" role="tabpanel">
           <div class="card">
             <h2>Как считается шанс</h2>
-            <p class="formula">шанс = база редкости × множитель сферы × бонус броска<br><span>не больше 100%</span></p>
+            <p class="formula">шанс = база редкости × сила сферы × бонус броска<br><span>не больше 100%</span></p>
           </div>
           <div class="rules-list" id="rulesList"></div>
           <div class="card">
@@ -1128,7 +1149,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
           </div>
           <div class="card set-card">
             <h2><span aria-hidden="true">🎓</span> Обучение</h2>
-            <p class="sub">Короткая подсказка: как бросать сферу, куда она девается и как прогнать пастуха.</p>
+            <p class="sub">Короткая подсказка: как бросать сферу, как она растёт и как прогнать пастуха.</p>
             <button class="btn primary wide" id="mTutorial" type="button">🎓 Пройти обучение</button>
           </div>
           <div class="card set-card">
@@ -1137,7 +1158,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
             <button class="btn danger wide" id="resetBtn" type="button">Начать игру заново</button>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 33</p>
+          <p class="version">Версия игры 34</p>
         </div>
       </div>
     </div>
@@ -1242,7 +1263,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
         <div class="card">
           <h2>Сферы и осколки</h2>
           <div class="btn-grid">
-            <button class="btn" id="adminOrbs" type="button">+10 сфер каждого вида</button>
+            <button class="btn" id="adminOrbs" type="button">Сферам: опыт, трофеи, звёздные</button>
             <button class="btn" id="adminShards" type="button">+5 осколков глитча</button>
           </div>
         </div>
@@ -1338,7 +1359,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
     </nav>
     <div class="start-card start-offer" id="startOffer" hidden>
       <h2>Ты здесь впервые?</h2>
-      <p class="start-hint">Короткое обучение покажет, как бросать сферу, куда она девается и как прогнать пастуха. Это около минуты.</p>
+      <p class="start-hint">Короткое обучение покажет, как бросать сферу, как она растёт и как прогнать пастуха. Это около минуты.</p>
       <button class="menu-big" id="offerYes" type="button"><span class="mi" aria-hidden="true">🎓</span><span class="mt"><b>Пройти обучение</b><small>Можно пропустить в любой момент</small></span></button>
       <button class="btn menu-row" id="offerNo" type="button">Пропустить</button>
     </div>
@@ -1349,7 +1370,7 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
       <label class="switch-row"><span>🔊 Звуковые эффекты</span><input type="checkbox" id="stSound"></label>
       <label class="switch-row"><span>🍂 Осеннее оформление</span><input type="checkbox" id="stAutumn"></label>
     </div>
-    <p class="start-ver">Версия игры 33</p>
+    <p class="start-ver">Версия игры 34</p>
   </div>
 </div>
 
@@ -1549,15 +1570,103 @@ for (const k of COLLECTIONS) collMembers(k.id).forEach((s, i) => { s.cno = i + 1
 const dexNo = n => '№' + String(n).padStart(3, '0');
 const collNoText = sp => `${COLL_BY_ID[sp.coll].name} ${dexNo(sp.cno)}`;
 
-// Сферы продаются в магазине. mult — множитель шанса; у звёздной свой шанс для каждой редкости (STAR_CHANCE)
-const ORBS = [
-  { id:'copper',  name:'Медная',     mult:1,   price:10,   label:'×1',   c1:'#ffe0c2', c2:'#d9773a', c3:'#7a3510', ring:'#f3b27c', glow:'#ffb27a' },
-  { id:'silver',  name:'Серебряная', mult:1.5, price:60,   label:'×1,5', c1:'#ffffff', c2:'#a3b6ca', c3:'#4a5c70', ring:'#e3ecf7', glow:'#bcd7ff' },
-  { id:'gold',    name:'Золотая',    mult:2.5, price:300,  label:'×2,5', c1:'#fff7cc', c2:'#f2b632', c3:'#8f6100', ring:'#ffe07a', glow:'#ffd34d' },
-  { id:'diamond', name:'Алмазная',   mult:4,   price:1500,  label:'×4',   c1:'#ffffff', c2:'#7fdcf0', c3:'#16708f', ring:'#c9f6ff', glow:'#9ef0ff' },
-  { id:'star',    name:'Звёздная',   mult:1,   price:15000, label:'★',    star:true, c1:'#f3e8ff', c2:'#8a5cf6', c3:'#341785', ring:'#e9dbff', glow:'#c49bff' },
-  { id:'glitch',  name:'Глитч',      mult:0,   price:0,    label:'⚡',    glitch:true, c1:'#e8fdff', c2:'#00bcd4', c3:'#4a148c', ring:'#ff4fd8', glow:'#00e5ff' },
+// Сферы не продаются, а прокачиваются. Основная сфера растёт с 1 до 20 уровня и по пути меняет вид:
+// Медная → Серебряная → Золотая → Алмазная → Радужная. Опыт она получает за пойманных ею зверьков,
+// а когда шкала опыта полна, её улучшают за монеты в «Магазине».
+// Особые сферы собирают из трофеев боссов, у каждой своё умение и свои 10 уровней.
+// Звёздная и глитч-сфера не прокачиваются: они тратятся при попадании.
+const ORB_TIERS = [
+  { from:1,  name:'Медная',     c1:'#ffe0c2', c2:'#d9773a', c3:'#7a3510', ring:'#f3b27c', glow:'#ffb27a' },
+  { from:5,  name:'Серебряная', c1:'#ffffff', c2:'#a3b6ca', c3:'#4a5c70', ring:'#e3ecf7', glow:'#bcd7ff' },
+  { from:9,  name:'Золотая',    c1:'#fff7cc', c2:'#f2b632', c3:'#8f6100', ring:'#ffe07a', glow:'#ffd34d' },
+  { from:13, name:'Алмазная',   c1:'#ffffff', c2:'#7fdcf0', c3:'#16708f', ring:'#c9f6ff', glow:'#9ef0ff', sparkle:true },
+  { from:17, name:'Радужная',   c1:'#ffffff', c2:'#f3a6ff', c3:'#4a2fa8', ring:'#ffe9a8', glow:'#ffc6f0', sparkle:true, rainbow:true },
 ];
+// Шанс поимки основной сферы по уровням (у старых купленных сфер было ×1, ×1,5, ×2,5 и ×4)
+const ORB_POWER = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.25, 4.5, 4.75, 5];
+// С каждым новым видом основной сферы вырвавшиеся зверьки убегают реже: на 0, 5, 10, 15 и 20%
+const ORB_HOLD = [1, 0.95, 0.9, 0.85, 0.8];
+// Опыт за поимку по редкости; если зверёк вырвался, сфера всё равно получает 1 опыт
+const XP_RARITY = { common:1, uncommon:2, rare:3, epic:4, legendary:6, mythic:8, secret:10, divine:12, pet:15, glitch:0 };
+// Умения особых сфер на уровне L (1–10). power — сила относительно основной сферы
+const ORB_FX = {
+  comet: L => ({ power:0.65 + 0.02 * (L - 1), range:6 + 2 * (L - 1) }),
+  net:   L => ({ power:0.7 + 0.02 * (L - 1), zone:1.4 + 0.06 * (L - 1) }),
+  moon:  L => ({ dark:1.25 + 0.05 * (L - 1), light:0.7 }),
+  lull:  L => ({ power:0.55 + 0.02 * (L - 1), hold:0.55 - 0.02 * (L - 1) }),
+};
+// Порядок такой же, как в выборе сферы на охоте. need — опыт до следующего уровня, base и grow — цена улучшения,
+// loot — трофей босса, из которого сферу собирают (он же нужен на 5 и 10 уровень), craft — монеты за сборку
+const ORBS = [
+  { id:'classic', name:'Основная', max:20, base:40, grow:2.1, need:L => Math.round(4 + 3.2 * Math.pow(L - 1, 1.45)),
+    desc:'Ловит всех. С уровнем растёт шанс поимки, а с новым видом зверьки реже убегают.' },
+  { id:'comet', name:'Комета', title:'Комета', max:10, base:200, grow:2.4, loot:'feather', craft:300, need:L => Math.round(6 + 4 * Math.pow(L - 1, 1.3)),
+    c1:'#e8fdff', c2:'#26c6da', c3:'#00505c', ring:'#b2ebf2', glow:'#84ffff', deco:'comet',
+    desc:'Летит дальше, чем бросает рука, и ветер её не сносит. Ловит слабее основной.' },
+  { id:'net', name:'Липучка', title:'Липучка', max:10, base:500, grow:2.4, loot:'tuft', craft:1000, need:L => Math.round(6 + 4 * Math.pow(L - 1, 1.3)),
+    c1:'#f4ffe6', c2:'#8bc34a', c3:'#2e5d12', ring:'#dcedc8', glow:'#ccff90', deco:'web',
+    desc:'Большая зона попадания, и в центр попасть легче. Хитрые не увернутся, трусишки реже убегают. Ловит слабее основной.' },
+  { id:'moon', name:'Лунная', title:'Лунная сфера', max:10, base:2000, grow:2.4, loot:'claw', craft:5000, need:L => Math.round(6 + 4 * Math.pow(L - 1, 1.3)),
+    c1:'#e8eaf6', c2:'#3f51b5', c3:'#0b1240', ring:'#fff59d', glow:'#fff59d', deco:'moon',
+    desc:'Ночью и в Пещере ловит сильнее основной, а днём слабее.' },
+  { id:'lull', name:'Колыбельная', title:'Колыбельная сфера', max:10, base:8000, grow:2.4, loot:'bell', craft:40000, need:L => Math.round(6 + 4 * Math.pow(L - 1, 1.3)),
+    c1:'#fff0fb', c2:'#d39ae0', c3:'#5e1a78', ring:'#f8bbd0', glow:'#f3c1ff', deco:'note',
+    desc:'Поёт колыбельную: вырвавшийся зверёк засыпает и убегает намного реже. Ловит слабее основной.' },
+  { id:'star', name:'Звёздная', title:'Звёздная сфера', item:true, star:true,
+    c1:'#f3e8ff', c2:'#8a5cf6', c3:'#341785', ring:'#e9dbff', glow:'#c49bff', desc:'Свой шанс для каждой редкости. Тратится при попадании.' },
+  { id:'glitch', name:'Глитч', title:'Глитч-сфера', item:true, glitch:true,
+    c1:'#e8fdff', c2:'#00bcd4', c3:'#4a148c', ring:'#ff4fd8', glow:'#00e5ff', desc:'Ловит только Виарика. Тратится при попадании.' },
+];
+const ORB_BY_ID = Object.fromEntries(ORBS.map(K => [K.id, K]));
+const ORB_LOOKS = [...ORB_TIERS, ...ORBS.filter(K => K.id !== 'classic')];   // для заставки
+const orbTierOf = lv => { let t = 0; ORB_TIERS.forEach((x, i) => { if (lv >= x.from) t = i; }); return t; };
+const orbLvOf = K => (K.max && save.orbLv[K.id] && save.orbLv[K.id].lv) || 0;
+const classicLv = () => save.orbLv.classic.lv;
+const orbOwned = K => K.max ? !!save.orbLv[K.id] : (save.orbs[K.id] || 0) > 0;
+const orbFx = (K, lv = orbLvOf(K)) => ORB_FX[K.id] ? ORB_FX[K.id](Math.max(1, lv)) : {};
+const orbTitle = K => K.id === 'classic' ? ORB_TIERS[orbTierOf(classicLv())].name + ' сфера' : K.title;
+const orbShort = K => K.id === 'classic' ? ORB_TIERS[orbTierOf(classicLv())].name : K.name;
+const orbCost = (K, lv) => niceNum(K.base * Math.pow(K.grow, lv - 1));
+const orbNeedsLoot = (K, lv) => !!K.loot && (lv === 4 || lv === 9);   // на 5 и 10 уровень нужен ещё один трофей
+const isDark = () => !!LOC_BY_ID[save.loc].indoor || weather.id === 'night';
+// Множитель шанса поимки
+function orbPower(K, lv) {
+  const P = ORB_POWER[classicLv() - 1];
+  if (K.id === 'classic' || !ORB_FX[K.id]) return P;
+  const f = orbFx(K, lv);
+  return P * (K.id === 'moon' ? (isDark() ? f.dark : f.light) : f.power);
+}
+// Во сколько раз реже убегает вырвавшийся зверёк
+const orbHold = K => ORB_HOLD[orbTierOf(classicLv())] * (K.id === 'lull' ? orbFx(K).hold : 1);
+const throwReach = K => armReach(save.arm) + (K && K.id === 'comet' ? orbFx(K).range : 0);
+// Как выглядит сфера: у основной вид по уровню, камешки на ободке показывают уровень внутри вида, на максимуме звёздочка
+const lookCache = {};
+function orbLook(K, lv = orbLvOf(K)) {
+  const key = K.id + ':' + lv;
+  if (lookCache[key]) return lookCache[key];
+  let L;
+  if (K.id === 'classic') { const t = orbTierOf(lv); L = Object.assign({}, ORB_TIERS[t], { gems:lv - ORB_TIERS[t].from + 1, crown:lv >= K.max }); }
+  else L = Object.assign({}, K, K.max ? { gems:Math.min(4, 1 + Math.floor((lv - 1) / 3)), crown:lv >= K.max } : {});
+  return (lookCache[key] = L);
+}
+// Старые сохранения: сферы покупались поштучно. Уровень основной сферы считаем по числу поимок
+// (примерно 2 опыта за зверька) и не ниже вида, который у игрока уже был, а оставшиеся сферы возвращаем монетами
+const OLD_ORBS = { copper:[10, 1], silver:[60, 5], gold:[300, 9], diamond:[1500, 13] };
+let orbMigrateNote = null;
+function migrateOrbs(d) {
+  if (d.orbV >= 2) return;
+  const o = d.orbs && typeof d.orbs === 'object' ? d.orbs : {}, K = ORBS[0];
+  let refund = 0, best = 1;
+  for (const [id, [price, lvl]] of Object.entries(OLD_ORBS)) { const n = Math.max(0, o[id] | 0); refund += n * price; if (n) best = Math.max(best, lvl); }
+  let lv = 1, xp = Math.max(0, d.caught | 0) * 2;
+  while (lv < K.max && xp >= K.need(lv)) { xp -= K.need(lv); lv++; }
+  if (best > lv) { lv = best; xp = 0; }
+  d.orbLv = { classic:{ lv, xp:lv >= K.max ? 0 : xp } };
+  d.orbs = { star:Math.max(0, o.star | 0), glitch:Math.max(0, o.glitch | 0) };
+  d.coins = (Number(d.coins) || 0) + refund;
+  d.orbV = 2;
+  if ((d.caught | 0) > 0 || refund > 0) orbMigrateNote = { lv, refund };
+}
 
 // Звёздная сфера сильная, но не всесильная
 const STAR_CHANCE = { common:1, uncommon:1, rare:0.85, epic:0.65, legendary:0.40, mythic:0.20, secret:0.10, divine:0.05, pet:0.03, glitch:0 };
@@ -1646,9 +1755,8 @@ const ARM_MAX = 10;
 const armReach = lvl => 16 + (lvl - 1) * 6;
 // Цены растут в 3,4 раза за уровень и в 2,8 раза за каждый новый круг
 const niceNum = x => { if (x < 100) return Math.round(x); const p = Math.pow(10, Math.floor(Math.log10(x)) - 1); return Math.round(x / p) * p; };
-const CIRCLE_COST = 2.8, ORB_CIRCLE = 1.5;
+const CIRCLE_COST = 2.8;
 const armCost = lvl => niceNum(300 * Math.pow(3.4, lvl - 1) * Math.pow(CIRCLE_COST, save.circle || 0));
-const orbPrice = def => niceNum(def.price * Math.pow(ORB_CIRCLE, save.circle || 0));
 
 // Загон: 3 места, каждое расширение даёт ещё одно
 const PEN_MAX = 10;
@@ -1668,7 +1776,7 @@ function catchChance(rarityId, orbDef, throwBonus = 1) {
     if (!(rarityId === 'glitch' && orbDef.glitch)) return 0;
     return Math.min(1, GLITCH_CHANCE * throwBonus * luckMult(rarityId));
   }
-  const base = orbDef.star ? STAR_CHANCE[rarityId] : RARITY[rarityId].base * orbDef.mult;
+  const base = orbDef.star ? STAR_CHANCE[rarityId] : RARITY[rarityId].base * orbPower(orbDef);
   return Math.min(1, base * throwBonus * luckMult(rarityId) * circleCatch());
 }
 function tryCatch(rarityId, orbDef, throwBonus = 1) {
@@ -1676,7 +1784,7 @@ function tryCatch(rarityId, orbDef, throwBonus = 1) {
   const roll = Math.random();
   return { success: roll < chance, chance, roll };
 }
-function tryFlee(rarityId) { return Math.random() < RARITY[rarityId].flee; }
+function tryFlee(rarityId, k = 1) { return Math.random() < RARITY[rarityId].flee * k; }
 function throwBonusFor(ratio) {
   for (const b of THROW_BONUS) if (ratio <= b.maxDist) return b;
   return { mult:1, label:'' };
@@ -1753,7 +1861,7 @@ function rng(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; 
 /* ======================= СОХРАНЕНИЕ ======================= */
 const KEY = 'sferolov-v2', OLD_KEY = 'sferolov-v1';
 function freshSave() {
-  return { coins:100, orbs:Object.fromEntries(ORBS.map(o => [o.id, o.id === 'copper' ? 10 : 0])),
+  return { coins:100, orbs:{ star:0, glitch:0 }, orbLv:{ classic:{ lv:1, xp:0 } }, orbV:2,
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', circle:0, exped:[], ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, expeditions:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 },
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, last:Date.now() };
@@ -1837,7 +1945,17 @@ function sanitize(d) {
   st.ch = clamp((st.ch | 0) || 1, 1, 7); for (const k of ['intro', 'beaten', 'rematch', 'loot']) if (!st[k] || typeof st[k] !== 'object') st[k] = {};
   st.prog = Array.isArray(st.prog) ? st.prog.map(n => Math.max(0, n | 0)) : []; st.dog = !!st.dog; st.title = !!st.title;
   for (const k of Object.keys(d.pets)) { const v = parseKey(k); if (v.stage > 1) d.evoMax[v.id] = Math.max(d.evoMax[v.id] || 1, v.stage); }
-  for (const o of ORBS) d.orbs[o.id] = Math.max(0, d.orbs[o.id] | 0);
+  // сферы: основная есть всегда, особые только собранные; тратятся только звёздная и глитч
+  const ol = d.orbLv && typeof d.orbLv === 'object' ? d.orbLv : {};
+  d.orbLv = {};
+  for (const K of ORBS) if (K.max) {
+    const v = ol[K.id] && typeof ol[K.id] === 'object' ? ol[K.id] : null;
+    if (!v && K.id !== 'classic') continue;
+    const lv = clamp((v && v.lv | 0) || 1, 1, K.max);
+    d.orbLv[K.id] = { lv, xp:lv >= K.max ? 0 : Math.max(0, (v && v.xp | 0) || 0) };
+  }
+  const oo = d.orbs && typeof d.orbs === 'object' ? d.orbs : {};
+  d.orbs = { star:Math.max(0, oo.star | 0), glitch:Math.max(0, oo.glitch | 0) };
   if (!(d.coins >= 0)) d.coins = 0;
   return d;
 }
@@ -1883,6 +2001,7 @@ function loadSave() {
         d.mini = Object.assign(d.mini, s.mini || {});
         d.shinySeen = s.shinySeen && typeof s.shinySeen === 'object' ? s.shinySeen : {};
         d.promoUsed = s.promoUsed && typeof s.promoUsed === 'object' ? s.promoUsed : {};
+        d.orbV = s.orbV | 0; d.orbLv = s.orbLv;
         if (s.story && typeof s.story === 'object') d.story = Object.assign(d.story, s.story);
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
@@ -1898,6 +2017,7 @@ function loadSave() {
           }
         }
       }
+      migrateOrbs(d);
       return sanitize(d);
     }
     const old = localStorage.getItem(OLD_KEY);
@@ -1909,10 +2029,12 @@ function loadSave() {
         }
       }
       if (o && o.orbs) for (const k of ['copper','silver','gold','star']) d.orbs[k] = (d.orbs[k] || 0) + Math.max(0, o.orbs[k] | 0);
+      d.orbV = 0;
       fillPenBest(d);
       d.migrated = true;
     }
   } catch (e) {}
+  migrateOrbs(d);
   return sanitize(d);
 }
 const save = loadSave();
@@ -2211,7 +2333,7 @@ function creatureIcon(sp, size, silhouette = false, stage = 1) {
     }
   });
 }
-function orbIcon(def, size) { return iconCanvas(size, (c, s) => drawOrb(c, s / 2, s / 2, s * 0.24, def, 0.6, 0, 1)); }
+function orbIcon(def, size, k = 0.24) { return iconCanvas(size, (c, s) => drawOrb(c, s / 2, s / 2, s * k, def, 0.6, 0, 1)); }
 
 let shownCoins = -1;
 function refreshWallet(bump) {
@@ -5958,6 +6080,20 @@ function drawOrb(c, x, y, R0, def, spin, rot = 0, alpha = 1) {
   g.addColorStop(0, def.c1); g.addColorStop(0.6, def.c2); g.addColorStop(1, def.c3);
   c.fillStyle = g; c.beginPath(); c.arc(0, 0, R0, 0, TAU); c.fill();
   c.save(); c.beginPath(); c.arc(0, 0, R0, 0, TAU); c.clip();
+  if (def.rainbow) {
+    // радужные полосы медленно плывут вокруг сферы
+    const cols = ['#ff6b6b', '#ffa94d', '#ffe066', '#8ce99a', '#74c0fc', '#b197fc'];
+    c.globalAlpha = alpha * 0.62;
+    for (let i = 0; i < cols.length; i++) {
+      const a0 = spin * 0.35 + i * TAU / cols.length;
+      c.fillStyle = cols[i]; c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, R0, a0, a0 + TAU / cols.length + 0.02); c.closePath(); c.fill();
+    }
+    c.globalAlpha = alpha;
+    const sh = c.createRadialGradient(-R0 * 0.35, -R0 * 0.4, R0 * 0.1, 0, 0, R0);
+    sh.addColorStop(0, 'rgba(255,255,255,0.75)'); sh.addColorStop(0.55, 'rgba(255,255,255,0.05)'); sh.addColorStop(1, 'rgba(40,20,90,0.45)');
+    c.fillStyle = sh; c.beginPath(); c.arc(0, 0, R0, 0, TAU); c.fill();
+  }
+  if (def.deco) orbDeco(c, R0, def, spin);
   c.strokeStyle = 'rgba(255,255,255,0.22)'; c.lineWidth = Math.max(1, R0 * 0.06);
   for (let i = 0; i < 3; i++) {
     const k = Math.cos(spin + i * 1.05);
@@ -5971,9 +6107,60 @@ function drawOrb(c, x, y, R0, def, spin, rot = 0, alpha = 1) {
     c.strokeStyle = '#ffffff'; c.lineWidth = Math.max(1, R0 * 0.12); c.lineJoin = 'round';
     c.beginPath(); c.moveTo(-R0 * 0.12, -R0 * 0.55); c.lineTo(R0 * 0.12, -R0 * 0.06); c.lineTo(-R0 * 0.1, R0 * 0.06); c.lineTo(R0 * 0.14, R0 * 0.55); c.stroke();
   }
-  if (def.id === 'diamond') { c.fillStyle = 'rgba(255,255,255,0.7)'; starPath(c, R0 * 0.3, R0 * 0.25, R0 * 0.22, 4, 0.3, spin); c.fill(); }
-  c.strokeStyle = def.ring;
+  if (def.sparkle) { c.fillStyle = 'rgba(255,255,255,0.7)'; starPath(c, R0 * 0.3, R0 * 0.25, R0 * 0.22, 4, 0.3, spin); c.fill(); }
+  c.strokeStyle = def.ring; c.lineWidth = Math.max(1.2, R0 * 0.13);
   c.beginPath(); c.ellipse(0, 0, R0 * 1.5, R0 * 0.4, tilt, 0, Math.PI); c.stroke();
+  // уровень: камешки на ободке спереди, на максимуме золотая звёздочка
+  if (def.gems) {
+    const n = def.gems, cs = Math.cos(tilt), sn = Math.sin(tilt), gr = Math.max(1, R0 * 0.14);
+    for (let k = 0; k < n; k++) {
+      const a = Math.PI / 2 + (k - (n - 1) / 2) * 0.5, ex = R0 * 1.5 * Math.cos(a), ey = R0 * 0.4 * Math.sin(a);
+      const px = ex * cs - ey * sn, py = ex * sn + ey * cs;
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(px, py, gr, 0, TAU); c.fill();
+      c.strokeStyle = def.c3; c.lineWidth = Math.max(0.8, R0 * 0.05); c.stroke();
+    }
+  }
+  if (def.crown) {
+    c.fillStyle = '#ffd54f'; c.strokeStyle = '#a66b00'; c.lineWidth = Math.max(0.8, R0 * 0.05);
+    starPath(c, R0 * 0.66, -R0 * 0.76, R0 * 0.3, 5, 0.45, 0); c.fill(); c.stroke();
+  }
+  c.restore();
+}
+// Узоры особых сфер (рисуются внутри круга сферы)
+function orbDeco(c, R, def, spin) {
+  c.save();
+  if (def.deco === 'web') {
+    c.rotate(spin * 0.15);
+    c.strokeStyle = 'rgba(255,255,255,0.6)'; c.lineWidth = Math.max(0.8, R * 0.06);
+    for (let i = 0; i < 6; i++) { const a = i * TAU / 6; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.cos(a) * R, Math.sin(a) * R); c.stroke(); }
+    for (const rr of [0.38, 0.72]) {
+      c.beginPath();
+      for (let i = 0; i <= 6; i++) { const a = i * TAU / 6, p = rr * R; if (i) c.quadraticCurveTo(Math.cos(a - TAU / 12) * p * 0.82, Math.sin(a - TAU / 12) * p * 0.82, Math.cos(a) * p, Math.sin(a) * p); else c.moveTo(p, 0); }
+      c.stroke();
+    }
+  } else if (def.deco === 'comet') {
+    // голова кометы и сужающийся хвост вниз-влево
+    const hx = R * 0.28, hy = -R * 0.22, hr = R * 0.24, ang = Math.atan2(R * 0.75 - hy, -R * 0.95 - hx), nx = -Math.sin(ang), ny = Math.cos(ang);
+    const tg = c.createLinearGradient(hx, hy, -R * 0.95, R * 0.75);
+    tg.addColorStop(0, 'rgba(255,255,255,0.9)'); tg.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = tg; c.beginPath();
+    c.moveTo(hx + nx * hr, hy + ny * hr); c.lineTo(-R * 0.95, R * 0.75); c.lineTo(hx - nx * hr, hy - ny * hr); c.closePath(); c.fill();
+    c.fillStyle = '#ffffff'; c.beginPath(); c.arc(hx, hy, hr, 0, TAU); c.fill();
+    c.fillStyle = 'rgba(255,255,255,0.8)'; starPath(c, -R * 0.45, -R * 0.4, R * 0.14, 4, 0.35, 0); c.fill();
+  } else if (def.deco === 'moon') {
+    const cx = R * 0.05, cy = -R * 0.05, a = R * 0.5;
+    c.beginPath(); c.arc(cx, cy, a, 0, TAU); c.clip();
+    c.fillStyle = '#fff59d'; c.beginPath(); c.arc(cx, cy, a, 0, TAU); c.arc(cx + a * 0.55, cy - a * 0.3, a * 0.9, 0, TAU, true); c.fill('evenodd');
+    c.restore(); c.save();
+    c.fillStyle = 'rgba(255,255,255,0.85)';
+    for (const [sx, sy, s] of [[0.45, 0.4, 0.09], [0.55, -0.45, 0.07], [-0.5, 0.5, 0.06]]) { starPath(c, sx * R, sy * R, s * R * 2, 4, 0.35, 0); c.fill(); }
+  } else if (def.deco === 'note') {
+    c.fillStyle = 'rgba(255,255,255,0.92)'; c.strokeStyle = 'rgba(255,255,255,0.92)'; c.lineWidth = Math.max(1, R * 0.09); c.lineCap = 'round';
+    c.beginPath(); c.ellipse(-R * 0.16, R * 0.3, R * 0.2, R * 0.14, -0.45, 0, TAU); c.fill();
+    c.beginPath(); c.moveTo(R * 0.02, R * 0.26); c.lineTo(R * 0.02, -R * 0.42); c.quadraticCurveTo(R * 0.12, -R * 0.2, R * 0.4, -R * 0.14); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.75)';
+    for (const [sx, sy, s] of [[0.45, 0.35, 0.08], [-0.5, -0.3, 0.07]]) { starPath(c, sx * R, sy * R, s * R * 2, 4, 0.35, 0); c.fill(); }
+  }
   c.restore();
 }
 
@@ -6935,7 +7122,7 @@ function roundRectPath(c, x, y, w, h, r) {
   c.lineTo(x, y + r); c.arcTo(x, y, x + r, y, r); c.closePath();
 }
 function drawReachLine() {
-  const reach = armReach(save.arm);
+  const reach = throwReach(ORBS[selected]);
   if (reach >= DIST_MAX) return;
   const y = footYFor(reach);
   ctx.save();
@@ -6947,7 +7134,7 @@ function drawReachLine() {
   ctx.restore();
 }
 function drawDistLabel() {
-  const far = cr.dist > armReach(save.arm);
+  const far = cr.dist > throwReach(ORBS[selected]);
   const txt = `${cr.dist} м`;
   ctx.save();
   ctx.globalAlpha = Math.min(1, cr.scale);
@@ -6994,6 +7181,7 @@ function setWeather(w) {
   weather = w; weatherLeft = WEATHER_TIME;
   const [a, b] = w.wind; wind = (a + Math.random() * (b - a)) * (Math.random() < 0.5 ? -1 : 1);
   renderWeather();
+  if (cr) updateInfo();   // Лунная сфера ночью сильнее
 }
 function nextWeather() {
   const pool = WEATHERS.filter(w => w !== weather), tot = pool.reduce((s, w) => s + w.w, 0);
@@ -7066,24 +7254,23 @@ function spawn(forced) {
     : { epic:'Рядом эпический зверёк!', legendary:'Ого, легендарный зверёк!', mythic:'Мифический зверёк! Такое бывает редко',
         secret:'Секретный зверёк!', divine:'Божественный зверёк!!!' }[sp.rarity];
   sfx(sp.shiny || ['legendary','mythic','secret','divine','pet'].includes(sp.rarity) ? 'rare' : sp.rarity === 'glitch' ? 'glitch' : 'pop');
-  if (!ORBS.some(o => save.orbs[o.id] > 0)) toast('Сферы закончились. Купи новые в магазине', 'bad', 2600);
-  else if (msg) toast(msg, sp.rarity === 'epic' && !sp.shiny ? '' : 'good');
+  if (msg) toast(msg, sp.rarity === 'epic' && !sp.shiny ? '' : 'good');
 }
 
 function throwOrb(vx, vy, curve = 0) {
   const speed = -vy, power = speed / IDEAL_SPEED;
-  const sx = orb.x, sy = orb.y, reach = armReach(save.arm);
+  const K = ORBS[orb.defIdx], sx = orb.x, sy = orb.y, reach = throwReach(K);
   const tooFar = cr.dist > reach;
   const ty = tooFar
     ? footYFor(reach) - ORB_R * 0.3
     : clamp(cr.y - (power - 1) * cr.r * 1.8, horizon - H * 0.1, H - ORB_R);
   const dy = Math.max(40, sy - (tooFar ? ty : cr.y));
   const aimX = clamp(sx + (vx / speed) * dy, -W * 0.2, W * 1.2);
-  const drift = windNow() * (curve ? 0.3 : 1) * Math.max(60, rest.y - ty) * 0.04;
+  const drift = windNow() * (curve ? 0.3 : 1) * (K.id === 'comet' ? 0 : K.id === 'net' ? 0.5 : 1) * Math.max(60, rest.y - ty) * 0.04;
   const tx = aimX + drift;
   const tD = depthT(tooFar ? reach : cr.dist);
   throwInfo = { sx, sy, tx, ty, aimX, drift, curve, tooFar, reach, orbIdx:orb.defIdx,
-                arc:Math.min(140, Math.max(30, (sy - ty) * 0.35)), dur:0.5 + 0.3 * tD, endScale:lerp(0.62, 0.3, tD) };
+                arc:Math.min(140, Math.max(30, (sy - ty) * (K.id === 'comet' ? 0.2 : 0.35))), dur:(0.5 + 0.3 * tD) * (K.id === 'comet' ? 0.75 : 1), endScale:lerp(0.62, 0.3, tD) };
   hintDone = true;
   sfx('throw');
   setState('flying');
@@ -7098,19 +7285,17 @@ function resolveThrow() {
     setState('miss'); tutEvent('miss');
     return;
   }
-  const hitR = Math.max(cr.r * 1.05, 24);
+  const def = ORBS[ti.orbIdx], hitR = Math.max(cr.r * 1.05, 24) * (def.id === 'net' ? orbFx(def).zone : 1);
   const d = Math.hypot(ti.tx - cr.x, ti.ty - cr.y);
   if (d <= hitR) {
     const bonus = throwBonusFor(d / hitR);
-    const def = ORBS[ti.orbIdx];
     if (catchChance(cr.sp.rarity, def, 1) <= 0) {
       toast(cr.sp.rarity === 'glitch' ? 'Сфера прошла сквозь Виарика! Его ловит только глитч-сфера' : 'Глитч-сфера ловит только Виарика', 'bad', 3000);
       missV = { x:(ti.tx - ti.sx) / ti.dur * 0.5, y:-200 };
       setState('miss'); tutEvent('miss');
       return;
     }
-    save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist();
-    ensureSelectable(); renderOrbs(); updateInfo();
+    if (def.item) { save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist(); ensureSelectable(); renderOrbs(); updateInfo(); }
     const res = tryCatch(cr.sp.rarity, def, bonus.mult * (ti.curve ? CURVE_BONUS : 1) * traitMult());
     const shakes = res.chance >= 1 ? 1 : res.success ? 3 : (res.roll - res.chance < 0.15 ? 2 : 1);
     attempt = { ...res, shakes, def };
@@ -7118,7 +7303,7 @@ function resolveThrow() {
     if (ti.curve) { save.stats.curve = (save.stats.curve || 0) + 1; questProgress('curve'); }
     toast(`${ti.curve ? '🌀 Закрученный! ' : ''}${bonus.label || 'Попадание!'} Шанс ${pct(res.chance)}`);
     capFrom = { x:cr.x, y:cr.y }; capOrb = { x:orb.x, y:orb.y };
-    burst(orb.x, orb.y, ['#ffffff', def.glow], 14, 150);
+    burst(orb.x, orb.y, ['#ffffff', orbLook(def).glow], 14, 150);
     sfx('pop');
     setState('capturing');
   } else {
@@ -7168,11 +7353,13 @@ function onCaught(sp, lucky) {
 function finishAttempt() {
   if (attempt.success) {
     onCaught(cr.sp, cr.trait === 'lucky');
+    gainOrbXp(attempt.def, XP_RARITY[cr.sp.rarity] || 0, { x:orb.x, y:orb.y });
     sfx('catch');
     burst(orb.x, orb.y, ['#ffffff', RARITY[cr.sp.rarity].aura || '#9be38f', '#ffe27a'], 34, 230);
     setState('caught'); tutEvent('caught');
   } else {
-    burst(orb.x, orb.y, ['#ffffff', attempt.def.glow], 22, 210);
+    gainOrbXp(attempt.def, 1, { x:orb.x, y:orb.y });
+    burst(orb.x, orb.y, ['#ffffff', orbLook(attempt.def).glow], 22, 210);
     sfx('break');
     save.luck[cr.sp.rarity] = Math.min(LUCK_MAX, (save.luck[cr.sp.rarity] || 0) + 1); persist();
     breakFrom = { x:orb.x, y:orb.y };
@@ -7215,7 +7402,7 @@ function update(dt) {
       orb.x = lerp(ti.sx, ti.aimX, u) + ti.drift * u * u + (ti.curve ? ti.curve * Math.sin(u * Math.PI) * 28 : 0);
       orb.y = lerp(ti.sy, ti.ty, u) - ti.arc * 4 * u * (1 - u);
       if (ti.curve) orb.spin += dt * 18;
-      if (cr.trait === 'sly' && !ti.dodgeChecked && u >= 0.45) {
+      if (cr.trait === 'sly' && !ti.dodgeChecked && u >= 0.45 && ORBS[ti.orbIdx].id !== 'net') {
         ti.dodgeChecked = true;
         if (Math.random() < 0.45) { const dir = Math.random() < 0.5 ? -1 : 1; cr.dodgeTo = clamp((cr.offX || 0) + dir * cr.r * 2.4, -W * 0.35, W * 0.35); ti.dodged = true; }
       }
@@ -7278,8 +7465,13 @@ function update(dt) {
       cr.x = lerp(breakFrom.x, capFrom.x, easeOut(u)); cr.y = lerp(breakFrom.y, capFrom.y, easeOut(u));
       orb.alpha = 1 - u; orb.scale = throwInfo.endScale + 0.4 * u;
       if (u >= 1) {
-        if (cr.trait !== 'stubborn' && tryFlee(cr.sp.rarity)) { sfx('flee'); toast(`${cr.sp.name} убегает…`, 'bad'); setState('fleeing'); }
-        else { updateInfo(); toast(`Вырвался! Шанс был ${pct(attempt.chance)}. 🍀 Невезение даёт +${Math.round((luckMult(cr.sp.rarity) - 1) * 100)}% к шансу`); resetOrb(true); setState('ready'); }
+        if (cr.trait !== 'stubborn' && tryFlee(cr.sp.rarity, orbHold(attempt.def))) { sfx('flee'); toast(`${cr.sp.name} убегает…`, 'bad'); setState('fleeing'); }
+        else {
+          updateInfo();
+          toast(attempt.def.id === 'lull' && cr.trait !== 'stubborn' ? `💤 Вырвался, но заслушался колыбельной и не убежал. Шанс был ${pct(attempt.chance)}`
+            : `Вырвался! Шанс был ${pct(attempt.chance)}. 🍀 Невезение даёт +${Math.round((luckMult(cr.sp.rarity) - 1) * 100)}% к шансу`);
+          resetOrb(true); setState('ready');
+        }
       }
       break;
     }
@@ -7291,6 +7483,25 @@ function update(dt) {
     }
   }
   updateParts(dt);
+  updateXpPops(dt);
+}
+// Хвост Кометы в полёте
+function drawCometTail(sr) {
+  const ti = throwInfo, dx = orb.x - ti.sx, dy = orb.y - ti.sy, len = Math.hypot(dx, dy);
+  if (len < 4) return;
+  const ux = dx / len, uy = dy / len, L = Math.min(len, sr * 6);
+  const g = ctx.createLinearGradient(orb.x, orb.y, orb.x - ux * L, orb.y - uy * L);
+  g.addColorStop(0, 'rgba(132,255,255,0.75)'); g.addColorStop(1, 'rgba(132,255,255,0)');
+  ctx.save(); ctx.strokeStyle = g; ctx.lineCap = 'round'; ctx.lineWidth = sr * 1.3;
+  ctx.beginPath(); ctx.moveTo(orb.x, orb.y); ctx.lineTo(orb.x - ux * L, orb.y - uy * L); ctx.stroke(); ctx.restore();
+}
+// Зона Липучки вокруг зверька: сюда достаточно попасть
+function drawNetZone() {
+  const r = Math.max(cr.r * 1.05, 24) * orbFx(ORBS[selected]).zone;
+  ctx.save(); ctx.globalAlpha = 0.75 + 0.2 * Math.sin(T * 3);
+  ctx.setLineDash([7, 6]); ctx.lineDashOffset = -T * 12;
+  ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(30,60,10,0.35)'; ctx.beginPath(); ctx.arc(cr.x, cr.y, r, 0, TAU); ctx.stroke();
+  ctx.lineWidth = 2.2; ctx.strokeStyle = '#d4ff9e'; ctx.beginPath(); ctx.arc(cr.x, cr.y, r, 0, TAU); ctx.stroke(); ctx.restore();
 }
 
 function draw() {
@@ -7315,6 +7526,7 @@ function draw() {
     if (cr.trait && MOVING.has(state)) drawTraitFx();
   }
   if (cr && ['spawning','ready','dragging','flying','miss','returning'].includes(state)) drawDistLabel();
+  if (cr && ORBS[selected].id === 'net' && ['ready','dragging','flying'].includes(state) && cr.scale > 0.9) drawNetZone();
   if (state === 'capturing') {
     const u = Math.min(1, stT / 0.55);
     ctx.save();
@@ -7334,9 +7546,11 @@ function draw() {
       ctx.fillStyle = `rgba(0,0,0,${0.2 * orb.alpha})`;
       ctx.beginPath(); ctx.ellipse(orb.x, sy, sr * 0.9, sr * 0.25, 0, 0, TAU); ctx.fill();
     }
-    drawOrb(ctx, orb.x, orb.y, sr, ORBS[orb.defIdx], orb.spin, orb.rot, orb.alpha);
+    if (state === 'flying' && ORBS[orb.defIdx].id === 'comet') drawCometTail(sr);
+    drawOrb(ctx, orb.x, orb.y, sr, orbLook(ORBS[orb.defIdx]), orb.spin, orb.rot, orb.alpha);
   }
   drawParts();
+  drawXpPops();
   drawWeatherFront(T);
   if (!hintDone && state === 'ready' && orb.pop >= 1) {
     ctx.save();
@@ -7357,7 +7571,7 @@ canvas.addEventListener('pointerdown', e => {
   if (state !== 'ready') return;
   const p = ptr(e);
   if (Math.hypot(p.x - orb.x, p.y - orb.y) > ORB_R * 2.4) return;
-  if ((save.orbs[ORBS[orb.defIdx].id] || 0) <= 0) { toast('Таких сфер нет. Купи их в магазине', 'bad'); return; }
+  if (!orbOwned(ORBS[orb.defIdx])) { toast('Таких сфер больше нет, выбери другую', 'bad'); return; }
   if (ORBS[orb.defIdx].glitch && cr.sp.rarity !== 'glitch') { toast('Глитч-сфера ловит только Виарика', 'bad'); return; }
   dragId = e.pointerId;
   try { canvas.setPointerCapture(dragId); } catch (err) {}
@@ -7397,36 +7611,240 @@ $('skipBtn').addEventListener('click', () => {
   setState('fleeing');
 });
 
+// Если выбранной сферы нет (звёздные кончились, особая не собрана), берём основную
 function ensureSelectable() {
-  if ((save.orbs[ORBS[selected].id] || 0) > 0) return;
-  let j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0 && !o.star && !o.glitch);
-  if (j < 0) j = ORBS.findIndex(o => (save.orbs[o.id] || 0) > 0 && !o.glitch);
-  if (j >= 0) selected = j;
+  const K = ORBS[selected];
+  if (K && orbOwned(K) && (!K.glitch || (cr && cr.sp.rarity === 'glitch'))) return;
+  selected = 0;
+}
+const fx2 = x => String(Math.round(x * 100) / 100).replace('.', ',');
+// Коротко, чем сфера хороша, для выбора сферы на охоте
+function orbStatLine(K) {
+  if (K.star) return 'свой шанс для каждой редкости';
+  if (K.glitch) return 'ловит только Виарика';
+  if (!orbOwned(K)) return (save.story.loot[K.loot] || 0) > 0 ? `трофей ${LOOT[K.loot].icon} есть: собери в «Магазине»` : `собирается из трофея ${LOOT[K.loot].icon} ${LOOT[K.loot].name}`;
+  const f = orbFx(K), P = ORB_POWER[classicLv() - 1];
+  if (K.id === 'classic') return `шанс ×${fx2(P)}, ловит всех`;
+  if (K.id === 'comet') return `+${f.range} м к броску, шанс ×${fx2(orbPower(K))}`;
+  if (K.id === 'net') return `зона ×${fx2(f.zone)}, шанс ×${fx2(orbPower(K))}`;
+  if (K.id === 'moon') return `в темноте ×${fx2(P * f.dark)}, днём ×${fx2(P * f.light)}`;
+  if (K.id === 'lull') return `убегают в ${fx2(1 / orbHold(K))} раза реже, шанс ×${fx2(orbPower(K))}`;
+  return '';
+}
+function xpFrac(K) {
+  const o = save.orbLv[K.id];
+  if (!o) return 0;
+  return o.lv >= K.max ? 1 : Math.min(1, o.xp / K.need(o.lv));
 }
 function renderOrbs() {
   orbsNav.innerHTML = '';
-  ORBS.forEach((def, i) => {
-    const n = save.orbs[def.id] || 0;
-    const b = document.createElement('button');
+  ORBS.forEach((K, i) => {
+    const own = orbOwned(K), b = document.createElement('button');
     b.type = 'button';
-    b.className = 'orb-row' + (i === selected ? ' sel' : '');
-    b.disabled = n <= 0 || (def.glitch && !(cr && cr.sp.rarity === 'glitch'));
+    b.className = 'orb-row' + (i === selected ? ' sel' : '') + (own || K.item ? '' : ' locked');
+    b.disabled = K.item && (!own || (K.glitch && !(cr && cr.sp.rarity === 'glitch')));
     b.setAttribute('aria-pressed', String(i === selected));
     const nm = document.createElement('span'); nm.className = 'orb-row-name';
-    nm.innerHTML = `<b>${def.name} сфера</b><small>${def.star ? 'свой шанс для каждой редкости' : def.glitch ? 'ловит только Виарика' : 'шанс поимки ' + def.label}</small>`;
-    const cnt = document.createElement('span'); cnt.className = 'orb-row-count'; cnt.textContent = '×' + n;
-    b.append(orbIcon(def, 38), nm, cnt);
+    nm.innerHTML = `<b>${orbTitle(K)}${save.flags['orbNew_' + K.id] ? ' <em class="new-tag">новая</em>' : ''}</b><small>${orbStatLine(K)}</small>`;
+    if (K.max && own) {
+      const bar = document.createElement('span'); bar.className = 'orb-xp' + (orbLvOf(K) >= K.max ? ' max' : ''); bar.setAttribute('aria-hidden', 'true');
+      bar.innerHTML = `<i style="width:${Math.round(xpFrac(K) * 100)}%"></i>`; nm.append(bar);
+    }
+    const cnt = document.createElement('span'); cnt.className = 'orb-row-count';
+    cnt.textContent = K.item ? '×' + (save.orbs[K.id] || 0) : own ? 'ур. ' + orbLvOf(K) : '🔒';
+    b.append(orbIcon(own || K.item ? orbLook(K) : orbLook(K, 1), 38), nm, cnt);
     b.addEventListener('click', () => {
+      if (!own && !K.item) { sfx('bad'); toast(`${K.title}: собери её в «Магазине» из трофея ${LOOT[K.loot].icon} ${LOOT[K.loot].name}`, 'bad', 3200); return; }
       selected = i;
+      if (save.flags['orbNew_' + K.id]) { delete save.flags['orbNew_' + K.id]; persist(); }
       if (['ready','spawning'].includes(state)) orb.defIdx = i;
       closeOrbPop(); renderOrbs(); updateInfo(); sfx('tap');
     });
     orbsNav.append(b);
   });
-  const def = ORBS[selected], n = save.orbs[def.id] || 0, ico = $('hudOrbIco');
-  ico.innerHTML = ''; ico.append(orbIcon(def, 48));
-  $('hudOrbCount').textContent = n;
-  $('hudOrb').setAttribute('aria-label', `Выбрать сферу. Сейчас ${def.name.toLowerCase()}, осталось ${n}`);
+  const K = ORBS[selected], ico = $('hudOrbIco'), cnt = $('hudOrbCount'), lv = orbLvOf(K);
+  ico.innerHTML = ''; ico.append(orbIcon(orbLook(K), 48));
+  cnt.textContent = K.item ? (save.orbs[K.id] || 0) : lv;
+  cnt.classList.toggle('lv', !K.item);
+  const xpEl = $('hudOrbXp');
+  xpEl.hidden = !!K.item;
+  if (!K.item) xpEl.firstChild.style.width = `${Math.round(xpFrac(K) * 100)}%`;
+  $('hudOrb').classList.toggle('dot', ORBS.some(x => save.flags['orbNew_' + x.id]));
+  $('hudOrb').setAttribute('aria-label', K.item ? `Выбрать сферу. Сейчас ${K.title.toLowerCase()}, осталось ${save.orbs[K.id] || 0}`
+    : `Выбрать сферу. Сейчас ${orbTitle(K).toLowerCase()}, уровень ${lv}`);
+}
+// Опыт сфере: за поимку по редкости, за вырвавшегося 1. Когда шкала заполнится, подскажем один раз за уровень
+const xpPops = [];
+function gainOrbXp(K, n, at) {
+  const o = save.orbLv[K.id];
+  if (!o || !(n > 0) || o.lv >= K.max) return 0;
+  const was = o.xp >= K.need(o.lv);
+  o.xp += n;
+  if (at) xpPops.push({ x:at.x, y:at.y, t:0, text:`+${n} опыта` });
+  if (!was && o.xp >= K.need(o.lv)) setTimeout(() => { sfx('ok'); toast(`🔮 ${orbTitle(K)} готова к улучшению! Улучши её в «Магазине»`, 'good', 3400); updateShopDot(); }, 3500);
+  return n;
+}
+// Награды (задания, арена, сюжет, достижения, экспедиции) дают опыт основной сфере,
+// а когда она на максимуме, опыт достаётся самой отстающей из собранных особых сфер
+function giveOrbXp(n) {
+  const K = [ORBS[0], ...ORBS.filter(x => x.loot && save.orbLv[x.id]).sort((a, b) => orbLvOf(a) - orbLvOf(b))].find(x => orbLvOf(x) < x.max);
+  if (!K) return '🔮 сферы уже на максимуме';
+  gainOrbXp(K, n);
+  return K.id === 'classic' ? `🔮 +${n} опыта сфере` : `🔮 +${n} опыта: ${K.title}`;
+}
+const xpRw = n => rwChip('orb', `🔮 +${n} опыта`);
+function updateXpPops(dt) { for (let i = xpPops.length - 1; i >= 0; i--) { xpPops[i].t += dt; if (xpPops[i].t > 1.4) xpPops.splice(i, 1); } }
+function drawXpPops() {
+  for (const p of xpPops) {
+    const a = p.t < 0.2 ? p.t / 0.2 : Math.max(0, 1 - (p.t - 0.8) / 0.6);
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.font = '900 15px Nunito, ui-rounded, system-ui, sans-serif'; ctx.textAlign = 'center';
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(40,20,80,0.55)'; ctx.fillStyle = '#e9d5ff';
+    const y = p.y - 26 - p.t * 34;
+    ctx.strokeText(p.text, p.x, y); ctx.fillText(p.text, p.x, y);
+    ctx.restore();
+  }
+}
+// Можно ли улучшить: опыт набран, монет хватает, а на 5 и 10 уровень особой сферы есть трофей
+function orbUpState(K) {
+  const o = save.orbLv[K.id];
+  if (!o || o.lv >= K.max) return { max:!!o };
+  const need = K.need(o.lv), cost = orbCost(K, o.lv), loot = orbNeedsLoot(K, o.lv);
+  return { need, cost, loot, xpOk:o.xp >= need, lootOk:!loot || (save.story.loot[K.loot] || 0) > 0 };
+}
+function upgradeOrb(K) {
+  const o = save.orbLv[K.id], u = orbUpState(K);
+  if (!o || u.max) return;
+  if (!u.xpOk) { toast(`Нужно ещё ${fmt(u.need - o.xp)} опыта: лови зверьков этой сферой`, 'bad'); return; }
+  if (!u.lootOk) { toast(`Для ${o.lv + 1} уровня нужен трофей ${LOOT[K.loot].icon} ${LOOT[K.loot].name}`, 'bad', 3000); return; }
+  if (!spend(u.cost)) return;
+  if (u.loot) save.story.loot[K.loot]--;
+  const tier0 = orbTierOf(o.lv);
+  o.xp -= u.need; o.lv++;
+  if (o.lv >= K.max) o.xp = 0;
+  persist(); sfx('evo');
+  if (K.id === 'classic' && orbTierOf(o.lv) !== tier0) {
+    const t = ORB_TIERS[orbTierOf(o.lv)];
+    toast(`✨ Сфера стала ${t.name.replace(/ая$/, 'ой')}! Шанс ×${fx2(ORB_POWER[o.lv - 1])}, зверьки убегают на ${Math.round((1 - ORB_HOLD[orbTierOf(o.lv)]) * 100)}% реже`, 'good', 3800);
+  } else toast(`🔮 ${orbTitle(K)}: уровень ${o.lv}${o.lv >= K.max ? ', это максимум!' : '!'}`, 'good');
+  renderShop(); renderOrbs(); updateInfo(); updateShopDot();
+}
+function craftOrb(K) {
+  if (save.orbLv[K.id] || !K.loot) return;
+  if ((save.story.loot[K.loot] || 0) < 1) { toast(`Нужен трофей ${LOOT[K.loot].icon} ${LOOT[K.loot].name}. Его дают за победу над боссом`, 'bad', 3200); return; }
+  if (!spend(K.craft)) return;
+  save.story.loot[K.loot]--;
+  save.orbLv[K.id] = { lv:1, xp:0 };
+  save.flags['orbNew_' + K.id] = true;
+  persist(); sfx('evo');
+  toast(`🎉 Собрана новая сфера: ${K.title}! Выбери её на охоте кнопкой сферы`, 'good', 3800);
+  renderShop(); renderOrbs(); updateShopDot();
+}
+// Из ледяного кристалла (трофей последнего босса) получаются звёздные сферы
+const STAR_FROM_FROST = 2;
+function craftStar() {
+  if ((save.story.loot.frost || 0) < 1) return;
+  save.story.loot.frost--; save.orbs.star = (save.orbs.star || 0) + STAR_FROM_FROST;
+  persist(); sfx('evo'); renderShop(); renderOrbs();
+  toast(`⭐ Собрано звёздных сфер: ${STAR_FROM_FROST}`, 'good');
+}
+// Где взять трофей: главы, в которых его даёт босс
+const lootChapters = id => STORY.filter(ch => BOSSES[ch.boss].loot === id).map(ch => ch.n);
+function lootWhere(id) { const n = lootChapters(id); return n.length > 1 ? `боссы глав ${n.join(' и ')}` : `босс главы ${n[0]}`; }
+// Есть что улучшить или собрать прямо сейчас: точка на «Магазине»
+function orbActionable() {
+  return ORBS.some(K => {
+    if (!K.max) return false;
+    if (!save.orbLv[K.id]) return !!K.loot && (save.story.loot[K.loot] || 0) > 0 && save.coins >= K.craft;
+    const u = orbUpState(K);
+    return !u.max && u.xpOk && u.lootOk && save.coins >= u.cost;
+  });
+}
+function updateShopDot() {
+  const on = orbActionable();
+  document.querySelector('.tab[data-tab="shop"]').classList.toggle('dot', on);
+  $('chipOrbs').classList.toggle('dot', on);
+}
+// Карточка сферы в магазине
+function orbCard(K) {
+  const el = document.createElement('div'), o = save.orbLv[K.id], own = !!o, lv = own ? o.lv : 1, u = orbUpState(K);
+  el.className = 'up-card orb-card' + (own ? '' : ' locked');
+  const head = document.createElement('div'); head.className = 'up-head';
+  const ico = document.createElement('span'); ico.className = 'up-ico orb'; ico.setAttribute('aria-hidden', 'true'); ico.append(orbIcon(orbLook(K, lv), 56, 0.3));
+  const tt = document.createElement('span'); tt.className = 'up-title'; tt.innerHTML = `<b>${orbTitle(K)}</b><small>${K.desc}</small>`;
+  const pill = document.createElement('span'); pill.className = 'up-lvl'; pill.textContent = own ? `ур. ${lv} из ${K.max}` : 'не собрана';
+  head.append(ico, tt, pill); el.append(head);
+  const P = ORB_POWER[classicLv() - 1], f = orbFx(K, lv), f2 = orbFx(K, lv + 1);
+  if (!own) {
+    const have = save.story.loot[K.loot] || 0, L = LOOT[K.loot];
+    const ch = document.createElement('div'); ch.className = 'up-change';
+    ch.innerHTML = `<span class="now">Нужно: ${L.icon} ${L.name}</span><b class="next">у тебя ${have}</b>`;
+    const note = document.createElement('p'); note.className = 'up-note';
+    note.innerHTML = `Трофей даёт ${lootWhere(K.loot)} в «Заданиях» → «Сюжет». ${orbSkillText(K, 1)}`;
+    el.append(ch, note);
+    const b = makeBtn('Собрать сферу ', 'primary', () => craftOrb(K), K.craft);
+    afford.shop.push({ el:b, cost:K.craft, blocked:have < 1 }); b.disabled = have < 1 || save.coins < K.craft;
+    el.append(b);
+    return el;
+  }
+  if (!u.max) {
+    const need = u.need, xp = Math.min(o.xp, need);
+    const xb = document.createElement('div'); xb.className = 'xp-block';
+    xb.innerHTML = `<div class="xp-line"><span>${u.xpOk ? '✓ Опыт набран' : `Опыт до ${lv + 1} уровня`}</span><b>${fmt(xp)} из ${fmt(need)}</b></div>` +
+      `<div class="prog big${u.xpOk ? ' full' : ''}" role="progressbar" aria-label="Опыт" aria-valuemin="0" aria-valuemax="${need}" aria-valuenow="${xp}"><i style="width:${Math.round(xp / need * 100)}%"></i></div>`;
+    el.append(xb);
+  }
+  // главное умение: сейчас → на следующем уровне
+  const stat = K.id === 'classic' ? [`шанс ×${fx2(P)}`, `шанс ×${fx2(ORB_POWER[Math.min(K.max, lv + 1) - 1])}`]
+    : K.id === 'comet' ? [`+${f.range} м`, `+${f2.range} м`]
+    : K.id === 'net' ? [`зона ×${fx2(f.zone)}`, `зона ×${fx2(f2.zone)}`]
+    : K.id === 'moon' ? [`в темноте ×${fx2(f.dark)}`, `в темноте ×${fx2(f2.dark)}`]
+    : [`побег ×${fx2(f.hold)}`, `побег ×${fx2(f2.hold)}`];
+  const ch = document.createElement('div'); ch.className = 'up-change';
+  ch.innerHTML = u.max ? `<b class="next">${stat[0]}</b>` : `<span class="now">${stat[0]}</span><span class="arrow" aria-hidden="true">→</span><b class="next">${stat[1]}</b>`;
+  el.append(ch);
+  const note = document.createElement('p'); note.className = 'up-note';
+  note.innerHTML = orbNoteText(K, lv, u);
+  el.append(note);
+  if (u.max) { const m = document.createElement('p'); m.className = 'up-max'; m.textContent = '✓ Сфера прокачана до максимума'; el.append(m); return el; }
+  const blocked = !u.xpOk || !u.lootOk;
+  const b = makeBtn(u.xpOk ? (u.lootOk ? 'Улучшить ' : 'Нужен трофей ') : `Ещё ${fmt(u.need - o.xp)} опыта · `, 'primary', () => upgradeOrb(K), u.cost);
+  afford.shop.push({ el:b, cost:u.cost, blocked }); b.disabled = blocked || save.coins < u.cost;
+  el.append(b);
+  return el;
+}
+// Подробно, что умеет особая сфера на уровне L
+function orbSkillText(K, L) {
+  const f = orbFx(K, L), pw = Math.round((f.power || 0) * 100);
+  if (K.id === 'comet') return `Летит на ${f.range} м дальше руки, ветер её не сносит. Сила ${pw}% от основной.`;
+  if (K.id === 'net') return `Зона попадания ×${fx2(f.zone)}, и зона «в центр» тоже больше. Хитрые не увернутся, ветер сносит вдвое меньше. Сила ${pw}% от основной.`;
+  if (K.id === 'moon') return `Ночью и в Пещере сила ×${fx2(f.dark)} от основной, днём ×${fx2(f.light)}.`;
+  if (K.id === 'lull') return `Вырвавшийся зверёк убегает в ${fx2(1 / f.hold)} раза реже. Сила ${pw}% от основной.`;
+  return '';
+}
+function orbNoteText(K, lv, u) {
+  const parts = [];
+  if (K.id === 'classic') {
+    const t = orbTierOf(lv), nt = ORB_TIERS[t + 1];
+    parts.push(`Сейчас зверьки убегают на ${Math.round((1 - ORB_HOLD[t]) * 100)}% реже.`);
+    if (nt) parts.push(`На ${nt.from} уровне сфера станет <b>${nt.name.replace(/ая$/, 'ой')}</b>${lv + 1 === nt.from ? ' уже после этого улучшения' : ''}.`);
+  } else parts.push(orbSkillText(K, lv));
+  if (!u.max) {
+    if (!u.xpOk) parts.push('Опыт копится, когда ловишь зверьков этой сферой.');
+    if (u.loot) parts.push(`Для ${lv + 1} уровня нужен ещё трофей ${LOOT[K.loot].icon} ${LOOT[K.loot].name} (у тебя ${save.story.loot[K.loot] || 0}).`);
+  }
+  return parts.join(' ');
+}
+function renderShopOrbs() {
+  const list = $('shopOrbs'); list.innerHTML = '';
+  for (const K of ORBS) if (K.max) list.append(orbCard(K));
+  // звёздная: не прокачивается, даётся в награду и собирается из ледяного кристалла
+  const st = document.createElement('div'); st.className = 'up-card orb-card';
+  const K = ORB_BY_ID.star;
+  st.innerHTML = `<div class="up-head"><span class="up-ico orb" aria-hidden="true"></span><span class="up-title"><b>${K.title}</b><small>Обычных ловит всегда, любимчиков в ${pct(STAR_CHANCE.pet)} случаев. Тратится при попадании.</small></span><span class="up-lvl">у тебя ×${fmt(save.orbs.star || 0)}</span></div>` +
+    `<p class="up-note">Не прокачивается и не продаётся. Её дают за достижения, каждый 5-й уровень арены, главы сюжета и бонус дня, а ещё её собирают из ${LOOT.frost.icon} Ледяного кристалла в разделе «Особое».</p>`;
+  st.querySelector('.up-ico').append(orbIcon(orbLook(K), 56, 0.3));
+  list.append(st);
 }
 function openOrbPop() { renderOrbs(); $('orbPop').hidden = false; $('orbBack').hidden = false; sfx('tap'); }
 function closeOrbPop() { $('orbPop').hidden = true; $('orbBack').hidden = true; }
@@ -7436,7 +7854,7 @@ $('orbClose').addEventListener('click', closeOrbPop);
 $('orbShop').addEventListener('click', () => { closeOrbPop(); showTab('shop', 0); });
 function updateInfo() {
   if (!cr) return;
-  const sp = cr.sp, def = ORBS[selected], reach = armReach(save.arm);
+  const sp = cr.sp, def = ORBS[selected], reach = throwReach(def), hand = def.id === 'comet' ? 'Комета летит' : 'рука бросает';
   cName.textContent = sp.name;
   setBadge(cRarity, sp.rarity);
   const tr = cr.trait && TRAITS[cr.trait];
@@ -7444,12 +7862,12 @@ function updateInfo() {
   if (tr) cTrait.textContent = `${tr.icon} ${tr.name}`;
   const luck = luckMult(sp.rarity) - 1;
   if (sp.rarity === 'glitch' && !def.glitch) cChance.innerHTML = `Ловится только <b>глитч-сферой</b>, у тебя ${save.orbs.glitch || 0}`;
-  else cChance.innerHTML = `${def.name}: шанс <b>${pct(catchChance(sp.rarity, def, traitMult()))}</b>, в центр до <b>${pct(catchChance(sp.rarity, def, 1.5 * traitMult()))}</b>` +
+  else cChance.innerHTML = `${orbShort(def)}: шанс <b>${pct(catchChance(sp.rarity, def, traitMult()))}</b>, в центр до <b>${pct(catchChance(sp.rarity, def, 1.5 * traitMult()))}</b>` +
     (luck > 0 ? ` 🍀+${Math.round(luck * 100)}%` : '');
   const far = cr.dist > reach;
   cDist.innerHTML = far
-    ? `До него <b>${cr.dist} м</b>, а рука только на ${reach} м`
-    : `До него <b>${cr.dist} м</b>, рука бросает на ${reach} м`;
+    ? `До него <b>${cr.dist} м</b>, а ${hand} только на ${reach} м`
+    : `До него <b>${cr.dist} м</b>, ${hand} на ${reach} м`;
   cDist.classList.toggle('far', far);
 }
 
@@ -7589,7 +8007,7 @@ function drawPen(dt) {
   for (let i = shots.length - 1; i >= 0; i--) {
     const sh = shots[i]; sh.t += dt;
     const k = Math.min(1, sh.t / 0.22);
-    drawOrb(c, lerp(sh.sx, sh.tx, k), lerp(sh.sy, sh.ty, k) - Math.sin(k * Math.PI) * 30, 7 * (1 - k * 0.4), ORBS[0], T * 10);
+    drawOrb(c, lerp(sh.sx, sh.tx, k), lerp(sh.sy, sh.ty, k) - Math.sin(k * Math.PI) * 30, 7 * (1 - k * 0.4), orbLook(ORBS[0]), T * 10);
     if (k >= 1) {
       shots.splice(i, 1);
       if (sh.hit && shep && shep.phase === 'walk') {
@@ -8829,14 +9247,6 @@ function craftGlitch() {
 }
 
 /* ======================= МАГАЗИН ======================= */
-function buyOrb(def, n) {
-  if (!spend(orbPrice(def) * n)) return;
-  save.orbs[def.id] = (save.orbs[def.id] || 0) + n; persist();
-  if (!(save.orbs[ORBS[selected].id] > 0) || !ORBS.some((o, i) => i !== selected && save.orbs[o.id] > 0)) ensureSelectable();
-  if (['ready','spawning'].includes(state)) orb.defIdx = selected;
-  renderOrbs(); updateInfo(); renderShop();
-  toast(`Куплено: ${def.name.toLowerCase()} сфера × ${n}`, 'good');
-}
 function reachSummary(reach) {
   const full = RARITY_ORDER.filter(k => k !== 'glitch' && RARITY[k].dist[1] <= reach);
   const part = RARITY_ORDER.find(k => k !== 'glitch' && RARITY[k].dist[0] < reach && RARITY[k].dist[1] > reach);
@@ -8885,20 +9295,7 @@ function tickShop() {
 }
 function renderShop() {
   afford.shop = [];
-  const list = $('shopOrbs'); list.innerHTML = '';
-  for (const def of ORBS.filter(o => !o.glitch)) {
-    const t = document.createElement('div'); t.className = 'prod';
-    const own = document.createElement('span'); own.className = 'own'; own.textContent = '×' + fmt(save.orbs[def.id] || 0);
-    own.setAttribute('aria-label', `У тебя ${save.orbs[def.id] || 0}`);
-    const nm = document.createElement('b'); nm.textContent = `${def.name} сфера`;
-    const sm = document.createElement('small'); sm.textContent = def.star ? 'обычных ловит всегда, любимчиков в 3% случаев' : `шанс поимки ${def.label}`;
-    const op = orbPrice(def);
-    const b1 = makeBtn('Купить ', 'primary', () => buyOrb(def, 1), op);
-    const b10 = makeBtn('10 штук ', '', () => buyOrb(def, 10), op * 10);
-    for (const [b, cost] of [[b1, op], [b10, op * 10]]) { afford.shop.push({ el:b, cost, blocked:false }); b.disabled = save.coins < cost; }
-    t.append(own, orbIcon(def, 64), nm, sm, b1, b10);
-    list.append(t);
-  }
+  renderShopOrbs();
   // рука
   const reach = armReach(save.arm), armMax = save.arm >= ARM_MAX;
   upCard($('armCard'), {
@@ -8930,9 +9327,17 @@ function renderShop() {
     note:'Осколки дают за прогнанного пастуха, мифических и более редких зверьков, слияние в ★★★, экспедиции и бонус дня.',
     btn:['Собрать глитч-сферу', null, craftGlitch, !canCraft],
   });
+  // звёздная из ледяного кристалла
+  const fr = save.story.loot.frost || 0;
+  upCard($('starCard'), {
+    ico:'⭐', title:'Звёздная сфера', sub:'Собирается из трофея последнего босса', lvl:`у тебя ×${save.orbs.star || 0}`,
+    now:`${LOOT.frost.icon} ${LOOT.frost.name}: ${fr}`,
+    note:`Один кристалл даёт ${STAR_FROM_FROST} звёздные сферы. Кристалл дают за победу над Пастухом в Ледяной крепости (глава 6), в том числе на реванше.`,
+    btn:[`Собрать ${STAR_FROM_FROST} звёздные сферы`, null, craftStar, fr < 1],
+  });
   renderCircle();
   const circleOk = save.arm >= ARM_MAX && save.pen >= PEN_MAX && VARIANTS.some(v => v.stage === EVO_MAX && (save.pets[v.key] || 0) > 0);
-  $('chipSpecial').classList.toggle('dot', canCraft || circleOk);
+  $('chipSpecial').classList.toggle('dot', canCraft || fr > 0 || circleOk);
 }
 
 /* ======================= НОВЫЙ КРУГ ======================= */
@@ -8952,8 +9357,8 @@ function renderCircle() {
     checks.append(r);
   }
   const note = document.createElement('p'); note.className = 'up-note';
-  note.innerHTML = `<b>Сбросятся:</b> монеты, сферы, зверьки, рука, загон и экспедиции. <b>Останутся:</b> альбом, достижения, локации и бонусы кругов. ` +
-    `Следующий круг дороже: прокачка в ${String(CIRCLE_COST).replace('.', ',')} раза, сферы в ${String(ORB_CIRCLE).replace('.', ',')} раза.`;
+  note.innerHTML = `<b>Сбросятся:</b> монеты, звёздные и глитч-сферы, зверьки, рука, загон и экспедиции. <b>Останутся:</b> альбом, достижения, локации, уровни сфер и бонусы кругов. ` +
+    `Следующий круг дороже: рука и загон в ${String(CIRCLE_COST).replace('.', ',')} раза.`;
   const b = makeBtn('Начать новый круг', 'danger', () => armReset(b, 'Начать новый круг', () => {}, true));
   b.id = 'circleBtn'; b.disabled = !(armOk && penOk && has3);
   c.append(head, row, checks, note, b);
@@ -8973,9 +9378,15 @@ function doNewCircle() {
 /* ======================= АЛЬБОМ ======================= */
 const RULES = [
   ['🎯', 'Бросок', ['Смахни сферу вверх, к зверьку. Чем резче движение, тем дальше она летит.', 'Попадание в самый центр даёт шанс ×1,5, рядом с центром ×1,25.',
-    'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине.']],
-  ['🔮', 'Сферы', ['Медная ×1, серебряная ×1,5, золотая ×2,5, алмазная ×4.', 'У звёздной свой шанс для каждой редкости, он есть в таблице ниже.',
-    'Промах сферу не тратит. При попадании она тратится, даже если зверёк вырвался.']],
+    'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине или возьми Комету.']],
+  ['🔮', 'Сферы', ['Сферы не кончаются и не продаются, их прокачивают. Когда ловишь зверька, сфера получает опыт: за обычного 1, за редкого 3, за любимчика 15. Если зверёк вырвался, всё равно 1.',
+    'Когда шкала опыта полна, улучши сферу в «Магазине» за монеты. Ещё опыт основной сфере дают за задания, арену, сюжет, достижения и экспедиции.',
+    `Основная сфера растёт с 1 до 20 уровня, шанс поимки от ×1 до ×5. По пути она становится ${ORB_TIERS.map(t => t.name).join(', ').toLowerCase()}. С каждым новым видом вырвавшиеся зверьки убегают реже.`,
+    'Звёздная и глитч-сфера не прокачиваются: они тратятся при попадании. У звёздной свой шанс для каждой редкости, он есть в таблице ниже.']],
+  ['✨', 'Особые сферы', ['Их собирают в «Магазине» из трофеев боссов. У каждой 10 уровней, для 5-го и 10-го нужен ещё один такой трофей.',
+    '☄ Комета (🪶 перо): летит дальше руки и не сносится ветром.', '🕸 Липучка (🦊 кисточка): большая зона попадания, и в центр попасть легче. Хитрые не увернутся, а трусишки реже убегают: промахов меньше.',
+    '🌙 Лунная (🦡 коготь): ночью и в Пещере сильнее основной, днём слабее.', '🎵 Колыбельная (🔔 колокольчик): вырвавшийся зверёк засыпает и убегает намного реже.',
+    'Особые сферы ловят слабее основной, зато у каждой своё умение. Их сила растёт вместе с основной.']],
   ['🍀', 'Невезение', ['Каждая неудача со зверьком одной редкости даёт +10% к шансу на эту редкость.', 'Бонус копится до +100% и сбрасывается после поимки.']],
   ['✨', 'Слияние', ['3 одинаковых обычных зверька → один ★★ с доходом ×4.', '3 зверька ★★ → один ★★★ с доходом ×16.', 'У каждого зверька своя эволюция: посмотри её в Коллекции.']],
   ['🌦', 'Локации и погода', ['Локации открываются по числу пойманных зверьков.', 'Погода меняется каждые 2,5 минуты: в дождь чаще водные зверьки, ночью ночные, в тумане туманные, в грозу грозовые.',
@@ -8986,7 +9397,7 @@ const RULES = [
     'Если в задании нужно прогнать пастуха, его можно позвать кнопкой «Позвать пастуха» в задании или в загоне. Он придёт сразу, даже мимо пугала.',
     'Пока идёт бой, диалог или звездопад, пастух ждёт и ничего не крадёт.']],
   ['⚔', 'Арена', ['Три твоих зверька бьются с тремя соперниками по очереди: первый против первого. Удар по слабой стихии ×1,6.',
-    'С каждым уровнем соперники чуть сильнее. За первую победу на уровне дают монеты и 2 золотые сферы.',
+    'С каждым уровнем соперники чуть сильнее. За первую победу на уровне дают монеты и опыт для сферы.',
     'Пройденные уровни можно повторить стрелками ◀ ▶. Награды за повтор нет, но победа засчитывается в задания дня и сюжет.']],
   ['❄', 'Ледяные горы', ['Открываются, когда поймаешь 200 зверьков.', `Там живут ${SPECIES.filter(s => s.home === 'peaks').length} ледяных зверьков, больше их нигде нет: ${SPECIES.filter(s => s.home === 'peaks').map(s => s.name).slice(0, -1).join(', ')} и ${SPECIES.filter(s => s.home === 'peaks').map(s => s.name).slice(-1)[0]}.`,
     'Лёд сильнее Природы и Воды, но слабее Огня и Земли.', 'Вместо дождя там снегопад, вместо грозы метель. Ночью над горами горит северное сияние.']],
@@ -9002,12 +9413,12 @@ const RULES = [
   ['🗺', 'Сюжет «Банда Пастуха»', ['6 глав в разделе «Задания» → «Сюжет». В каждой три задания и бой с боссом.',
     'В бою с боссом ты сам выбираешь, кто бьёт. Ударивший зверёк отдыхает один ход.',
     'У каждого босса свой приём: ворует ходы, уворачивается, носит броню или сажает зверьков в мешок.',
-    'Побеждённых боссов можно вызвать на реванш раз в 2 часа: за это монеты, сферы и трофеи.',
+    'Побеждённых боссов можно вызвать на реванш раз в 2 часа: за это монеты, опыт для сферы и трофеи. Из трофеев собирают особые сферы.',
     'После 3-й главы на ферме живёт пёс Пират: он лает на Пастуха и мешает ему красть.']],
   ['🎁', 'Промокоды', ['Промокод вводится в «Альбом → Настройки». За него можно получить любимчика или подарок.', 'Каждый код срабатывает один раз на этом телефоне.']],
   ['⚡', 'Виарик', ['Цифровой зверёк: телепортируется и ловится только глитч-сферой.', `Глитч-сфера собирается из ${SHARDS_FOR_ORB} осколков в Магазине, в разделе «Особое».`]],
   ['🌀', 'Новый круг', ['Нужны рука и загон на максимуме и хотя бы один зверёк ★★★.', 'Каждый круг навсегда даёт +50% к доходу и +10% к шансу поимки.',
-    `Следующий круг дороже: прокачка в ${String(CIRCLE_COST).replace('.', ',')} раза, сферы в ${String(ORB_CIRCLE).replace('.', ',')} раза.`]],
+    `Следующий круг дороже: рука и загон в ${String(CIRCLE_COST).replace('.', ',')} раза. Уровни сфер остаются.`]],
 ];
 function renderRules() {
   const box = $('rulesList');
@@ -9141,7 +9552,7 @@ function openMonSheet(sp) {
   if (seen && sp.desc) { const d = document.createElement('p'); d.className = 'ps-desc'; d.textContent = sp.desc; body.append(d); }
   const facts = document.createElement('div'); facts.className = 'ps-facts';
   const f1 = fighterOf(sp, 1);
-  const rows = [['Стоит на расстоянии', `${rr.dist[0]}–${rr.dist[1]} м`], ['Шанс медной сферой', rr.base ? pct(rr.base) : 'только глитч'], ['Убегает, если вырвался', pct(rr.flee)], ['Доход в загоне', seen ? `${fmt(sp.income)}/с` : '???']];
+  const rows = [['Стоит на расстоянии', `${rr.dist[0]}–${rr.dist[1]} м`], [`Шанс твоей сферой (${classicLv()} ур.)`, rr.base ? pct(Math.min(1, rr.base * ORB_POWER[classicLv() - 1])) : 'только глитч'], ['Убегает, если вырвался', pct(rr.flee)], ['Доход в загоне', seen ? `${fmt(sp.income)}/с` : '???']];
   if (seen) rows.push(['Здоровье и атака', `❤ ${fmt(f1.maxHp)} · ⚔ ${fmt(f1.atk)}`], ['Боевой характер', battleStyle(sp)]);
   for (const [k, v] of rows) { const d = document.createElement('div'); d.innerHTML = `<small>${k}</small><b>${v}</b>`; facts.append(d); }
   body.append(facts);
@@ -9257,8 +9668,10 @@ for (const b of document.querySelectorAll('[data-coins]')) b.addEventListener('c
   save.coins += v; persist(); refreshWallet(true); toast(`+${fmt(v)} монет`, 'good');
 });
 $('adminOrbs').addEventListener('click', () => {
-  for (const o of ORBS) save.orbs[o.id] = (save.orbs[o.id] || 0) + (o.glitch ? 1 : 10);
-  persist(); renderOrbs(); updateInfo(); toast('+10 сфер каждого вида и 1 глитч-сфера', 'good');
+  for (const K of ORBS) if (K.max && save.orbLv[K.id]) save.orbLv[K.id].xp += 300;
+  for (const id of Object.keys(LOOT)) save.story.loot[id] = (save.story.loot[id] || 0) + 1;
+  save.orbs.star = (save.orbs.star || 0) + 10; save.orbs.glitch = (save.orbs.glitch || 0) + 1;
+  persist(); renderOrbs(); updateInfo(); updateShopDot(); toast('+300 опыта сферам, по трофею каждого вида, 10 звёздных и 1 глитч-сфера', 'good', 3200);
 });
 $('adminShards').addEventListener('click', () => { save.shards = (save.shards || 0) + 5; persist(); toast('+5 осколков глитча 🧩', 'good'); });
 $('adminArm').addEventListener('click', () => { save.arm = ARM_MAX; persist(); updateInfo(); toast(`Рука на максимуме: бросаешь на ${armReach(ARM_MAX)} м`, 'good'); });
@@ -9338,9 +9751,9 @@ function redeemPromo() {
     toast(`🎁 Промокод принят! К тебе пришёл любимчик ${sp.name}${put ? ', он уже в загоне' : ''}`, 'good', 4200);
     setTimeout(() => openPetSheet(sp.id), 350);
   } else {
-    save.orbs.gold = (save.orbs.gold || 0) + 5; save.orbs.star = (save.orbs.star || 0) + 1;
+    giveOrbXp(20); save.orbs.star = (save.orbs.star || 0) + 1;
     persist(); renderOrbs(); sfx('evo');
-    toast('🎁 Промокод принят! Подарок: 5 золотых сфер и звёздная сфера', 'good', 4200);
+    toast('🎁 Промокод принят! Подарок: 20 опыта сфере и звёздная сфера', 'good', 4200);
   }
 }
 $('promoBtn').addEventListener('click', redeemPromo);
@@ -9394,8 +9807,8 @@ function claimQuest(i) {
   if (!q || q.claimed || q.prog < q.n) return;
   q.claimed = true;
   const coins = Math.max(300, Math.round(curIncome * 90 + 200));
-  save.coins += coins; save.orbs.gold = (save.orbs.gold || 0) + 3;
-  let msg = `+${fmt(coins)} монет и 3 золотые сферы`;
+  save.coins += coins;
+  let msg = `+${fmt(coins)} монет и ${giveOrbXp(5)}`;
   if (!save.quests.bonus && save.quests.list.every(x => x.claimed)) {
     save.quests.bonus = true; save.orbs.star = (save.orbs.star || 0) + 1; save.shards = (save.shards || 0) + 1;
     msg += '. Бонус дня: звёздная сфера и осколок глитча 🧩';
@@ -9417,7 +9830,6 @@ function rwChip(kind, text) {
   else s.textContent = text;
   return s;
 }
-function orbRw(id, n) { return rwChip('orb', `🔮 ${ORBS.find(o => o.id === id).name.toLowerCase()} ×${n}`); }
 // Общая карточка задания или достижения
 function questCard(o) {
   const card = document.createElement('div'); card.className = 'q-card' + (o.claimed ? ' claimed' : o.ready ? ' done' : '');
@@ -9448,7 +9860,7 @@ function renderQuests() {
     if (q.claimed) claimed++;
     list.append(questCard({
       icon:def.icon, title:def.text(q.n, q), frac:q.prog / q.n, progText:`${q.prog} из ${q.n}`, ready, claimed:q.claimed,
-      rewards:q.claimed ? [] : [rwChip('coin', '+' + fmt(coins)), orbRw('gold', 3)], onClaim:() => claimQuest(i), go:TASK_GO[q.id],
+      rewards:q.claimed ? [] : [rwChip('coin', '+' + fmt(coins)), xpRw(5)], onClaim:() => claimQuest(i), go:TASK_GO[q.id],
     }));
   });
   $('questDone').textContent = `${claimed}/${save.quests.list.length}`;
@@ -9467,6 +9879,7 @@ const ACH = [
   { id:'catcher',   icon:'🎯', name:'Ловец',            what:'поймано зверьков',          val:() => save.caught, tiers:[10, 50, 200, 1000] },
   { id:'collector', icon:'📖', name:'Коллекционер',     what:'открыто видов',             val:() => SPECIES.filter(s => save.seen[s.id]).length, tiers:[5, 12, 25, SPECIES.length] },
   { id:'curator',   icon:'🗂', name:'Хранитель коллекций', what:'коллекций собрано целиком', val:() => COLLECTIONS.filter(collDone).length, tiers:[1, 4, COLLECTIONS.length] },
+  { id:'orbs',      icon:'🔮', name:'Мастер сфер',      what:'уровень основной сферы',    val:() => save.orbLv.classic.lv, tiers:[5, 10, 15, 20] },
   { id:'sniper',    icon:'🏹', name:'Снайпер',          what:'попаданий в самый центр',   val:() => save.stats.perfect || 0, tiers:[10, 50, 200] },
   { id:'curver',    icon:'🌀', name:'Мастер закрутки',  what:'закрученных попаданий',     val:() => save.stats.curve || 0, tiers:[5, 25, 100] },
   { id:'alchemist', icon:'✨', name:'Алхимик',          what:'слияний',                   val:() => save.stats.merges || 0, tiers:[1, 10, 50] },
@@ -9487,19 +9900,18 @@ const ACH = [
   { id:'frost',     icon:'❄', name:'Покоритель льда',  what:'ледяных зверьков открыто',  val:() => SPECIES.filter(s => s.home === 'peaks' && save.seen[s.id]).length, tiers:[1, 3, 6] },
 ];
 const ACH_REWARD = [
-  { coins:500, orb:['silver', 5] }, { coins:5000, orb:['gold', 5] },
-  { coins:50000, orb:['diamond', 3], shards:1 }, { coins:500000, orb:['star', 1], shards:2 },
+  { coins:500, xp:3 }, { coins:5000, xp:6 },
+  { coins:50000, xp:10, shards:1 }, { coins:500000, xp:15, star:1, shards:2 },
 ];
 const achClaimable = a => { const got = save.ach[a.id] || 0; return got < a.tiers.length && a.val() >= a.tiers[got]; };
 function claimAch(a) {
   if (!achClaimable(a)) return;
   const got = save.ach[a.id] || 0, r = ACH_REWARD[Math.min(got, ACH_REWARD.length - 1)];
   save.ach[a.id] = got + 1;
-  save.coins += r.coins; save.orbs[r.orb[0]] = (save.orbs[r.orb[0]] || 0) + r.orb[1];
+  save.coins += r.coins; const xpText = giveOrbXp(r.xp); if (r.star) save.orbs.star = (save.orbs.star || 0) + r.star;
   if (r.shards) save.shards = (save.shards || 0) + r.shards;
-  const orbName = ORBS.find(o => o.id === r.orb[0]).name.toLowerCase();
   sfx('evo'); persist(); refreshWallet(true); renderOrbs();
-  toast(`🏆 ${a.name}: +${fmt(r.coins)} монет, ${orbName} сфера ×${r.orb[1]}${r.shards ? `, осколков ${r.shards} 🧩` : ''}`, 'good', 3600);
+  toast(`🏆 ${a.name}: +${fmt(r.coins)} монет, ${xpText}${r.star ? ', звёздная сфера' : ''}${r.shards ? `, осколков ${r.shards} 🧩` : ''}`, 'good', 3600);
   renderAch(); updateQuestDot();
 }
 function renderAch() {
@@ -9510,7 +9922,8 @@ function renderAch() {
     const got = save.ach[a.id] || 0, v = a.val(), target = a.tiers[Math.min(got, a.tiers.length - 1)];
     doneTiers += got; allTiers += a.tiers.length;
     const r = ACH_REWARD[Math.min(got, ACH_REWARD.length - 1)];
-    const rewards = maxed ? [] : [rwChip('coin', '+' + fmt(r.coins)), orbRw(r.orb[0], r.orb[1])];
+    const rewards = maxed ? [] : [rwChip('coin', '+' + fmt(r.coins)), xpRw(r.xp)];
+    if (!maxed && r.star) rewards.push(rwChip('orb', '⭐ звёздная ×1'));
     if (!maxed && r.shards) rewards.push(rwChip('orb', `🧩 ×${r.shards}`));
     list.append(questCard({
       icon:a.icon, title:a.name, stars:'★'.repeat(got) + '☆'.repeat(a.tiers.length - got), frac:maxed ? 1 : v / target,
@@ -9526,9 +9939,9 @@ function renderAch() {
 /* ======================= ЭКСПЕДИЦИИ ======================= */
 const EXP_SLOTS = 2;
 const EXP_DUR = [
-  { label:'15 мин', sec:900,   k:1,    orb:['silver', 2],  shard:0.05 },
-  { label:'1 час',  sec:3600,  k:1.15, orb:['gold', 3],    shard:0.2 },
-  { label:'4 часа', sec:14400, k:1.3,  orb:['diamond', 2], shard:0.5 },
+  { label:'15 мин', sec:900,   k:1,    xp:2,  shard:0.05 },
+  { label:'1 час',  sec:3600,  k:1.15, xp:5,  shard:0.2 },
+  { label:'4 часа', sec:14400, k:1.3,  xp:12, shard:0.5 },
 ];
 let expDur = 1, expEls = [];
 function expEstimate(key, d) { const D = EXP_DUR[d]; return Math.max(100, Math.round(incomeOfKey(key) * circleMult() * D.sec * 0.7 * D.k)); }
@@ -9551,13 +9964,12 @@ function claimExpedition(i) {
   save.exped.splice(i, 1);
   save.pets[e.key] = (save.pets[e.key] || 0) + 1;
   if (penCount(save) < penSlots(save.pen)) save.inPen[e.key] = (save.inPen[e.key] || 0) + 1;
-  save.coins += coins; save.orbs[D.orb[0]] = (save.orbs[D.orb[0]] || 0) + D.orb[1];
+  save.coins += coins; const xpText = giveOrbXp(D.xp);
   let shard = '';
   if (Math.random() < D.shard + RARITY_ORDER.indexOf(sp.rarity) * 0.03) { save.shards = (save.shards || 0) + 1; shard = ' и осколок глитча 🧩'; }
   save.stats.expeditions = (save.stats.expeditions || 0) + 1;
   persist(); refreshIncome(); refreshPenAnimals(); refreshWallet(true); renderOrbs(); sfx('coin');
-  const orbName = ORBS.find(o => o.id === D.orb[0]).name.toLowerCase();
-  toast(`${keyName(e.key)} вернулся: +${fmt(coins)} монет, ${orbName} сфера ×${D.orb[1]}${shard}`, 'good', 3800);
+  toast(`${keyName(e.key)} вернулся: +${fmt(coins)} монет, ${xpText}${shard}`, 'good', 3800);
   renderExp(); updateQuestDot();
 }
 function renderExp() {
@@ -9589,12 +10001,12 @@ function renderExp() {
   EXP_DUR.forEach((D, d) => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'dur' + (d === expDur ? ' on' : '');
     b.setAttribute('aria-pressed', String(d === expDur));
-    b.innerHTML = `<b>${D.label}</b><small>🔮 ${ORBS.find(o => o.id === D.orb[0]).name.toLowerCase()} ×${D.orb[1]}</small><small>🧩 от ${Math.round(D.shard * 100)}%</small>`;
+    b.innerHTML = `<b>${D.label}</b><small>🔮 +${D.xp} опыта</small><small>🧩 от ${Math.round(D.shard * 100)}%</small>`;
     b.addEventListener('click', () => { expDur = d; sfx('tap'); renderExp(); });
     row.append(b);
   });
   const hint = document.createElement('p'); hint.className = 'hint-line';
-  hint.textContent = 'Зверёк вернётся с монетами и сферами, а иногда и с осколком глитча. Чем он реже, тем выше шанс осколка.';
+  hint.textContent = 'Зверёк вернётся с монетами и опытом для сферы, а иногда и с осколком глитча. Чем он реже, тем выше шанс осколка.';
   box.append(h, row, hint);
   const cands = VARIANTS.filter(v => (save.pets[v.key] || 0) - (save.inPen[v.key] || 0) > 0)
     .sort((a, b) => incomeOfStage(b.sp, b.stage) - incomeOfStage(a.sp, a.stage)).slice(0, 8);
@@ -9889,7 +10301,7 @@ function renderArena() {
   rb.append(makeBtn('Подобрать лучших', '', autoPick), fight);
   const rw = document.createElement('p'); rw.className = 'sub';
   if (replay) { rw.className = 'arena-note'; rw.textContent = `Это повтор: награды нет, но победа засчитывается в задания дня и сюжет. Награды ждут на уровне ${top}.`; }
-  else rw.textContent = `За победу: ${fmt(arenaReward(L))} монет и 2 золотые сферы${L % 5 === 0 ? ', а ещё звёздная сфера и осколок глитча' : ''}.`;
+  else rw.textContent = `За победу: ${fmt(arenaReward(L))} монет и 4 опыта сфере${L % 5 === 0 ? ', а ещё звёздная сфера и осколок глитча' : ''}.`;
   c2.append(tr, rb, rw);
   const c3 = cardWith('🐾 Выбери бойцов');
   const cands = VARIANTS.filter(v => (save.pets[v.key] || 0) > 0).map(v => ({ v, f:fighterOf(v.sp, v.stage) })).sort((a, b) => fPower(b.f) - fPower(a.f)).slice(0, 20);
@@ -10028,8 +10440,8 @@ function finishBattle() {
     $('battleResText').textContent = `За повтор награды нет, но победа засчитана в задания. Награды ждут на уровне ${save.arena.level}.`;
   } else if (win) {
     const coins = arenaReward(L);
-    save.coins += coins; save.orbs.gold = (save.orbs.gold || 0) + 2;
-    text = `+${fmt(coins)} монет и 2 золотые сферы`;
+    save.coins += coins;
+    text = `+${fmt(coins)} монет и ${giveOrbXp(4)}`;
     if (L % 5 === 0) { save.orbs.star = (save.orbs.star || 0) + 1; save.shards = (save.shards || 0) + 1; text += ', звёздная сфера и осколок глитча 🧩'; }
     save.arena.level = L + 1; arenaSel = 0; save.stats.arenaWins = (save.stats.arenaWins || 0) + 1;
     persist(); refreshWallet(true); renderOrbs(); questProgress('arena'); sfx('evo');
@@ -10157,7 +10569,7 @@ const STORY = [
     fight:[['crow', 'Кар! Нашёл меня? Тогда держись: я буду воровать твои ходы!', 'angry']],
     outro:[['crow', 'Кар-кар… Ладно, улетаю! Но Хитрюга тебе ещё покажет!', 'hurt'],
            ['nar', 'Каркуша обронил чёрное перо. Следы банды ведут к морю, на Пляж.']],
-    reward:{ coins:1500, k:120, orbs:{ gold:3 } } },
+    reward:{ coins:1500, k:120, xp:15 } },
   { n:2, loc:'beach', title:'Следы на песке', boss:'fox',
     intro:[['nar', 'На мокром песке петляет цепочка лисьих следов.'],
            ['fox', 'Хи-хи! Меня не поймать: я уворачиваюсь от всего, что летит слабо и медленно.'],
@@ -10166,7 +10578,7 @@ const STORY = [
     fight:[['fox', 'Ну давай, попробуй попасть! Слабые удары я даже не замечу.']],
     outro:[['fox', 'Ай-ай, хвост помяли! Бугай вас раздавит, он сторожит наше Болото!', 'hurt'],
            ['nar', 'Хитрюга удрал, оставив рыжую кисточку с хвоста.']],
-    reward:{ coins:6000, k:150, orbs:{ gold:4, star:1 } } },
+    reward:{ coins:6000, k:150, xp:20, star:1 } },
   { n:3, loc:'swamp', title:'Болотная засада', boss:'badger',
     intro:[['nar', 'В глубине Болота стоит шалаш банды. Оттуда доносится жалобный лай.'],
            ['badger', 'Ур-р. Я Бугай. Я в железе с головы до лап. Мне ничего не страшно.', 'angry'],
@@ -10177,7 +10589,7 @@ const STORY = [
            ['dog', 'Гав! Спасибо, что развязал! Я Пират, банда держала меня сторожем.'],
            ['dog', 'Теперь я буду охранять твой загон. Пусть только Пастух сунется!', 'bark'],
            ['nar', 'Пират поселился на ферме. Он лает на Пастуха, и тот теряет смелость.']],
-    reward:{ coins:20000, k:180, orbs:{ diamond:1, star:1 }, dog:true } },
+    reward:{ coins:20000, k:180, xp:25, star:1, dog:true } },
   { n:4, loc:'cave', title:'Тайник в пещере', boss:'duo',
     intro:[['dog', 'Р-р-р… Я чую Хитрюгу и Каркушу. Они прячутся в Пещере!', 'bark'],
            ['crow', 'Кар! Это наш тайник с добычей. Хитрюга, р-разберёмся вместе!', 'angry'],
@@ -10187,7 +10599,7 @@ const STORY = [
     outro:[['crow', 'Кар… сдаёмся. Пастух улетел на воздушном шар-р-ре!', 'hurt'],
            ['fox', 'Он на Небесных островах. Только не говори, что это мы сказали.', 'scared'],
            ['nar', 'В тайнике нашлись звёздные сферы и карта с отметкой высоко в облаках.']],
-    reward:{ coins:60000, k:200, orbs:{ star:2 }, shards:2 } },
+    reward:{ coins:60000, k:200, xp:30, star:2, shards:2 } },
   { n:5, loc:'sky', title:'Погоня в облаках', boss:'balloon',
     intro:[['nar', 'Над Небесными островами плывёт пёстрый воздушный шар.'],
            ['shep', 'А, это ты разогнал мою банду? Ничего, в мой мешок поместится кто угодно!'],
@@ -10196,7 +10608,7 @@ const STORY = [
     fight:[['shep', 'Хе-хе! Посмотрим, кто окажется в мешке!']],
     outro:[['shep', 'Ой-ой, шар сдувается! Ничего, у меня есть Ледяная крепость в горах!', 'scared'],
            ['nar', 'Пастух улетел к Ледяным горам. С шара упал медный колокольчик.']],
-    reward:{ coins:200000, k:240, orbs:{ diamond:2 }, shards:3 } },
+    reward:{ coins:200000, k:240, xp:40, shards:3 } },
   { n:6, loc:'peaks', title:'Ледяная крепость', boss:'final',
     intro:[['nar', 'На вершине Ледяных гор блестит крепость изо льда. Там прячется Пастух.'],
            ['shep', 'Сюда тебе не добраться! Каркуша, Хитрюга, ко мне! Последний бой!'],
@@ -10206,7 +10618,7 @@ const STORY = [
     outro:[['shep', 'Всё, всё! Сдаюсь! Забирай свою славу… и не говори никому, что я плакал.', 'hurt'],
            ['dog', 'Гав-гав! Ты победил всю банду!', 'bark'],
            ['nar', 'Теперь у тебя титул «Гроза пастухов». Пастух ещё заглядывает на ферму, но гораздо реже и с опаской.']],
-    reward:{ coins:600000, k:300, orbs:{ diamond:3, star:3 }, shards:5, title:true } },
+    reward:{ coins:600000, k:300, xp:50, star:3, shards:5, title:true } },
 ];
 const REMATCH_MS = 2 * 3600000;
 const storyLoc = ch => LOC_BY_ID[ch.loc];
@@ -10238,12 +10650,13 @@ function storyReward(ch, first) {
   if (first) {
     const coins = Math.round(Math.max(rw.coins, curIncome * rw.k));
     save.coins += coins; parts.push(`+${fmt(coins)} монет`);
-    for (const [id, n] of Object.entries(rw.orbs || {})) { save.orbs[id] = (save.orbs[id] || 0) + n; parts.push(`${ORBS.find(o => o.id === id).name} сфера ×${n}`); }
+    if (rw.xp) parts.push(giveOrbXp(rw.xp));
+    if (rw.star) { save.orbs.star = (save.orbs.star || 0) + rw.star; parts.push(`звёздная сфера ×${rw.star}`); }
     if (rw.shards) { save.shards = (save.shards || 0) + rw.shards; parts.push(`${rw.shards} ${plural(rw.shards, 'осколок', 'осколка', 'осколков')} глитча 🧩`); }
   } else {
     const coins = Math.round(Math.max(rw.coins * 0.25, curIncome * rw.k * 0.3));
-    save.coins += coins; save.orbs.gold = (save.orbs.gold || 0) + 2;
-    parts.push(`+${fmt(coins)} монет`, '2 золотые сферы');
+    save.coins += coins;
+    parts.push(`+${fmt(coins)} монет`, giveOrbXp(4));
   }
   const loot = BOSSES[ch.boss].loot, ln = first ? 2 : 1;
   save.story.loot[loot] = (save.story.loot[loot] || 0) + ln; parts.push(`трофей ${LOOT[loot].icon} ${LOOT[loot].name} ×${ln}`);
@@ -10417,7 +10830,7 @@ function drawStoryMap(dt) {
     c.save(); c.globalAlpha = open ? 1 : 0.5;
     drawCastMember(c, bossMiniModel(B), bx, by, ch.boss === 'balloon' || ch.boss === 'final' ? 11 : 13, T, { mood:'sly', dir:-side, shadow:true });
     c.restore();
-    drawOrb(c, x, y - 34 - Math.abs(Math.sin(T * 3)) * 6, 8, ORBS[0], T * 2);
+    drawOrb(c, x, y - 34 - Math.abs(Math.sin(T * 3)) * 6, 8, orbLook(ORBS[0]), T * 2);
   } else {
     const [x, y] = mapPt(5); c.font = '22px sans-serif'; c.textAlign = 'center'; c.fillText('🏆', x, y - 32 - Math.abs(Math.sin(T * 3)) * 5);
   }
@@ -10532,7 +10945,7 @@ function startChapter(n) {
 }
 function rematchCard() {
   const card = document.createElement('div'); card.className = 'card';
-  card.innerHTML = '<div class="card-head"><h2>⚔ Реванш</h2></div><p class="sub">Побеждённых боссов можно вызвать снова раз в 2 часа. За победу монеты, 2 золотые сферы и трофей.</p>';
+  card.innerHTML = '<div class="card-head"><h2>⚔ Реванш</h2></div><p class="sub">Побеждённых боссов можно вызвать снова раз в 2 часа. За победу монеты, опыт для сферы и трофей.</p>';
   const list = document.createElement('div'); list.className = 'list';
   for (const ch of STORY) {
     if (!save.story.beaten[ch.n]) continue;
@@ -10564,7 +10977,7 @@ function lootCard() {
     d.innerHTML = `<span class="lo-ico">${n ? L.icon : '❔'}</span><b>${n ? L.name : '???'}</b><small>×${n}</small>`;
     g.append(d);
   }
-  const p = document.createElement('p'); p.className = 'hint-line'; p.textContent = 'Трофеи падают с боссов. Скоро из них можно будет мастерить особые сферы.';
+  const p = document.createElement('p'); p.className = 'hint-line'; p.textContent = 'Трофеи падают с боссов. Из них в «Магазине» собирают особые сферы: 🪶 Комету, 🦊 Липучку, 🦡 Лунную и 🔔 Колыбельную, а 💠 превращается в звёздные сферы.';
   card.append(g, p);
   return card;
 }
@@ -11329,9 +11742,9 @@ function sfEnd() {
   if (g.paid) {
     const coins = Math.round(score * miniBase() * 0.12);
     save.coins += coins; lines.push(`🪙 +${fmt(coins)} монет`);
-    if (score >= 60) { save.orbs.gold = (save.orbs.gold || 0) + 2; lines.push('🔮 2 золотые сферы'); }
+    if (score >= 60) lines.push(giveOrbXp(4));
     if (score >= 150) { save.shards = (save.shards || 0) + 1; lines.push('🧩 Осколок глитча'); }
-    if (score < 60) lines.push('Набери 60 очков, чтобы получить золотые сферы');
+    if (score < 60) lines.push('Набери 60 очков, чтобы получить опыт для сферы');
     else if (score < 150) lines.push('Набери 150, чтобы получить осколок глитча');
     refreshWallet(true); renderOrbs();
   } else lines.push('Игра на рекорд: наградные игры на сегодня кончились');
@@ -11495,7 +11908,7 @@ function layoutStart() {
   const d = Math.min(window.devicePixelRatio || 1, 2.5);
   startCv.width = Math.round(stW * d); startCv.height = Math.round(stH * d); stx.setTransform(d, 0, 0, d, 0, 0);
   if (!stBalls.length) {
-    const defs = ORBS, n = clamp(Math.round(stW * stH / 26000), 12, 24);
+    const defs = ORB_LOOKS, n = clamp(Math.round(stW * stH / 26000), 12, 24);
     for (let i = 0; i < n; i++) {
       const hop = i % 3 !== 2, r = hop ? 13 + Math.random() * 13 : 9 + Math.random() * 9;
       stBalls.push({ def:defs[i % defs.length], r, hop, x:Math.random() * stW, y:hop ? stH * (0.5 + Math.random() * 0.4) : stH * (0.08 + Math.random() * 0.5),
@@ -11607,7 +12020,7 @@ new ResizeObserver(() => { if (startOpen) layoutStart(); }).observe(startCv);
 
 /* ======================= ОБУЧЕНИЕ =======================
    Опирается только на настоящие правила игры:
-   бросок — смахнуть сферу вверх; промах сферу не тратит; попадание тратит её всегда;
+   бросок — смахнуть сферу вверх; сферы не кончаются, за пойманных зверьков сфера получает опыт;
    пойманный зверёк идёт в загон (если есть место) или в «Мои зверьки»;
    пастуха прогоняют нажатиями по нему в загоне, сферы для этого не тратятся. */
 const tut = { on:false, step:'', easy:false };
@@ -11631,9 +12044,6 @@ function tutShepRect() {
 }
 function tutPrepareHunt() {
   showTab('hunt');
-  const total = ORBS.reduce((s, o) => s + (o.glitch ? 0 : save.orbs[o.id] || 0), 0);
-  tut.gift = total < 3;
-  if (tut.gift) { save.orbs.copper = (save.orbs.copper || 0) + 3; persist(); renderOrbs(); }
   selected = 0; ensureSelectable(); renderOrbs();
   tut.easy = true;
   if (['ready', 'spawning'].includes(state)) spawn();
@@ -11648,17 +12058,17 @@ function tutStartShep() {
   return true;
 }
 const TUT_STEPS = {
-  intro:     { g:0, text:'Привет! За минуту покажу главное: как бросать сферу, куда она девается и как прогнать пастуха.', next:'Начать', onNext:() => tutGo('throw') },
-  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:() => (tut.gift ? 'Держи 3 учебные сферы. ' : '') + 'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Это бросок.',
+  intro:     { g:0, text:'Привет! За минуту покажу главное: как бросать сферу, как она растёт и как прогнать пастуха.', next:'Начать', onNext:() => tutGo('throw') },
+  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Это бросок.',
                on:{ throw:() => tutGo('flying') } },
   flying:    { g:1, tab:'hunt', hide:true, on:{ miss:() => tutGo('missed'), caught:() => tutGo('caught'), breakout:() => tutGo('broke'), throw:() => {} } },
-  missed:    { g:1, tab:'hunt', target:tutOrbRect, text:'Мимо! Промах сферу не тратит: она вернулась к тебе. Брось ещё раз, прямо в зверька.', on:{ throw:() => tutGo('flying') } },
-  broke:     { g:1, tab:'hunt', target:tutOrbRect, text:'Попал, но зверёк вырвался. Сфера, которая попала, тратится, даже если зверёк убежал. Брось ещё!', on:{ throw:() => tutGo('flying') } },
-  caught:    { g:2, enter:() => { tut.easy = false; }, target:() => rectOf($('hudOrb')), text:'Поймал! Сфера, которая попала, тратится: смотри, на кнопке сферы их стало на одну меньше. А промах сферу не тратит.', next:'Понятно', onNext:() => tutGo('toFarm') },
+  missed:    { g:1, tab:'hunt', target:tutOrbRect, text:'Мимо! Сфера вернулась к тебе. Брось ещё раз, прямо в зверька.', on:{ throw:() => tutGo('flying') } },
+  broke:     { g:1, tab:'hunt', target:tutOrbRect, text:'Попал, но зверёк вырвался. Брось ещё! Если зверёк вырвался, он может и убежать.', on:{ throw:() => tutGo('flying') } },
+  caught:    { g:2, enter:() => { tut.easy = false; }, target:() => rectOf($('hudOrb')), text:'Поймал! За каждого зверька сфера получает опыт: полоска на кнопке сферы растёт. Цифра на кнопке — уровень сферы.', next:'Понятно', onNext:() => tutGo('toFarm') },
   toFarm:    { g:2, target:() => rectOf(tabEl('farm')), text:'Пойманный зверёк отправился на ферму. Нажми «Ферма».', on:{ tab:t => { if (t === 'farm') tutGo('pen'); } } },
   pen:       { g:2, tab:'farm', enter:() => { if (farmPager.index !== 0) farmPager.go(0); }, target:() => rectOf(penCanvas),
                text:'Это загон: зверьки здесь приносят монеты. Если места нет, новые ждут в разделе «Мои зверьки».', next:'Дальше', onNext:() => tutGo('shop') },
-  shop:      { g:2, target:() => rectOf(tabEl('shop')), text:'Сферы кончаются. Новые покупай в «Магазине».', next:'Понятно', onNext:() => tutGo('shepIntro') },
+  shop:      { g:2, target:() => rectOf(tabEl('shop')), text:'Сферы не кончаются. Когда полоска опыта заполнится, улучши сферу в «Магазине», и ловить станет легче.', next:'Понятно', onNext:() => tutGo('shepIntro') },
   shepIntro: { g:3, tab:'farm', enter:() => showTab('farm', 0), text:'Иногда приходит пастух и пытается украсть зверька из загона. Сейчас придёт учебный: он ничего не унесёт.',
                next:'Позвать пастуха', onNext:() => { if (tutStartShep()) tutGo('shepHit'); else tutGo('shepNone'); } },
   shepHit:   { g:3, tab:'farm', target:tutShepRect, text:'Нажимай на пастуха или на красную кнопку внизу: в него полетят сферы. Сферы при этом не тратятся. Попади 3 раза!',
@@ -11776,7 +12186,7 @@ function frame(now) {
     if (tab === 'quests') { tickQuests(); tickExp(); tickStory(); }
     updateMood(); refreshIncome();
     if (tab === 'farm') tickCare();
-    updateQuestDot();
+    updateQuestDot(); updateShopDot();
   }
   if (tut.on) tutTick();
   saveTimer += dt;
@@ -11813,8 +12223,13 @@ renderLocChips(); setWeather(WEATHERS[0]); ensureQuests(); updateQuestDot();
 spawn();
 // Приветствия показываются, когда игрок нажал «Играть»
 function welcomeToasts() {
-  if (guardRefund > 0) { const back = guardRefund; guardRefund = 0; setTimeout(() => { sfx('coin'); toast(`🛡 Пугало теперь ставится максимум на ${GUARD_MAX_MIN} минут. За лишнее время вернули ${fmt(back)} монет`, 'good', 5200); }, 4300); }
-  if (save.flags.tutDone && !save.flags.storyHint) { save.flags.storyHint = true; persist(); setTimeout(() => { sfx('rare'); toast('🗺 Новое: сюжет «Банда Пастуха»! Открой «Задания» → «Сюжет»', 'good', 4200); }, 3800); }
+  const late = orbMigrateNote ? 6200 : 0;
+  if (orbMigrateNote) {
+    const n = orbMigrateNote; orbMigrateNote = null;
+    setTimeout(() => { sfx('rare'); toast(`🔮 Сферы теперь прокачиваются! ${orbTitle(ORBS[0])}: уровень ${n.lv}.${n.refund ? ` За старые сферы вернули ${fmt(n.refund)} монет.` : ''} Подробнее в «Магазине»`, 'good', 6000); }, 3300);
+  }
+  if (guardRefund > 0) { const back = guardRefund; guardRefund = 0; setTimeout(() => { sfx('coin'); toast(`🛡 Пугало теперь ставится максимум на ${GUARD_MAX_MIN} минут. За лишнее время вернули ${fmt(back)} монет`, 'good', 5200); }, 4300 + late); }
+  if (save.flags.tutDone && !save.flags.storyHint) { save.flags.storyHint = true; persist(); setTimeout(() => { sfx('rare'); toast('🗺 Новое: сюжет «Банда Пастуха»! Открой «Задания» → «Сюжет»', 'good', 4200); }, 3800 + late); }
   if (save.migrated) toast('Твои зверьки из прошлой версии уже на ферме', 'good', 3200);
   else if (offlineEarned > 0 && offline > 30) toast(`Пока тебя не было, ферма принесла ${fmt(offlineEarned)} монет`, 'good', 3200);
   else if (AUTUMN && !save.flags.autumnHi) { save.flags.autumnHi = true; persist(); toast('Осень пришла! На поляне листопад и тыквы урожая 🍂', 'good', 3400); }
