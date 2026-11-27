@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="sferolov-version" content="42">
+<meta name="sferolov-version" content="43">
 <title>Сферолов</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -850,8 +850,6 @@ html[data-hand="left"] .shep-btn{right:auto;left:calc(12px + env(safe-area-inset
 .shep-btn .shep-txt b{font-size:max(14px,calc(var(--hud) * .2));line-height:1.1}
 .shep-btn .shep-txt small{font-size:max(11px,calc(var(--hud) * .15));opacity:.95}
 @keyframes shepPulse{50%{box-shadow:0 4px 0 rgba(0,0,0,.22),0 0 0 8px rgba(255,107,107,.35)}}
-/* пока идёт пастух, кнопка «Другой» поднимается, чтобы не стоять рядом с кнопкой пастуха */
-html.shep-on #scr-hunt .hud-right{bottom:calc(12px + var(--hud-lift) + var(--hud) + 22px)}
 /* выбор сферы */
 .pop-back{position:absolute;inset:0;z-index:4;background:rgba(10,8,22,.25)}
 .orb-pop{position:absolute;z-index:5;left:12px;bottom:calc(12px + var(--hud-lift) + var(--hud) + 14px);width:min(340px,calc(100% - 24px));max-height:calc(100% - var(--hud) - var(--hud-lift) - 36px);
@@ -983,22 +981,6 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
 .seg button{min-height:48px;border-radius:14px;border:2px solid var(--border);background:var(--surface-2);font-weight:900;cursor:pointer;color:var(--text)}
 .seg button.on{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
 .set-label{margin-top:12px;font-weight:800}
-/* горизонтальный экран телефона: вкладки справа столбиком */
-@media (orientation:landscape) and (max-height:540px){
-  body{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto minmax(0,1fr);
-    padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-  .top{grid-column:1;grid-row:1;padding:6px 12px}
-  .alert{grid-column:1;grid-row:2}
-  .screens{grid-column:1;grid-row:3}
-  .tabs{grid-column:2;grid-row:1 / span 3;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);width:88px;border-top:0;border-left:1px solid var(--border);
-    padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
-  html[data-hand="left"] body{grid-template-columns:auto minmax(0,1fr)}
-  html[data-hand="left"] .tabs{grid-column:1;border-left:0;border-right:1px solid var(--border)}
-  html[data-hand="left"] .top,html[data-hand="left"] .alert,html[data-hand="left"] .screens{grid-column:2}
-  .tab{min-height:0}
-  .hunt-bar{padding-bottom:6px}
-  .stage{margin-bottom:8px}
-}
 /* обучение: подсветка и подсказка */
 .coach{position:fixed;inset:0;z-index:44;pointer-events:none}
 .coach-spot{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(10,8,22,.55);outline:3px solid #ffd54f;outline-offset:2px;
@@ -1031,6 +1013,111 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
 .mini canvas{width:56px;height:56px}
 .mini .btn{margin-top:2px;padding:6px 10px;font-size:.78rem}
 @media (prefers-reduced-motion: reduce){ .bump{animation:none} .toast{transition:none} }
+/* ===== Этап 1 (версия 43): охота на весь экран, разделы — панели поверх неё ===== */
+body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.stage,.stage{margin:0;border-radius:0;box-shadow:none}
+@media (min-width:768px) and (min-height:700px){ .stage{margin:0} }
+/* верх поля: шапка, полоса событий и карточка зверька */
+.hunt-top{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;flex-direction:column;gap:8px;padding:8px 10px 0;pointer-events:none}
+.hunt-top > *{pointer-events:auto}
+.top{display:flex;align-items:stretch;justify-content:space-between;gap:6px;padding:0}
+.top-mid{flex:1;min-width:0;display:flex;align-items:stretch;gap:6px}
+.top .menu-btn,.top .loc-btn,.top .weather-pill,.top .stat{min-height:48px;border:1px solid var(--border);background:var(--glass);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.top .menu-btn{flex:none;padding:4px 12px 4px 6px;border-radius:16px}
+.top .loc-btn{padding:4px 10px 4px 12px;font-size:.92rem}
+.top .weather-pill{justify-content:center;align-items:flex-start;text-align:left}
+.top .stat{flex:none;align-items:center;padding:4px 11px 4px 7px;border-radius:16px;cursor:default}
+.wn-ico{font-style:normal}
+@media (max-width:420px){ .top .menu-btn{padding:4px 7px;gap:0} .top .menu-btn > span:not(.logo){display:none}
+  .top .weather-pill{padding:4px 8px} .top .weather-pill .wn{display:none} .top .weather-pill .wn-ico{font-size:1.05rem} }
+@media (max-width:360px){
+  .top{gap:5px}
+  .top .weather-pill{align-items:center;min-width:44px;padding:4px 8px} .top .weather-pill .wn,.top .weather-pill small{display:none}
+  .top .weather-pill b{font-size:1.15rem}
+  .top .loc-btn{padding:4px 8px;font-size:.88rem;gap:3px} .top .loc-btn b{display:none}
+  .top .stat{padding:4px 8px 4px 5px;gap:5px} .top .stat small{display:none} .top .stat .coin{width:17px;height:17px}
+}
+/* загон не сжимается на низком экране (в версии 42 на 320 px он сплющивался в полоску) */
+.pen-card{flex:none}
+.hunt-strip{display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.hunt-strip > *{pointer-events:auto}
+.info{position:relative;top:auto;left:auto;right:auto}
+/* кнопки разделов по краям поля: слева про твоих зверьков, справа дела и покупки */
+.hud{gap:12px}
+.sec-stack{display:flex;flex-direction:column;align-items:center;gap:8px}
+.sec-btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:66px;padding:0;border:0;background:none;
+  color:var(--text);font:inherit;cursor:pointer;touch-action:manipulation}
+.sec-btn .sb-ico{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--glass);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 3px 0 rgba(0,0,0,.18),0 6px 14px rgba(0,0,0,.2);font-size:1.5rem;line-height:1;transition:transform .08s ease}
+.sec-btn small{max-width:100%;padding:1px 7px;border-radius:999px;background:var(--glass);font-weight:900;font-size:.72rem;line-height:1.35;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.sec-btn:active .sb-ico{transform:scale(.88)}
+.sec-btn.on .sb-ico{border-color:var(--accent)}
+.sec-btn.dot::after{content:'';position:absolute;top:-1px;right:5px;width:14px;height:14px;border-radius:50%;background:#ff4d6d;box-shadow:0 0 0 2px #fff}
+:root[data-theme="dark"] .sec-btn .sb-ico{border-color:rgba(255,255,255,.55)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .sec-btn .sb-ico{border-color:rgba(255,255,255,.55)} }
+/* разделы — панели поверх охоты: выезжают с той стороны, где кнопка */
+.screen.panel{position:fixed;top:0;bottom:0;z-index:30;display:flex;flex-direction:column;width:min(100%,520px);background:var(--bg);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 0 44px rgba(0,0,0,.35);
+  visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s linear .28s}
+.screen.panel.from-left{left:0;right:auto;transform:translateX(-104%)}
+.screen.panel.from-right{right:0;left:auto;transform:translateX(104%)}
+.screen.panel.active{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.panel-back{position:fixed;inset:0;z-index:29;background:rgba(10,8,22,.38)}
+.panel-bar{flex:none;display:flex;align-items:center;gap:8px;padding:10px 12px 10px 14px}
+.pb-ico{font-size:1.5rem;line-height:1}
+.pb-title{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;font-size:1.22rem;white-space:nowrap;overflow:hidden}
+.pb-sub{font-weight:800;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.pb-sub b{font-weight:900;color:var(--text)}
+.pb-btn{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
+  color:var(--text);font:inherit;font-weight:900;font-size:1.1rem;cursor:pointer}
+.pb-btn:active{transform:scale(.92)}
+.pb-close{font-size:1.15rem;background:var(--surface-2)}
+/* предупреждение о пастухе — над полем или под шапкой открытого раздела */
+.alert{position:fixed;left:10px;right:10px;top:var(--alert-top,70px);z-index:31;margin:0;max-width:640px;cursor:pointer}
+/* кнопка «Бросить в пастуха» — внизу панели фермы */
+.screen.panel .shep-btn{position:absolute;z-index:3;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:14px;left:auto}
+html[data-hand="left"] .screen.panel .shep-btn{right:auto;left:14px}
+/* меню: кнопки в ряд, настройки и правила внутри меню */
+.menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.menu-grid .menu-row{flex-direction:column;gap:2px;min-height:64px;padding:6px 4px;font-size:.86rem;line-height:1.15}
+.menu-grid .menu-row span{font-size:1.35rem}
+.start.sub-open .start-title,.start.sub-open .start-sub,.start.sub-open .start-badge{display:none}
+.start-panel{gap:10px}
+.start-panel .card{box-shadow:none}
+.start-panel .table-wrap{overflow-x:auto}
+/* «?» в разделах: подробности */
+.help-list{margin:0;padding:0 0 0 2px;list-style:none;display:flex;flex-direction:column;gap:8px}
+.help-list li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-weight:700;line-height:1.42;font-size:.92rem}
+.help-list li::before{content:'•';color:var(--accent);font-weight:900;text-align:center}
+/* горизонтальный экран: кнопки разделов в ряд у нижних углов, рядом с кнопками охоты */
+@media (orientation:landscape) and (max-height:540px){
+  :root{--hud:64px}
+  .hud{flex-direction:row;align-items:flex-end;gap:10px}
+  .hud-left{flex-direction:row-reverse}
+  html[data-hand="left"] .hud-left{flex-direction:row}
+  html[data-hand="left"] .hud-right{flex-direction:row-reverse}
+  .sec-stack{flex-direction:row;gap:6px}
+  html[data-hand="left"] .sec-stack{flex-direction:row-reverse}
+  .sec-btn{width:58px}
+  .sec-btn .sb-ico{width:46px;height:46px;font-size:1.3rem}
+  .sec-btn{width:auto;min-width:52px}
+  .sec-btn small{overflow:visible}
+  .hunt-top{gap:6px;padding-top:6px}
+  .top .menu-btn,.top .loc-btn,.top .weather-pill,.top .stat{min-height:44px}
+  .top-mid{flex:0 1 auto} .top .loc-btn{flex:0 1 auto;max-width:260px}
+  /* карточка зверька — слева, чтобы не закрывать его на низком поле */
+  .info{align-self:flex-start;width:min(330px,42%)}
+  .hunt-strip{max-width:42%}
+}
+/* удобство: крупный шрифт и меньше анимации */
+html[data-font="l"]{font-size:112.5%}
+html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-hand)::before,html[data-motion="low"] *:not(.coach-hand)::after{
+  animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+#adminSheet{z-index:46}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1087,21 +1174,24 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
 </style>
 </head>
 <body>
-<header class="top" id="top">
-  <button class="menu-btn" id="menuBtn" type="button" aria-label="Открыть главное меню"><span class="logo" aria-hidden="true">✦</span><span>Меню</span></button>
-  <div class="stats">
-    <div class="stat" id="petsStat" role="status" aria-label="Мои зверьки"><span class="stat-ico" aria-hidden="true">🐾</span><span class="stat-txt"><b id="petsCount">0</b><small id="petsWord">зверьков</small></span></div>
-    <div class="stat" id="wallet" role="status" aria-label="Монеты"><span class="coin" aria-hidden="true"></span><span class="stat-txt"><b class="coins" id="coins">0</b><small id="income">+0/с</small></span></div>
-  </div>
-</header>
 
 <div class="alert" id="shepAlert" role="alert" hidden><span id="shepText"></span></div>
 
 <main class="screens">
   <section class="screen active" id="scr-hunt" aria-label="Охота">
-    <div class="hunt-bar"><button class="loc-btn" id="locBtn" type="button" aria-haspopup="true"><span id="locBtnTxt">🌳 Поляна</span><b aria-hidden="true">▾</b></button><button class="weather-pill" id="weatherPill" type="button" aria-label="Погода: что она меняет в охоте"><b id="weatherName">☀ Ясно</b><small id="weatherWind">без ветра</small></button><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
     <div class="stage" id="stage">
       <canvas id="game" role="img" aria-label="Поляна со зверьком. Смахни сферу вверх, чтобы бросить её."></canvas>
+      <div class="hunt-top" id="huntTop">
+        <header class="top" id="top">
+          <button class="menu-btn" id="menuBtn" type="button" aria-label="Открыть главное меню"><span class="logo" aria-hidden="true">✦</span><span>Меню</span></button>
+          <div class="top-mid">
+            <button class="loc-btn" id="locBtn" type="button" aria-haspopup="true"><span id="locBtnTxt">🌳 Поляна</span><b aria-hidden="true">▾</b></button>
+            <button class="weather-pill" id="weatherPill" type="button" aria-label="Погода: что она меняет в охоте"><b id="weatherName">☀ Ясно</b><small id="weatherWind">без ветра</small></button>
+          </div>
+          <div class="stat" id="wallet" role="status" aria-label="Монеты"><span class="coin" aria-hidden="true"></span><span class="stat-txt"><b class="coins" id="coins">0</b><small id="income">+0/с</small></span></div>
+        </header>
+        <!-- полоса событий под шапкой: улей, позже «Следующая цель» и событие недели. Пустая не показывается -->
+        <div class="hunt-strip" id="huntStrip" hidden><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
       <div class="info" id="info">
         <div class="info-main">
           <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span><span class="trait" id="cTrait" role="button" hidden></span></div>
@@ -1109,8 +1199,9 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
           <div class="line" id="cDist"></div>
         </div>
       </div>
-      <div class="hud hud-left"><button class="hud-btn hud-orb" id="hudOrb" type="button" aria-haspopup="true"><span class="hud-ico" id="hudOrbIco"></span><small>Сфера ▾</small><span class="hud-count" id="hudOrbCount">0</span><span class="hud-dur" id="hudOrbDur" aria-hidden="true"><i></i></span></button></div>
-      <div class="hud hud-right"><button class="hud-btn hud-scope" id="scopeBtn" type="button" title="Телескоп: найти космического зверька" hidden><span class="hud-sym" aria-hidden="true">🔭</span><small>Телескоп</small><span class="hud-count" id="scopeDust">0</span></button><button class="hud-btn hud-skip" id="skipBtn" type="button" title="Искать другого зверька"><span class="hud-sym" aria-hidden="true">↻</span><small>Другой</small></button></div>
+      </div>
+      <div class="hud hud-left"><div class="sec-stack"><button class="sec-btn" type="button" data-tab="farm" aria-label="Ферма"><span class="sb-ico" aria-hidden="true">🏡</span><small>Ферма</small></button><button class="sec-btn" type="button" data-tab="album" aria-label="Альбом"><span class="sb-ico" aria-hidden="true">📖</span><small>Альбом</small></button></div><button class="hud-btn hud-scope" id="scopeBtn" type="button" title="Телескоп: найти космического зверька" hidden><span class="hud-sym" aria-hidden="true">🔭</span><small>Телескоп</small><span class="hud-count" id="scopeDust">0</span></button><button class="hud-btn hud-orb" id="hudOrb" type="button" aria-haspopup="true"><span class="hud-ico" id="hudOrbIco"></span><small>Сфера ▾</small><span class="hud-count" id="hudOrbCount">0</span><span class="hud-dur" id="hudOrbDur" aria-hidden="true"><i></i></span></button></div>
+      <div class="hud hud-right"><div class="sec-stack"><button class="sec-btn" type="button" data-tab="quests" aria-label="Задания"><span class="sb-ico" aria-hidden="true">🏆</span><small>Задания</small></button><button class="sec-btn" type="button" data-tab="games" aria-label="Арена"><span class="sb-ico" aria-hidden="true">⚔️</span><small>Арена</small></button><button class="sec-btn" type="button" data-tab="shop" aria-label="Магазин"><span class="sb-ico" aria-hidden="true">🛒</span><small>Магазин</small></button></div><button class="hud-btn hud-skip" id="skipBtn" type="button" title="Искать другого зверька"><span class="hud-sym" aria-hidden="true">↻</span><small>Другой</small></button></div>
       <div class="pop-back" id="orbBack" hidden></div>
       <div class="orb-pop" id="orbPop" role="dialog" aria-label="Сферы и зелья" hidden>
         <div class="pop-head"><b>Выбери сферу</b><button class="btn" id="orbClose" type="button">✕ Закрыть</button></div>
@@ -1128,7 +1219,9 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
     </div>
   </section>
 
-  <section class="screen" id="scr-farm" aria-label="Ферма">
+  <div class="panel-back" id="panelBack" hidden></div>
+  <section class="screen panel from-left" id="scr-farm" role="dialog" aria-modal="true" aria-label="Ферма">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">🏡</span><h2 class="pb-title">Ферма<small class="pb-sub"><b id="petsCount">0</b> <span id="petsWord">зверьков</span></small></h2><button class="pb-btn pb-help" type="button" data-help="farm" aria-label="Подсказка: как устроен раздел">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
     <div class="pager" id="farmPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Разделы фермы">
         <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">🏡</span>Загон</button>
@@ -1174,9 +1267,11 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
         </div>
       </div>
     </div>
+    <button class="hud-btn shep-btn" id="shepBtn" type="button" hidden><span class="shep-face" aria-hidden="true">👨‍🌾</span><span class="shep-txt"><b id="shepBtnTitle">Пастух!</b><small id="shepBtnSub">к загону</small></span></button>
   </section>
 
-  <section class="screen" id="scr-games" aria-label="Арена">
+  <section class="screen panel from-right" id="scr-games" role="dialog" aria-modal="true" aria-label="Арена">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">⚔️</span><h2 class="pb-title">Арена</h2><button class="pb-btn pb-help" type="button" data-help="games" aria-label="Подсказка: как устроен раздел">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
     <div class="pager" id="gamesPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Арена и звездопад">
         <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">⚔</span>Арена</button>
@@ -1208,7 +1303,8 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
     </div>
   </section>
 
-  <section class="screen" id="scr-shop" aria-label="Магазин">
+  <section class="screen panel from-right" id="scr-shop" role="dialog" aria-modal="true" aria-label="Магазин">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">🛒</span><h2 class="pb-title">Магазин</h2><button class="pb-btn pb-help" type="button" data-help="shop" aria-label="Подсказка: как устроен раздел">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
     <div class="pager" id="shopPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Разделы магазина">
         <button class="chip" type="button" role="tab" id="chipOrbs"><span class="ci" aria-hidden="true">🔮</span>Сферы</button>
@@ -1217,7 +1313,6 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
       </div>
       <div class="pages">
         <div class="page" role="tabpanel">
-          <p class="hint-line">Медная сфера всегда с тобой и не ломается. Улучши её за монеты, и у тебя будет сильная сфера: она ловит лучше, но каждый бросок тратит её прочность, а если зверёк вырвался, она может сломаться. Тогда её чинят.</p>
           <div class="list-gap" id="shopOrbs">
             <div class="up-card orb-card" id="mainCard"></div>
             <div class="card" id="chainCard"></div>
@@ -1230,19 +1325,19 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
           <div class="up-card" id="guardCard"></div>
         </div>
         <div class="page" role="tabpanel">
-          <p class="hint-line">Зелья варят из трофеев боссов: трофей и монеты дают 2 зелья. Выпей зелье на охоте (кнопка сферы → «Зелья»), и оно поможет на 10 бросков любой сферой.</p>
           <div class="list-gap" id="shopPots"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="screen" id="scr-album" aria-label="Альбом">
+  <section class="screen panel from-left" id="scr-album" role="dialog" aria-modal="true" aria-label="Альбом">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">📖</span><h2 class="pb-title">Альбом</h2><button class="pb-btn pb-help" type="button" data-help="album" aria-label="Подсказка: как устроен раздел">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
     <div class="pager" id="albumPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Разделы альбома">
         <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">📖</span>Коллекция</button>
-        <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">📜</span>Правила</button>
-        <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">⚙️</span>Настройки</button>
+        <button class="chip chip-link" type="button" id="albRules" aria-label="Правила: открыть в меню"><span class="ci" aria-hidden="true">📜</span>Правила</button>
+        <button class="chip chip-link" type="button" id="albSettings" aria-label="Настройки: открыть в меню"><span class="ci" aria-hidden="true">⚙️</span>Настройки</button>
       </div>
       <div class="pages">
         <div class="page" role="tabpanel">
@@ -1258,59 +1353,11 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
           </div>
           <div class="list-gap" id="albumGrid"></div>
         </div>
-        <div class="page" role="tabpanel">
-          <div class="card">
-            <h2>Как считается шанс</h2>
-            <p class="formula">шанс = база редкости × сила сферы × бонус броска × характер, погода и зелья<br><span>не больше 100%</span></p>
-          </div>
-          <div class="rules-list" id="rulesList"></div>
-          <div class="card">
-            <h2>Таблица редкостей</h2>
-            <div class="table-wrap"><table id="rules"></table></div>
-          </div>
-        </div>
-        <div class="page" role="tabpanel">
-          <div class="card set-card">
-            <h2><span aria-hidden="true">🎮</span> Управление</h2>
-            <p class="sub">Кнопки в игре стоят в нижних углах, под большими пальцами.</p>
-            <div class="set-label">Размер игровых кнопок</div>
-            <div class="seg" id="setHud"><button type="button" data-v="m">Обычные</button><button type="button" data-v="l">Крупные</button><button type="button" data-v="xl">Очень крупные</button></div>
-            <div class="set-label">Положение кнопок</div>
-            <div class="seg two" id="setLift"><button type="button" data-v="down">Ниже</button><button type="button" data-v="up">Выше</button></div>
-            <label class="switch-row"><span>Режим для левши: главные кнопки меняются сторонами</span><input type="checkbox" id="setLeft"></label>
-          </div>
-          <div class="card set-card">
-            <h2><span aria-hidden="true">🔊</span> Звук и музыка</h2>
-            <label class="switch-row"><span>Фоновая музыка</span><input type="checkbox" id="musicToggle"></label>
-            <label class="slider-row"><span>Громкость музыки</span><input type="range" id="musicVolume" min="0" max="100" step="5"></label>
-            <div class="bee-song" id="beeSongRow" hidden>
-              <label class="switch-row"><span>🐝 «Песня пчёл» вместо фоновой музыки</span><input type="checkbox" id="beeSongToggle"></label>
-              <button class="btn wide" id="beeSongPlay" type="button">▶ Послушать «Песню пчёл»</button>
-            </div>
-            <label class="switch-row"><span>Звуковые эффекты</span><input type="checkbox" id="soundToggle"></label>
-          </div>
-          <div class="card set-card">
-            <h2><span aria-hidden="true">🎨</span> Оформление</h2>
-            <p class="sub">Время года на поляне, на ферме и в музыке. «Авто» включает осень с сентября, а зиму с 20 ноября до конца февраля.</p>
-            <div class="seg four" id="setSeason"><button type="button" data-v="auto">Авто</button><button type="button" data-v="autumn">🍂 Осень</button><button type="button" data-v="winter">❄ Зима</button><button type="button" data-v="off">Нет</button></div>
-          </div>
-          <div class="card set-card">
-            <h2><span aria-hidden="true">🎁</span> Промокод</h2>
-            <p class="sub">Есть секретный код? Введи его и получи подарок. Каждый код срабатывает только один раз.</p>
-            <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
-          </div>
-          <div class="card set-card">
-            <h2><span aria-hidden="true">🎓</span> Обучение</h2>
-            <p class="sub">Короткая подсказка: как бросать сферу, как она растёт и как прогнать пастуха.</p>
-            <button class="btn primary wide" id="mTutorial" type="button">🎓 Пройти обучение</button>
-          </div>
-          <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 42</p>
-        </div>
       </div>
     </div>
   </section>
-  <section class="screen" id="scr-quests" aria-label="Задания">
+  <section class="screen panel from-right" id="scr-quests" role="dialog" aria-modal="true" aria-label="Задания">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">🏆</span><h2 class="pb-title">Задания</h2><button class="pb-btn pb-help" type="button" data-help="quests" aria-label="Подсказка: как устроен раздел">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
     <div class="pager" id="questPager">
       <div class="chips seg-tabs" role="tablist" aria-label="Разделы заданий">
         <button class="chip" type="button" role="tab" id="chipStory"><span class="ci" aria-hidden="true">🗺</span>Сюжет</button>
@@ -1342,32 +1389,6 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
   </section>
 </main>
 
-<nav class="tabs" role="tablist" aria-label="Разделы">
-  <button class="tab active" type="button" role="tab" aria-selected="true" data-tab="hunt">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-    <span>Охота</span>
-  </button>
-  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="farm">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V8l2-3 2 3v13M15 21V8l2-3 2 3v13M2 11h20M2 17h20"/></svg>
-    <span>Ферма</span>
-  </button>
-  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="quests">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 16v5M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>
-    <span>Задания</span>
-  </button>
-  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="games">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9h12a4 4 0 0 1 4 4v1a3 3 0 0 1-5.5 1.7L15 14H9l-1.5 1.7A3 3 0 0 1 2 14v-1a4 4 0 0 1 4-4z"/><path d="M7 11v3M5.5 12.5h3M16 12h.01M18 13.5h.01"/></svg>
-    <span>Арена</span>
-  </button>
-  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="shop">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-    <span>Магазин</span>
-  </button>
-  <button class="tab" type="button" role="tab" aria-selected="false" data-tab="album">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M9 9h6M9 13h4"/></svg>
-    <span>Альбом</span>
-  </button>
-</nav>
 
 <div class="sheet" id="adminSheet" role="dialog" aria-modal="true" aria-labelledby="adminTitle" hidden>
   <div class="sheet-head" id="adminHead">
@@ -1443,6 +1464,8 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
             <button class="btn" id="adminStorySkip" type="button">⏭ Пройти текущую главу</button>
             <button class="btn" id="adminHive" type="button">🐝 Улей: пчёлки прилетают снова</button>
             <button class="btn" id="adminHiveTime" type="button">⏱ Улей: осталась 1 минута</button>
+            <button class="btn" id="adminNewbie" type="button">🎓 Как новичок: обучение при «Играть»</button>
+            <button class="btn" id="adminDots" type="button">🔴 Показать все точки на 5 с</button>
           </div>
         </div>
       </div>
@@ -1525,22 +1548,61 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
     <div class="start-load" id="startLoad" aria-live="polite"><span>Загрузка…</span><b><i></i></b><small class="start-err" id="startErr" hidden></small><small class="start-stuck" id="startStuck">Игра не запускается в этом окне. Если ты открыл файл из чата или из «Файлов», это только предпросмотр, игры в нём не работают. Открой игру в Safari или Chrome по ссылке: <a href="https://2211334433d-ship-it.github.io/sverolov/">2211334433d-ship-it.github.io/sverolov</a></small></div>
     <nav class="start-card" id="startMenu" aria-label="Главное меню">
       <button class="menu-main" id="mPlay" type="button"><span class="mi" aria-hidden="true">▶</span><span class="mt"><b>Играть</b><small>Лови, сливай и расти своих сфериков</small></span></button>
-      <button class="btn menu-row" id="startSetBtn" type="button">⚙ Настройки</button>
+      <div class="menu-grid">
+        <button class="btn menu-row" id="startSetBtn" type="button"><span aria-hidden="true">⚙</span>Настройки</button>
+        <button class="btn menu-row" id="startRulesBtn" type="button"><span aria-hidden="true">📜</span>Правила</button>
+        <button class="btn menu-row" id="mTutorial" type="button"><span aria-hidden="true">🎓</span>Обучение</button>
+      </div>
     </nav>
-    <div class="start-card start-offer" id="startOffer" hidden>
-      <h2>Ты здесь впервые?</h2>
-      <p class="start-hint">Короткое обучение покажет, как бросать сферу, как она растёт и как прогнать пастуха. Это около минуты.</p>
-      <button class="menu-big" id="offerYes" type="button"><span class="mi" aria-hidden="true">🎓</span><span class="mt"><b>Пройти обучение</b><small>Можно пропустить в любой момент</small></span></button>
-      <button class="btn menu-row" id="offerNo" type="button">Пропустить</button>
-    </div>
     <div class="start-card start-panel" id="startPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="startBack" type="button">← Назад</button><h2>Настройки</h2></div>
-      <label class="switch-row"><span>🎵 Фоновая музыка</span><input type="checkbox" id="stMusic"></label>
-      <label class="slider-row"><span>Громкость музыки</span><input type="range" id="stVolume" min="0" max="100" step="5"></label>
-      <label class="switch-row"><span>🔊 Звуковые эффекты</span><input type="checkbox" id="stSound"></label>
-      <div class="season-pick"><span>🎨 Оформление</span><div class="seg four" id="stSeason"><button type="button" data-v="auto">Авто</button><button type="button" data-v="autumn">🍂 Осень</button><button type="button" data-v="winter">❄ Зима</button><button type="button" data-v="off">Нет</button></div></div>
+          <div class="card set-card">
+            <h2><span aria-hidden="true">🎮</span> Управление</h2>
+            <p class="sub">Кнопки охоты стоят в нижних углах, под большими пальцами, а разделы — по краям поля.</p>
+            <div class="set-label">Размер игровых кнопок</div>
+            <div class="seg" id="setHud"><button type="button" data-v="m">Обычные</button><button type="button" data-v="l">Крупные</button><button type="button" data-v="xl">Очень крупные</button></div>
+            <div class="set-label">Положение кнопок</div>
+            <div class="seg two" id="setLift"><button type="button" data-v="down">Ниже</button><button type="button" data-v="up">Выше</button></div>
+            <label class="switch-row"><span>Режим для левши: главные кнопки меняются сторонами</span><input type="checkbox" id="setLeft"></label>
+            <label class="switch-row"><span>Крупный шрифт</span><input type="checkbox" id="setFont"></label>
+            <label class="switch-row"><span>Меньше анимации</span><input type="checkbox" id="setMotion"></label>
+          </div>
+          <div class="card set-card">
+            <h2><span aria-hidden="true">🔊</span> Звук и музыка</h2>
+            <label class="switch-row"><span>Фоновая музыка</span><input type="checkbox" id="musicToggle"></label>
+            <label class="slider-row"><span>Громкость музыки</span><input type="range" id="musicVolume" min="0" max="100" step="5"></label>
+            <div class="bee-song" id="beeSongRow" hidden>
+              <label class="switch-row"><span>🐝 «Песня пчёл» вместо фоновой музыки</span><input type="checkbox" id="beeSongToggle"></label>
+              <button class="btn wide" id="beeSongPlay" type="button">▶ Послушать «Песню пчёл»</button>
+            </div>
+            <label class="switch-row"><span>Звуковые эффекты</span><input type="checkbox" id="soundToggle"></label>
+          </div>
+          <div class="card set-card">
+            <h2><span aria-hidden="true">🎨</span> Оформление</h2>
+            <p class="sub">Время года на поляне, на ферме и в музыке. «Авто» включает осень с сентября, а зиму с 20 ноября до конца февраля.</p>
+            <div class="seg four" id="setSeason"><button type="button" data-v="auto">Авто</button><button type="button" data-v="autumn">🍂 Осень</button><button type="button" data-v="winter">❄ Зима</button><button type="button" data-v="off">Нет</button></div>
+          </div>
+          <div class="card set-card">
+            <h2><span aria-hidden="true">🎁</span> Промокод</h2>
+            <p class="sub">Есть секретный код? Введи его и получи подарок. Каждый код срабатывает только один раз.</p>
+            <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
+          </div>
+          <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
+          <p class="version">Версия игры 43</p>
+            </div>
+    <div class="start-card start-panel" id="rulesPanel" hidden>
+      <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
+          <div class="card">
+            <h2>Как считается шанс</h2>
+            <p class="formula">шанс = база редкости × сила сферы × бонус броска × характер, погода и зелья<br><span>не больше 100%</span></p>
+          </div>
+          <div class="rules-list" id="rulesList"></div>
+          <div class="card">
+            <h2>Таблица редкостей</h2>
+            <div class="table-wrap"><table id="rules"></table></div>
+          </div>
     </div>
-    <p class="start-ver">Версия игры 42</p>
+    <p class="start-ver">Версия игры 43</p>
   </div>
 </div>
 
@@ -1551,7 +1613,6 @@ html[data-hand="left"] .fight-row{flex-direction:row-reverse}
   <div id="bsBody" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
 
-<button class="hud-btn shep-btn" id="shepBtn" type="button" hidden><span class="shep-face" aria-hidden="true">👨‍🌾</span><span class="shep-txt"><b id="shepBtnTitle">Пастух!</b><small id="shepBtnSub">к загону</small></span></button>
 
 <div class="coach" id="coach" hidden>
   <div class="coach-spot" id="coachSpot" hidden></div>
@@ -2787,8 +2848,12 @@ let tab = 'hunt';
 let curIncome = 0;
 const afford = { shop:[], farm:[], stolen:[] };
 
-let toastTimer = 0;
+let toastTimer = 0, toastQ = [], toastNextAt = 0;
+// Пока сфера в руке или летит, сообщения ждут (не больше трёх) и выходят по одному, когда бросок закончился
+const throwBusy = () => tab === 'hunt' && (state === 'dragging' || state === 'flying');
+function whenIdle(fn) { if (!throwBusy() && !dlg) fn(); else setTimeout(() => whenIdle(fn), 250); }
 function toast(msg, kind = '', ms = 2200) {
+  if (throwBusy()) { toastQ.push([msg, kind, ms]); if (toastQ.length > 3) toastQ.shift(); return; }
   const stEl = document.getElementById('startScreen');
   if (stEl && !stEl.hidden && !stEl.classList.contains('hide')) return;  // пока открыт стартовый экран, подсказки игры не показываем
   const coachEl = document.getElementById('coach');
@@ -2798,9 +2863,9 @@ function toast(msg, kind = '', ms = 2200) {
   if (sh && !sh.hidden) anchor = $('adminHead').getBoundingClientRect().bottom;
   else if (hs && !hs.hidden) anchor = 0;
   else {
-    anchor = tab === 'hunt' ? $('info').getBoundingClientRect().bottom : $('top').getBoundingClientRect().bottom;
+    anchor = tab === 'hunt' ? $('info').getBoundingClientRect().bottom : panelBar(tab).getBoundingClientRect().bottom;
     const al = $('shepAlert');
-    if (al && !al.hidden && tab !== 'hunt') anchor = Math.max(anchor, al.getBoundingClientRect().bottom);
+    if (al && !al.hidden) anchor = Math.max(anchor, al.getBoundingClientRect().bottom);
   }
   toastEl.style.top = Math.round(anchor + 8) + 'px';
   toastEl.textContent = msg;
@@ -7533,9 +7598,33 @@ function placeCreature() {
   cr.r = R * scaleFor(cr.dist);
   cr.baseY = footYFor(cr.dist) - cr.r * 0.95;
 }
+// Кнопки разделов и охоты стоят по краям поля. Зверёк, который стоит на их высоте, держится между ними
+// На низком поле (альбомная ориентация) карточка зверька стоит слева сверху — зверёк её тоже обходит
+const sideBox = { L:null, R:null, I:null };
+function measureSides() {
+  const sr = stage.getBoundingClientRect(); if (sr.width < 10) return;
+  for (const [k, sel] of [['L', '.hud-left'], ['R', '.hud-right']]) {
+    const r = stage.querySelector(sel).getBoundingClientRect();
+    sideBox[k] = r.width > 0 ? { x0:r.left - sr.left, x1:r.right - sr.left, y0:r.top - sr.top } : null;
+  }
+  const ir = $('info').getBoundingClientRect();
+  sideBox.I = ir.width > 0 && ir.width < sr.width * 0.6 ? { x0:ir.left - sr.left, x1:ir.right - sr.left, y1:ir.bottom - sr.top } : null;
+}
+function sideSafe(y, r) {
+  let lo = r * 1.05, hi = W - r * 1.05;
+  for (const b of [sideBox.L, sideBox.R]) {
+    if (!b || y + r < b.y0 - 4) continue;
+    if (b.x0 < W / 2) lo = Math.max(lo, b.x1 + r * 0.95); else hi = Math.min(hi, b.x0 - r * 0.95);
+  }
+  const I = sideBox.I;
+  if (I && y - r < I.y1 + 4) { if (I.x0 < W / 2) lo = Math.max(lo, I.x1 + r * 0.95); else hi = Math.min(hi, I.x0 - r * 0.95); }
+  if (lo > hi) lo = hi = (lo + hi) / 2;
+  return [lo, hi];
+}
 function creatureX() {
-  const mv = cr.sp.ab === 'drive' ? 0.16 : RARITY[cr.sp.rarity].move, amp = cr.trait === 'sleepy' ? 0 : Math.max(0, Math.min(W * mv, W / 2 - cr.r * 1.8));
-  return W / 2 + (cr.offX || 0) + Math.sin(cr.mt * cr.freq + cr.ph) * amp;
+  const [lo, hi] = sideSafe(cr.baseY, cr.r), mid = (lo + hi) / 2;
+  const mv = cr.sp.ab === 'drive' ? 0.16 : RARITY[cr.sp.rarity].move, amp = cr.trait === 'sleepy' ? 0 : Math.max(0, Math.min(W * mv, (hi - lo) / 2, W / 2 - cr.r * 1.8));
+  return clamp(mid + (cr.offX || 0) + Math.sin(cr.mt * cr.freq + cr.ph) * amp, lo, hi);
 }
 
 function buildScenery() {
@@ -7707,8 +7796,9 @@ function layout() {
   R = clamp(Math.min(W, H) * 0.12, 32, 66);
   ORB_R = clamp(Math.min(W, H) * 0.062, 20, 29);
   rest.x = W / 2; rest.y = H - ORB_R * 2.1;
+  measureSides();
   placeCreature();
-  if (cr && MOVING.has(state)) cr.y = cr.baseY;
+  if (cr && MOVING.has(state)) { cr.y = cr.baseY; cr.x = creatureX(); }
   if (['ready','spawning','init'].includes(state)) { orb.x = rest.x; orb.y = rest.y; }
   buildScenery();
 }
@@ -9073,6 +9163,7 @@ function drawDistLabel() {
 
 /* ======================= ЧАСТИЦЫ ======================= */
 function burst(x, y, colors, n, spd) {
+  if (save.flags.motion === 'low') n = Math.ceil(n / 3);
   for (let i = 0; i < n; i++) {
     const a = Math.random() * TAU, v = spd * (0.4 + Math.random() * 0.8);
     parts.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - spd * 0.3, life:1, dur:0.6 + Math.random() * 0.6,
@@ -9118,8 +9209,8 @@ function nextWeather() {
 function renderWeather() {
   if (inSpace()) { renderSpacePill(); return; }
   const indoor = LOC_BY_ID[save.loc].indoor, w = windNow();
-  $('weatherName').textContent = indoor ? '🕯 Под землёй' : `${weatherLabel().icon} ${weatherLabel().name}`;
-  $('weatherWind').textContent = Math.abs(w) < 0.3 ? 'без ветра' : `ветер ${w < 0 ? '←' : '→'} ${Math.abs(w).toFixed(1).replace('.', ',')} м/с`;
+  setWxName(indoor ? '🕯' : weatherLabel().icon, indoor ? 'Под землёй' : weatherLabel().name);
+  $('weatherWind').textContent = Math.abs(w) < 0.3 ? 'без ветра' : `💨 ${w < 0 ? '←' : '→'} ${Math.abs(w).toFixed(1).replace('.', ',')} м/с`;
 }
 // Выбор места. Сверху две карты: 🌍 Земля и 🚀 Космос. Список показывает выбранную карту
 // (по умолчанию ту, где ты сейчас). Перелёт на другую карту — с эффектом гиперпрыжка и своей музыкой.
@@ -9169,11 +9260,15 @@ function travelTo(L) {
   if (from !== to) {
     warpT = WARP_TIME; mStep = 0; sfx('rare');
     toast(to === 'space' ? `🚀 Полетели в космос! Ты на локации ${L.icon} ${L.name}` : `🌍 Вернулись на Землю: ${L.icon} ${L.name}`, 'good', 3200);
-    if (to === 'space' && !save.flags.spaceIntro) setTimeout(openSpaceIntro, 1200);
+    if (to === 'space' && !save.flags.spaceIntro) setTimeout(() => whenIdle(openSpaceIntro), 1200);
   } else toast(`Ты на локации ${L.icon} ${L.name}`, 'good');
   spawn();
 }
-function openLocPop(view) { locView = view || null; renderLocChips(); $('locPop').hidden = false; $('locBack').hidden = false; sfx('tap'); }
+function openLocPop(view) {
+  locView = view || null; renderLocChips();
+  $('locPop').style.top = Math.round($('top').getBoundingClientRect().bottom - $('scr-hunt').getBoundingClientRect().top + 6) + 'px';
+  $('locPop').hidden = false; $('locBack').hidden = false; sfx('tap');
+}
 function closeLocPop() { $('locPop').hidden = true; $('locBack').hidden = true; locView = null; }
 $('locBtn').addEventListener('click', () => { if ($('locPop').hidden) openLocPop(); else closeLocPop(); });
 $('mapTabs').addEventListener('click', e => {
@@ -9191,9 +9286,13 @@ $('locClose').addEventListener('click', closeLocPop);
 
 // ---- Космос: плашка вместо погоды ----
 const fmtMS = sec => { const s = Math.max(0, Math.ceil(sec)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+function setWxName(ico, name) {
+  const el = $('weatherName'), h = `<span class="wn-ico">${ico}</span> <span class="wn">${name}</span>`;
+  if (el.innerHTML !== h) el.innerHTML = h;
+}
 function renderSpacePill() {
-  $('weatherName').textContent = meteor.on ? '🌠 Метеоры!' : '🛰 Невесомость';
-  $('weatherWind').textContent = meteor.on ? `ещё ${Math.ceil(meteor.left)} с` : `метеоры через ${fmtMS(meteor.next)}`;
+  setWxName(meteor.on ? '🌠' : '🛰', meteor.on ? 'Метеоры!' : 'Невесомость');
+  $('weatherWind').textContent = meteor.on ? `ещё ${Math.ceil(meteor.left)} с` : `☄ через ${fmtMS(meteor.next)}`;
 }
 function spacePillTip() {
   return meteor.on
@@ -9250,7 +9349,9 @@ function spaceCatch(sp) {
   return ` +${d} ✨`;
 }
 function updateScopeBtn() {
+  const was = $('scopeBtn').hidden;
   $('scopeBtn').hidden = !inSpace();
+  if (was !== $('scopeBtn').hidden) requestAnimationFrame(measureSides);
   $('scopeDust').textContent = fmt(save.dust || 0);
 }
 // Если зверёк из телескопа ушёл не пойманным (сбежал, «Другой», смена места), половина пыли возвращается
@@ -9746,15 +9847,17 @@ function draw() {
   drawParts();
   drawPops();
   drawWeatherFront(T);
-  if (warpT > 0) drawWarp();
+  if (warpT > 0 && save.flags.motion !== 'low') drawWarp();
   if (!hintDone && state === 'ready' && orb.pop >= 1) {
     ctx.save();
     ctx.globalAlpha = 0.65 + 0.35 * Math.sin(T * 4);
     ctx.font = '800 15px Nunito, ui-rounded, system-ui, sans-serif';
     ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
     ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 6;
-    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.strokeText('Смахни сферу вверх ↑', rest.x, rest.y - ORB_R * 2.2);
-    ctx.fillText('Смахни сферу вверх ↑', rest.x, rest.y - ORB_R * 2.2);
+    // на узком поле подсказка короче, чтобы не наезжать на подписи кнопок по краям
+    const hint = W < 380 ? 'Смахни вверх ↑' : 'Смахни сферу вверх ↑';
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.strokeText(hint, rest.x, rest.y - ORB_R * 2.2);
+    ctx.fillText(hint, rest.x, rest.y - ORB_R * 2.2);
     ctx.restore();
   }
 }
@@ -9890,7 +9993,7 @@ function renderOrbs() {
   const db = $('hudOrbDur');
   db.hidden = !K.main;
   if (K.main) { const f = durFrac(); db.className = 'hud-dur' + durCls(f); db.firstChild.style.width = `${Math.round(f * 100)}%`; }
-  $('hudOrb').classList.toggle('dot', mainNeedsFix());
+  dotWant.orb = mainNeedsFix(); applyDots();
   $('hudOrb').setAttribute('aria-label', K.item ? `Сферы и зелья. Сейчас ${K.title.toLowerCase()}, осталось ${save.orbs[K.id] || 0}`
     : K.spare ? 'Сферы и зелья. Сейчас медная сфера' : `Сферы и зелья. Сейчас ${orbTitle(K).toLowerCase()}, прочность ${save.chain.dur}`);
 }
@@ -10013,12 +10116,29 @@ function orbActionable() {
     (save.shards || 0) >= SHARDS_FOR_ORB;
 }
 const potActionable = () => POTIONS.some(P => (save.story.loot[P.loot] || 0) > 0 && save.coins >= P.cost);
+/* Красные точки (этап 1). Точка значит: прямо сейчас можно забрать награду или сделать важное дело.
+   На главном экране их не больше трёх, по важности: сломанная сфера → Задания (награда, глава, улей) → Ферма (новое слияние) →
+   Магазин (новая сфера по карману, а ты её ещё не видел, или можно собрать глитч-сферу). Внутри разделов точки на подвкладках как раньше. */
+const DOT_MAX = 3, DOT_ORDER = ['orb', 'quests', 'farm', 'shop'];
+const dotWant = { orb:false, quests:false, farm:false, shop:false };
+function applyDots() {
+  let n = 0;
+  for (const k of DOT_ORDER) {
+    const on = !!dotWant[k] && n < DOT_MAX; if (on) n++;
+    const el = k === 'orb' ? $('hudOrb') : secBtn(k);
+    if (el && el.classList.contains('dot') !== on) el.classList.toggle('dot', on);
+  }
+}
+function nextOrbAffordable() { const N = ORB_CHAIN[chainT() + 1]; return !!N && save.coins >= N.cost && (!N.loot || (save.story.loot[N.loot] || 0) > 0); }
+// в магазин заглянул — новая сфера уже не «новость», пока не станет по карману следующая
+function markShopSeen() { if (save.flags.shopSeen !== chainT()) { save.flags.shopSeen = chainT(); updateShopDot(); } }
 function updateShopDot() {
-  const a = orbActionable(), b = potActionable();
-  document.querySelector('.tab[data-tab="shop"]').classList.toggle('dot', a || b);
+  const a = orbActionable(), b = potActionable(), fix = mainNeedsFix();
   $('chipOrbs').classList.toggle('dot', a);
   $('chipPots').classList.toggle('dot', b);
-  $('hudOrb').classList.toggle('dot', mainNeedsFix());
+  dotWant.orb = fix;
+  dotWant.shop = !fix && ((nextOrbAffordable() && save.flags.shopSeen !== chainT()) || (save.shards || 0) >= SHARDS_FOR_ORB);
+  applyDots();
 }
 // Карточка сильной сферы: прочность, ремонт, улучшение до следующей
 function renderMainCard() {
@@ -10050,10 +10170,9 @@ function renderMainCard() {
   const note = document.createElement('p'); note.className = 'up-note';
   const held = k => Math.round((1 - chainHold(k)) * 100);
   note.innerHTML = N
-    ? `После улучшения у тебя будет <b>${N.name} сфера</b>: прочность ${N.dur}, полный ремонт ${fmt(N.fix)} монет, вырвавшиеся зверьки убегают на ${held(t + 1)}% реже. ` +
-      (t ? 'Она заменит нынешнюю, а медная останется запасной.' : 'Медная останется запасной.') +
-      (N.loot ? ` Для этого улучшения нужен ещё ${LOOT[N.loot].icon} ${LOOT[N.loot].name} (у тебя ${save.story.loot[N.loot] || 0}): его даёт ${lootWhere(N.loot)}.` : '')
-    : `Вырвавшиеся зверьки убегают на ${held(t)}% реже. Это последняя сфера цепочки, новые появятся в следующих обновлениях.`;
+    ? `Дальше: <b>${N.name}</b>, прочность ${N.dur}, зверьки убегают на ${held(t + 1)}% реже.` +
+      (N.loot ? ` Нужен ещё ${LOOT[N.loot].icon} ${LOOT[N.loot].name} (у тебя ${save.story.loot[N.loot] || 0}).` : '')
+    : `Зверьки убегают на ${held(t)}% реже. Это последняя сфера цепочки.`;
   el.append(note);
   if (N) {
     const noLoot = !!N.loot && (save.story.loot[N.loot] || 0) < 1;
@@ -10094,7 +10213,7 @@ function renderShopPots() {
     const ch = document.createElement('div'); ch.className = 'up-change';
     ch.innerHTML = `<span class="now">Нужно: ${L.icon} ${L.name}</span><b class="next">у тебя ${have}</b>`;
     const note = document.createElement('p'); note.className = 'up-note';
-    note.innerHTML = `${P.desc} Где взять трофей: ${lootWhere(P.loot)} в «Заданиях» → «Сюжет», и на реванше тоже.`;
+    note.innerHTML = `Трофей даёт ${lootWhere(P.loot)}.`;
     el.append(ch, note);
     const b = makeBtn(`Сварить ${POT_BREW} зелья `, 'primary', () => brewPotion(P), P.cost);
     afford.shop.push({ el:b, cost:P.cost, blocked:have < 1 }); b.disabled = have < 1 || save.coins < P.cost;
@@ -10387,7 +10506,7 @@ function renderPetsPage() {
   if (petFilter === 'rest') owned = owned.filter(v => (save.pets[v.key] || 0) > (save.inPen[v.key] || 0));
   owned.sort((a, b) => incomeOfStage(b.sp, b.stage) - incomeOfStage(a.sp, a.stage));
   if (!owned.length) {
-    list.innerHTML = `<div class="empty-card"><span class="ec-ico">🐾</span><b>${total ? 'Здесь пока никого' : 'Пока никого нет'}</b><span>${total ? 'Выбери другой фильтр сверху' : 'Поймай зверька на вкладке «Охота»'}</span></div>`;
+    list.innerHTML = `<div class="empty-card"><span class="ec-ico">🐾</span><b>${total ? 'Здесь пока никого' : 'Пока никого нет'}</b><span>${total ? 'Выбери другой фильтр сверху' : 'Поймай зверька на охоте'}</span></div>`;
     return;
   }
   for (const { sp, stage, key } of owned) {
@@ -10564,7 +10683,7 @@ function noteMerge(sp) {
   return ' Можно слить 3 в ★★ на ферме!';
 }
 function updateEvoDot() {
-  document.querySelector('.tab[data-tab="farm"]').classList.toggle('dot', farmNotice);
+  dotWant.farm = farmNotice; applyDots();
   $('chipMerge').classList.toggle('dot', SPECIES.some(sp => (save.pets[sp.id] || 0) >= MERGE_NEED || (save.pets[vkey(sp.id, 2)] || 0) >= MERGE_NEED));
 }
 function mergePets(sp, stage) {
@@ -11405,23 +11524,19 @@ function updateShepAlert() {
   const active = !!(shep && shep.phase === 'walk') && (shep.practice || !shepPaused());
   document.documentElement.classList.toggle('shep-on', active);
   if (!active) { el.hidden = true; btn.hidden = true; return; }
-  el.hidden = false; btn.hidden = false;
   const left = Math.max(0, Math.ceil(SHEP_WALK - shep.t)), atPen = tab === 'farm' && farmPager.index === 0;
+  el.hidden = atPen; btn.hidden = tab !== 'farm';
+  const bar = tab !== 'hunt' && panelBar(tab), top = bar ? bar.getBoundingClientRect().bottom + 4 : $('top').getBoundingClientRect().bottom + 6;
+  el.style.setProperty('--alert-top', Math.round(top) + 'px');
   $('shepText').textContent = atPen ? `Пастух у загона! Жми на него или на красную кнопку. Осталось ${left} с` : `Пастух крадётся к загону! Осталось ${left} с`;
   $('shepBtnTitle').textContent = atPen ? 'Бросить' : 'Пастух!';
   $('shepBtnSub').textContent = atPen ? `в пастуха · ${left} с` : `к загону · ${left} с`;
   btn.setAttribute('aria-label', atPen ? 'Бросить сферу в пастуха' : 'Пастух крадётся. Перейти к загону');
   placeShepBtn();
 }
-function placeShepBtn() {
-  const btn = $('shepBtn'), r = document.querySelector('.tabs').getBoundingClientRect();
-  const iw = window.innerWidth, ih = window.innerHeight, lefty = !!save.flags.leftHand;
-  const rail = r.height > ih * 0.6;  // на горизонтальном экране вкладки стоят столбиком сбоку
-  const bottom = rail ? 'calc(12px + env(safe-area-inset-bottom, 0px))' : `${Math.round(ih - r.top + 12)}px`;
-  const side = rail ? `${Math.round(lefty ? r.right + 12 : iw - r.left + 12)}px` : `calc(12px + env(safe-area-inset-${lefty ? 'left' : 'right'}, 0px))`;
-  btn.style.bottom = `calc(${bottom} + var(--hud-lift))`;
-  if (lefty) { btn.style.left = side; btn.style.right = 'auto'; } else { btn.style.right = side; btn.style.left = 'auto'; }
-}
+// Кнопка «Бросить» стоит внизу панели фермы (место задаёт CSS); функция осталась для старых вызовов
+function placeShepBtn() {}
+$('shepAlert').addEventListener('click', () => { sfx('tap'); showTab('farm', 0); updateShepAlert(); });
 let shepBtnAt = 0;
 $('shepCall').addEventListener('click', callShepherd);
 $('shepBtn').addEventListener('click', () => {
@@ -11492,7 +11607,7 @@ function renderFarmExtras() {
 function tickFarmExtras() {
   const left = guardLeft();
   $('guardLine').innerHTML = left > 0 ? `🛡 Пугало охраняет загон ещё <b>${fmtTime(left)}</b>`
-    : `👨‍🌾 Пастух может прийти в любой момент. Пугало из «Магазина» не пускает его ${GUARD_MIN} минут.`;
+    : '👨‍🌾 Пастух может прийти в любой момент';
   $('shepCall').hidden = !shepTaskOpen() || !!(shep && shep.phase === 'walk');
   for (const { el, s } of stolenMetaEls) el.textContent = `Выкупи его за ${fmtTime(s.until - Date.now())}, иначе он пропадёт навсегда`;
 }
@@ -11589,7 +11704,6 @@ function renderShop() {
   // пугало
   upCard($('guardCard'), {
     ico:'🛡', title:'Пугало', sub:`Не пускает пастуха ${GUARD_MIN} минут`, lvl:'', lvlId:'guardStatus',
-    note:`Каждая покупка добавляет ещё ${GUARD_MIN} минут, но не больше ${GUARD_MAX_MIN} минут вперёд. Если пастух уже идёт к загону, пугало его спугнёт.`,
     btn:['Поставить пугало ', guardPrice(), buyGuard, guardFull()],
   });
   guardAfford = afford.shop[afford.shop.length - 1];
@@ -11599,7 +11713,6 @@ function renderShop() {
   upCard($('glitchCard'), {
     ico:'⚡', title:'Глитч-сфера', sub:`Только она ловит Виарика, шанс ${pct(GLITCH_CHANCE)}`, lvl:`у тебя ×${save.orbs.glitch || 0}`,
     pips:[Math.min(sh, SHARDS_FOR_ORB), SHARDS_FOR_ORB], now:`🧩 ${sh} из ${SHARDS_FOR_ORB} осколков`,
-    note:'Осколки дают за прогнанного пастуха, мифических и более редких зверьков, слияние в ★★★, арену, сюжет и бонус дня.',
     btn:['Собрать глитч-сферу', null, craftGlitch, !canCraft],
   });
   updateShopDot();
@@ -11609,6 +11722,12 @@ function renderShop() {
 const RULES = [
   ['🎯', 'Бросок', ['Смахни сферу вверх, к зверьку. Чем резче движение, тем дальше она летит.', 'Попадание в самый центр даёт шанс ×1,5, рядом с центром ×1,25.',
     'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине или выпей зелье Кометы.']],
+  ['🧭', 'Главный экран', ['Игра открывается на охоте. Кнопки по краям поля открывают разделы: слева Ферма и Альбом, справа Задания, Арена и Магазин.',
+    'Раздел закрывается крестиком ✕, свайпом в ту сторону, откуда он выехал, или кнопкой «Назад» на телефоне. Пока раздел открыт, охота ждёт.',
+    'Красная точка значит: прямо сейчас можно что-то забрать или сделать. Больше трёх точек на поле не бывает.',
+    'Кнопка «?» в разделе коротко объясняет, как он устроен. Настройки, Правила и Обучение — в «Меню».',
+    'В Настройках можно включить крупный шрифт и сделать анимации спокойнее.',
+    'Пока сфера летит, сообщения ждут и показываются после броска.']],
   ['🔮', 'Сферы', ['Медная сфера всегда с тобой: бесплатная, не изнашивается и не ломается.',
     `Улучши её в «Магазине» за монеты, и у тебя будет сильная сфера. Каждое улучшение меняет её на следующую: ${ORB_CHAIN.slice(1).map(C => C.name.toLowerCase()).join(', ')}. Шанс поимки растёт от ×1 до ×${fx2(ORB_CHAIN[CHAIN_MAX].power)}, а вырвавшиеся зверьки убегают реже.`,
     `Звёздная — последняя сфера цепочки. Для неё кроме монет нужен ${LOOT.frost.icon} ${LOOT.frost.name}: его дают за победу над Пастухом в Ледяной крепости (глава 6) и на реванше.`,
@@ -11659,7 +11778,7 @@ const RULES = [
     'У каждого босса свой приём: ворует ходы, уворачивается, носит броню или сажает зверьков в мешок.',
     'Побеждённых боссов можно вызвать на реванш раз в 2 часа: за это монеты и трофей. Из трофеев варят зелья, а Ледяной кристалл нужен для Звёздной сферы.',
     'После 3-й главы на ферме живёт пёс Пират: он лает на Пастуха и мешает ему красть.']],
-  ['🐝', 'Глава «Улей»', [`Начинается, когда поймаешь ${HIVE_NEED} зверьков: прилетят пчёлки и спросят, уважаешь ли ты их.`,
+  ['🐝', 'Глава «Улей»', [`Начинается, когда поймаешь ${HIVE_NEED} зверьков: прилетят пчёлки. Нажми «Пчёлки ждут» над полем, и они спросят, уважаешь ли ты их.`,
     '«Нет» — сразу очень сложный бой с роем, и улей закрыт на сутки. Потом пчёлки спросят снова.',
     '«Да» — пять этапов: танец пчелы, мёд и яйца, соты-замок, тихий проход и бой с пастухом. На всё 1 час, и время идёт, даже когда игра закрыта.',
     'Не успел за час — пчёлы нападают, как при ответе «Нет». Пройденные этапы при этом сохраняются. Проигрыш в финале возвращает яйца пастуху: финал можно повторять, пока идёт час.',
@@ -11667,7 +11786,7 @@ const RULES = [
     'Банки мёда и яйца нельзя купить или обойти за монеты: зелья по ним не работают, ловит только точный бросок.',
     'Награда только за все 5 этапов и только один раз: Королева пчёл, титул «Друг пчёл», монеты, мёд и «Песня пчёл» в настройках.',
     `Мёд пчёлы приносят раз в 2 часа, даже когда игра закрыта, до ${HONEY_MAX} порций. Забирай его в улье. Мёд можно скормить зверьку (в его карточке на ферме) или продать.`]],
-  ['🎁', 'Промокоды', ['Промокод вводится в «Альбом → Настройки». За него можно получить любимчика или подарок.', 'Каждый код срабатывает один раз на этом телефоне.']],
+  ['🎁', 'Промокоды', ['Промокод вводится в «Меню» → «Настройки». За него можно получить любимчика или подарок.', 'Каждый код срабатывает один раз на этом телефоне.']],
   ['⚡', 'Виарик', ['Цифровой зверёк: телепортируется и ловится только глитч-сферой.', `Глитч-сфера собирается из ${SHARDS_FOR_ORB} осколков в Магазине, в разделе «Сферы».`]],
 ];
 function renderRules() {
@@ -11686,6 +11805,47 @@ function renderRules() {
            `<td>${r.base ? pct(r.base) : '—'}</td><td>${r.base ? pct(Math.min(1, r.base * ORB_CHAIN[CHAIN_MAX].power)) : '—'}</td><td>${pct(r.flee)}</td><td>${pct(r.weight / total)}</td><td>${r.dist[0]}–${r.dist[1]} м</td></tr>`;
   }).join('');
   $('rules').innerHTML = `<thead><tr><th>Редкость</th><th>Медной</th><th>Звёздной</th><th>Побег</th><th>Встречается</th><th>Стоит на</th></tr></thead><tbody>${rows}</tbody>`;
+}
+// ---- «?» в разделах (этап 1): подробности, которые раньше занимали место на экране ----
+const HELP = {
+  farm:['Ферма', () => ['Зверьки в загоне приносят монеты каждую секунду, пока ты играешь.',
+    '«Посадить лучших» сажает самых доходных. Мест станет больше, если расширить загон в «Магазине».',
+    'Настроение меняет доход: корми зверьков, играй с ними и гладь их, нажимая на них в загоне.',
+    'Слияние: 3 одинаковых → один ★★, 3 зверька ★★ → один ★★★. Доход ×4 и ×16.',
+    `Пастух крадёт зверьков из загона. Жми на него, чтобы прогнать. Украденного можно выкупить за ${SHEP_RANSOM_MIN} минут.`,
+    `Пугало из «Магазина» не пускает пастуха ${GUARD_MIN} минут.`,
+    'Декор из «Ухода» навсегда прибавляет доход.']],
+  shop:['Магазин', () => ['Медная сфера всегда с тобой: бесплатная, не ломается и не изнашивается.',
+    'Улучши её за монеты, и у тебя будет сильная сфера: она ловит лучше, но каждый бросок тратит прочность.',
+    'Если зверёк вырвался, сильная сфера может сломаться. Чинят её за монеты, сломанную — вдвое дороже. Медная остаётся запасной.',
+    `Звёздной сфере нужен ещё ${LOOT.frost.icon} ${LOOT.frost.name}: его даёт ${lootWhere('frost')}.`,
+    'Рука: чем она сильнее, тем дальше летит сфера и тем более редких зверьков ты достаёшь.',
+    'Загон: каждое расширение даёт ещё одно место для зверька.',
+    `Пугало: каждая покупка добавляет ${GUARD_MIN} минут, но не больше ${GUARD_MAX_MIN} минут вперёд. Если пастух уже идёт, пугало его спугнёт.`,
+    `Зелья варят из трофеев боссов: трофей и монеты дают ${POT_BREW} зелья. Пей их на охоте: кнопка сферы → «Зелья». Каждое действует ${POT_THROWS} бросков.`,
+    `Осколки глитча дают за прогнанного пастуха, мифических и более редких зверьков, слияние в ★★★, арену, сюжет и бонус дня. Из ${SHARDS_FOR_ORB} осколков собирается глитч-сфера.`]],
+  games:['Арена', () => ['Три твоих зверька бьются с тремя соперниками по очереди: первый против первого. Когда один падает, выходит следующий.',
+    'Подбирай стихии: удар по слабой стихии ×1,6, по сильной ×0,65.',
+    ...Object.values(ELEMENTS).map(e => `${e.icon} ${e.name} сильнее ${andList(e.strong.map(s => ELEMENTS[s].icon + ' ' + ELEMENTS[s].gen))}.`),
+    'Пройденные уровни можно повторить стрелками ◀ ▶. Награды за повтор нет, но победа идёт в задания.',
+    'Звездопад: води пальцем, лови звёзды в корзинку и уворачивайся от туч.']],
+  quests:['Задания', () => ['Сюжет: главы с заданиями и боссами. Кнопка рядом с заданием ведёт туда, где его выполнить.',
+    'Глава «Улей» тоже здесь, в «Сюжете».',
+    'Сегодня: 3 задания дня. За все три — бонус дня.',
+    'Достижения: у каждого несколько ступеней, и награда растёт.']],
+  album:['Альбом', () => ['В альбоме все зверьки. Ненайденные видно силуэтом.',
+    'Фильтры показывают коллекцию, редкость, найденных или ещё не найденных.',
+    'В карточке зверька написано, где его искать. Кнопка «Ловить здесь» сразу отправит на охоту в нужное место.',
+    'За собранные коллекции дают награды в «Заданиях» → «Достижения».']],
+};
+function openHelp(id) {
+  const H = HELP[id]; if (!H) return;
+  sheetKey = null; sfx('tap');
+  showSheet('❓ ' + H[0]);
+  const body = $('bsBody'); body.innerHTML = '';
+  const ul = document.createElement('ul'); ul.className = 'help-list';
+  for (const t of H[1]()) { const li = document.createElement('li'); li.textContent = t; ul.append(li); }
+  body.append(ul, makeBtn('📜 Все правила', 'wide', () => { closeSheet(); openMenu('rulesPanel'); }));
 }
 // ---- Альбом: коллекции, номера и фильтры ----
 const albumView = { coll:'all', rar:'all', show:'all' };
@@ -11821,6 +11981,7 @@ function openMonSheet(sp) {
     const reach = armReach(save.arm), home = sp.home && LOC_BY_ID[sp.home];
     where.textContent = habitatText(sp) + (!home && sp.rarity !== 'glitch' && !sp.solo && reach < rr.dist[0] ? ` Пока не достать: рука бросает на ${reach} м, а он стоит от ${rr.dist[0]} м. Прокачай руку в Магазине.` : '');
     body.append(where);
+    const go = huntSpotBtn(sp); if (go) body.append(go);
     return;
   }
   where.textContent = '📍 ' + habitatText(sp);
@@ -11830,6 +11991,7 @@ function openMonSheet(sp) {
     body.append(where, ab);
     return;
   }
+  const go = huntSpotBtn(sp);
   const h = document.createElement('h3'); h.className = 'sec-title'; h.textContent = 'Эволюции';
   const row = document.createElement('div'); row.className = 'evo-row';
   for (let k = 1; k <= EVO_MAX; k++) {
@@ -11838,7 +12000,7 @@ function openMonSheet(sp) {
     const s2 = document.createElement('small'); s2.textContent = !open ? 'ещё не открыта' : k === 1 ? `доход ×1` : `«${evoFormName(sp, k)}», доход ×${EVO_MULT[k - 1]}`;
     cell.append(creatureIcon(sp, 76, !open, k), t, s2); row.append(cell);
   }
-  body.append(where, h, row);
+  body.append(where); if (go) body.append(go); body.append(h, row);
   if (save.shinySeen[sp.id]) {
     const p = document.createElement('div'); p.className = 'shiny-note';
     p.append(creatureIcon(shinyOf(sp), 64));
@@ -12165,7 +12327,7 @@ function renderQuests() {
     if (q.claimed) claimed++;
     list.append(questCard({
       icon:def.icon, title:def.text(q.n, q), frac:q.prog / q.n, progText:`${q.prog} из ${q.n}`, ready, claimed:q.claimed,
-      rewards:q.claimed ? [] : [rwChip('coin', '+' + fmt(coins))], onClaim:() => claimQuest(i), go:TASK_GO[q.id],
+      rewards:q.claimed ? [] : [rwChip('coin', '+' + fmt(coins))], onClaim:() => claimQuest(i), go:taskGo(q.id, q),
     }));
   });
   $('questDone').textContent = `${claimed}/${save.quests.list.length}`;
@@ -12244,7 +12406,7 @@ function updateQuestDot() {
   const q = save.quests && save.quests.day === dayKey() && save.quests.list.some(x => x.prog >= x.n && !x.claimed);
   const a = ACH.some(achClaimable);
   const st = storyAttention() || hiveAttention();
-  document.querySelector('.tab[data-tab="quests"]').classList.toggle('dot', !!(q || a || st));
+  dotWant.quests = !!(q || a || st); applyDots();
   $('chipStory').classList.toggle('dot', st);
   $('chipDaily').classList.toggle('dot', !!q); $('chipAch').classList.toggle('dot', a);
 }
@@ -12497,7 +12659,7 @@ function renderArena() {
   const er = document.createElement('div'); er.className = 'ftiles';
   for (const f of enemy) er.append(fTile(f));
   if (top > 1) c1.append(arenaPicker(L, top));
-  c1.append(p1, er);
+  c1.append(er);
   const c2 = cardWith('🛡 Твоя команда', `${arenaTeam.length} из 3`);
   const tr = document.createElement('div'); tr.className = 'ftiles';
   for (let i = 0; i < 3; i++) {
@@ -12533,11 +12695,7 @@ function renderArena() {
     row.append(creatureIcon(v.sp, 40, false, v.stage), mid, b); list.append(row);
   }
   c3.append(list);
-  const c4 = cardWith('🌈 Стихии');
-  const ul = document.createElement('p'); ul.className = 'note';
-  ul.textContent = Object.values(ELEMENTS).map(e => `${e.icon} ${e.name} сильнее ${andList(e.strong.map(s => ELEMENTS[s].icon + ' ' + ELEMENTS[s].gen))}`).join('. ') + '. Удар по слабому ×1,6, по сильному ×0,65.';
-  c4.append(ul);
-  pg.append(c1, c2, c3, c4);
+  pg.append(c1, c2, c3);
 }
 const arenaReward = L => Math.round(Math.max(300 * L * Math.pow(1.18, L), curIncome * (8 + 2 * L)));
 function simulate(teamA, teamB) {
@@ -13143,6 +13301,29 @@ const TASK_GO = {
   merge:      ['✨ К слиянию', () => showTab('farm', 2)],
   space:      ['🚀 В космос', () => { showTab('hunt'); openLocPop('space'); }],
 };
+// Кнопка «перейти» у задания: всё, что делается на охоте, ведёт прямо на охоту, а задание на место — в это место
+function goHunt(locId) {
+  showTab('hunt');
+  const L = locId && LOC_BY_ID[locId];
+  if (L && L.id !== save.loc && locOpen(L) && ['ready', 'spawning'].includes(state)) travelTo(L);
+}
+function taskGo(id, q) {
+  if (TASK_GO[id]) return TASK_GO[id];
+  if (id === 'loc' && q && LOC_BY_ID[q.loc]) { const L = LOC_BY_ID[q.loc]; return locOpen(L) ? [`🎯 ${L.icon} ${L.name}`, () => goHunt(L.id)] : null; }
+  if (['catch', 'rare', 'perfect', 'curve', 'weather'].includes(id)) return ['🎯 На охоту', () => goHunt()];
+  if (id === 'pet') return ['💕 В загон', () => showTab('farm', 0)];
+  return null;
+}
+// Где ловить зверька из альбома: его дом или место, где он частый, если оно уже открыто
+function huntSpotFor(sp) {
+  if (sp.solo || sp.rarity === 'glitch') return null;
+  const c = sp.home ? [LOC_BY_ID[sp.home]] : sp.rarity === 'pet' ? [LOC_BY_ID.meadow] : LOCATIONS.filter(l => l.native.includes(sp.id) && mapOf(l) === (sp.map || 'earth'));
+  return c.find(l => l && locOpen(l)) || null;
+}
+function huntSpotBtn(sp) {
+  const L = huntSpotFor(sp); if (!L) return null;
+  return makeBtn(`🎯 Ловить здесь: ${L.icon} ${L.name}`, 'primary wide', () => { closeSheet(); goHunt(L.id); });
+}
 function chapterCard(ch) {
   const S = save.story, B = BOSSES[ch.boss], L = storyLoc(ch);
   const card = document.createElement('div'); card.className = 'card ch-card'; card.id = 'chapterCard';
@@ -13169,7 +13350,7 @@ function chapterCard(ch) {
     const pr = Math.min(tk.n, S.prog[i] || 0), ok = pr >= tk.n;
     const row = document.createElement('div'); row.className = 'ch-task' + (ok ? ' ok' : '');
     row.innerHTML = `<span class="ct-ico">${ok ? '✅' : '◻️'}</span><span class="ct-main"><b>${tk.text}</b><span class="prog"><i style="width:${pr / tk.n * 100}%"></i></span></span><span class="ct-n">${pr}/${tk.n}</span>`;
-    const go = !ok && TASK_GO[tk.ev];
+    const go = !ok && taskGo(tk.ev, tk);
     if (go) row.append(makeBtn(go[0], 'ct-act', go[1]));
     list.append(row);
   });
@@ -13821,10 +14002,10 @@ function hiveTimeOut() {
 function hiveTick() {
   hiveHoneyTick();
   if (hiveTimeUp() && !hiveBusy()) { hiveTimeOut(); return; }
+  // Этап 1: охоту ничто не перебивает — пчёлки не открывают вопрос сами, а ждут на кнопке в полосе сверху
   if (!hiveAskAuto && hiveCanAsk() && canAutoAsk()) {
     hiveAskAuto = true;
-    toast('🐝 Прилетели пчёлки! Они хотят тебя о чём-то спросить', 'good', 2600);
-    setTimeout(() => { if (canAutoAsk()) openHiveAsk(); }, 1500);
+    toast('🐝 Прилетели пчёлки! Нажми «Пчёлки ждут» сверху, когда будешь готов', 'good', 3600);
   }
   updateHivePill();
   for (const el of document.querySelectorAll('.hive-live')) {
@@ -13836,13 +14017,16 @@ function hiveTick() {
     if (hiveActive()) { tm.textContent = '⏳ ' + hiveLeftText(); tm.classList.toggle('alarm', hiveLeft() < 5 * 60000); }
   }
 }
+// Полоса событий под шапкой видна, только если в ней что-то есть (пустых плашек не показываем)
+function syncStrip() { const s = $('huntStrip'), any = [...s.children].some(c => !c.hidden); if (s.hidden === any) s.hidden = !any; }
 function updateHivePill() {
   const el = $('hivePill'), h = save.hive;
   let txt = '', cls = 'hive-pill';
   if (hiveActive()) { txt = hiveLeftText(); if (hiveLeft() < 5 * 60000) cls += ' alarm'; }
-  else if (hiveCanAsk()) { txt = 'ждут!'; cls += ' ask'; }
+  else if (hiveCanAsk()) { txt = 'Пчёлки ждут'; cls += ' ask'; }
   else if (h.queen && h.honey > 0) { txt = `мёд ${h.honey}`; cls += ' ask'; }
   el.hidden = !txt;
+  syncStrip();
   if (!txt) return;
   if (el.className !== cls) el.className = cls;
   if ($('hivePillTxt').textContent !== txt) $('hivePillTxt').textContent = txt;
@@ -14150,7 +14334,7 @@ function hiveGotItem(id) {
   toast(`${I.kind === 'jar' ? '🍯 Банка мёда' : '🥚 Яйцо королевы'} у тебя! Мёд ${hiveItemsGot('jar')} из 3, яйца ${hiveItemsGot('egg')} из 3`, 'good', 3200);
   if (all && h.stage === 2) {
     h.stage = 3;
-    setTimeout(() => { sfx('rare'); toast('🐝 Вся пропажа найдена! Этап 3: соты-замок на ящике с яйцами', 'good', 3800); if (!hiveBusy() && hiveActive()) openHive(); }, 2600);
+    setTimeout(() => { sfx('rare'); toast('🐝 Вся пропажа найдена! Этап 3 ждёт в улье: нажми 🐝 над полем', 'good', 3800); }, 2600);
   }
   persist(); updateQuestDot();
 }
@@ -14614,7 +14798,7 @@ function renderHiveDone(body) {
   const sell = makeBtn('Продать порцию за ', '', sellHoney, honeyPrice()); sell.disabled = h.jars <= 0;
   row.append(sell, makeBtn('🍽 Скормить зверьку', '', () => { closeHive(); showTab('farm', 1); toast('Открой зверька и нажми «Угостить мёдом»'); }));
   card.append(row);
-  body.append(card, hiveP('🎵 В улье звучит «Песня пчёл». В «Альбом» → «Настройки» её можно поставить вместо фоновой музыки.', 'hint-line'));
+  body.append(card, hiveP('🎵 В улье звучит «Песня пчёл». В «Меню» → «Настройки» её можно поставить вместо фоновой музыки.', 'hint-line'));
 }
 
 /* ---------- карточка в «Задания» → «Сюжет» ---------- */
@@ -14684,6 +14868,12 @@ $('adminHive').addEventListener('click', () => {
   if (hiveActive()) { toast('Задание улья уже идёт'); return; }
   h.closed = 0; save.caught = Math.max(save.caught, HIVE_NEED); hiveAskAuto = false; persist(); closeAdmin();
   setTimeout(openHiveAsk, 300);
+});
+$('adminNewbie').addEventListener('click', () => { save.flags.tutOffered = false; save.flags.tutDone = false; persist(); renderMenuTut(); toast('При следующем «Играть» обучение начнётся с броска', 'good'); });
+$('adminDots').addEventListener('click', () => {
+  const keep = { ...dotWant }; for (const k of DOT_ORDER) dotWant[k] = true; applyDots(); closeAdmin();
+  toast(`Все точки хотят гореть, видно не больше ${DOT_MAX}`, 'good');
+  setTimeout(() => { Object.assign(dotWant, keep); updateShopDot(); updateEvoDot(); updateQuestDot(); }, 5000);
 });
 $('adminHiveTime').addEventListener('click', () => {
   if (!hiveActive()) { toast('Задание улья сейчас не идёт', 'bad'); return; }
@@ -15118,12 +15308,12 @@ function applySeason(rebuild) {
   if (WINTER) root.setAttribute('data-winter', ''); else root.removeAttribute('data-winter');
   const lg = document.querySelector('.logo');
   lg.textContent = WINTER ? '❄️' : AUTUMN ? '🍁' : '✦'; lg.classList.toggle('emoji', AUTUMN || WINTER);
-  for (const id of ['setSeason', 'stSeason']) for (const b of $(id).querySelectorAll('button')) {
+  for (const id of ['setSeason']) for (const b of $(id).querySelectorAll('button')) {
     const on = b.dataset.v === SEASON_PICK; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
   }
   if (rebuild) { readColors(); buildScenery(); if (tab === 'hunt') renderWeather(); }
 }
-for (const id of ['setSeason', 'stSeason']) $(id).addEventListener('click', e => {
+for (const id of ['setSeason']) $(id).addEventListener('click', e => {
   const b = e.target.closest('button[data-v]'); if (!b || b.dataset.v === SEASON_PICK) return;
   SEASON_PICK = b.dataset.v; save.flags.season = SEASON_PICK; persist();
   applySeason(true); sfx('tap');
@@ -15155,21 +15345,35 @@ function applyControls() {
   for (const b of document.querySelectorAll('#setHud button')) b.classList.toggle('on', b.dataset.v === (f.hudSize || 'm'));
   for (const b of document.querySelectorAll('#setLift button')) b.classList.toggle('on', b.dataset.v === (f.hudLift ? 'up' : 'down'));
   $('setLeft').checked = !!f.leftHand;
-  if (typeof placeShepBtn === 'function' && shep) placeShepBtn();
+  root.setAttribute('data-font', f.font === 'l' ? 'l' : 'm');
+  if (f.motion === 'low') root.setAttribute('data-motion', 'low'); else root.removeAttribute('data-motion');
+  $('setFont').checked = f.font === 'l'; $('setMotion').checked = f.motion === 'low';
+  requestAnimationFrame(measureSides);
 }
 for (const b of document.querySelectorAll('#setHud button')) b.addEventListener('click', () => { save.flags.hudSize = b.dataset.v; persist(); applyControls(); sfx('tap'); });
 for (const b of document.querySelectorAll('#setLift button')) b.addEventListener('click', () => { save.flags.hudLift = b.dataset.v === 'up'; persist(); applyControls(); sfx('tap'); });
 $('setLeft').addEventListener('change', e => { save.flags.leftHand = e.target.checked; persist(); applyControls(); toast(e.target.checked ? 'Режим для левши включён' : 'Режим для левши выключен'); });
+$('setFont').addEventListener('change', e => { save.flags.font = e.target.checked ? 'l' : 'm'; persist(); applyControls(); requestAnimationFrame(layout); toast(e.target.checked ? 'Крупный шрифт включён' : 'Обычный шрифт'); });
+$('setMotion').addEventListener('change', e => { save.flags.motion = e.target.checked ? 'low' : ''; persist(); applyControls(); toast(e.target.checked ? 'Анимации стало меньше' : 'Анимации как обычно'); });
 applyControls();
 window.addEventListener('resize', () => { if (shep) placeShepBtn(); });
 
-/* ======================= ВКЛАДКИ ======================= */
-const tabBtns = [...document.querySelectorAll('.tab')];
+/* ======================= РАЗДЕЛЫ =======================
+   Этап 1 (версия 43): охота всегда на экране, а разделы — панели поверх неё. Кнопки разделов стоят по краям поля:
+   слева про твоих зверьков (Ферма, Альбом), справа дела и покупки (Задания, Арена, Магазин). Переменная tab осталась:
+   'hunt' — открыта охота, иначе — какой раздел открыт. Пока раздел открыт, охота на паузе и зверёк ждёт. */
+const secBtns = [...document.querySelectorAll('.sec-btn')];
+const secBtn = t => document.querySelector(`.sec-btn[data-tab="${t}"]`);
+const panelEl = t => $('scr-' + t);
+const panelBar = t => { const p = panelEl(t); return p ? p.querySelector('.panel-bar') : null; };
+// на узком экране панель закрывает охоту целиком, и рисовать охоту под ней незачем
+const panelCovers = () => window.innerWidth < 600;
+const lowMotion = () => save.flags.motion === 'low' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Разделы листаются влево-вправо, а кнопки сверху сразу переносят к нужному
 function makePager(root, onChange) {
   const chips = [...root.querySelectorAll(':scope > .chips > .chip:not(.chip-link)')];
   const pages = root.querySelector(':scope > .pages');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let reduce = lowMotion();
   let idx = 0, target = -1, targetTimer = 0;
   function mark(i, silent) {
     idx = i;
@@ -15181,7 +15385,7 @@ function makePager(root, onChange) {
     if (!silent && onChange) onChange(i);
   }
   function go(i, smooth = true) {
-    i = clamp(i, 0, chips.length - 1);
+    i = clamp(i, 0, chips.length - 1); reduce = lowMotion();
     target = i; clearTimeout(targetTimer); targetTimer = setTimeout(() => { target = -1; }, 700);
     pages.scrollTo({ left:i * pages.clientWidth, behavior:smooth && !reduce ? 'smooth' : 'auto' });
     mark(i);
@@ -15210,14 +15414,22 @@ function rerenderCurrent() {
   else if (tab === 'album') renderAlbum();
 }
 function showTab(t, page) {
+  if (t !== 'hunt' && !panelEl(t)) t = 'hunt';
+  const was = tab;
   tab = t;
   closeOrbPop(); closeLocPop(); if (!$('bs').hidden) closeSheet();
   setTimeout(updateShepAlert, 0);
   setTimeout(() => tutEvent('tab', t), 0);
   clearTimeout(toastTimer); toastEl.className = 'toast';
-  for (const b of tabBtns) { const on = b.dataset.tab === t; b.classList.toggle('active', on); b.setAttribute('aria-selected', String(on)); }
-  for (const s of document.querySelectorAll('.screen')) s.classList.toggle('active', s.id === 'scr-' + t);
-  if (t === 'hunt') { layout(); updateInfo(); }
+  for (const b of secBtns) { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-expanded', String(on)); }
+  for (const s of document.querySelectorAll('.screen.panel')) {
+    const on = s.id === 'scr-' + t;
+    s.classList.toggle('active', on); s.setAttribute('aria-hidden', on ? 'false' : 'true'); s.inert = !on;
+  }
+  $('panelBack').hidden = t === 'hunt';
+  document.documentElement.classList.toggle('panel-open', t !== 'hunt');
+  if (t === 'hunt' && was !== 'hunt') { layout(); updateInfo(); }
+  else if (t === 'hunt') updateInfo();
   if (t === 'farm') { farmNotice = false; updateEvoDot(); layoutPen(); renderFarm(); }
   if (t === 'shop') renderShop();
   if (t === 'album') { renderAlbum(); renderSongRow(); }
@@ -15225,9 +15437,78 @@ function showTab(t, page) {
   if (t === 'games') { renderArena(); layoutStars(); renderMiniInfo(); }
   if (t === 'farm') renderCare();
   if (page != null && PAGERS[t]) PAGERS[t].go(page, false);
-  updateShepAlert();
+  if (t === 'shop') markShopSeen();
+  updateShepAlert(); syncBackGuard();
 }
-tabBtns.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+// кнопка раздела: открыть его, а если он уже открыт — вернуться на охоту
+secBtns.forEach(b => b.addEventListener('click', () => { if (tab === b.dataset.tab) showTab('hunt'); else showTab(b.dataset.tab); }));
+for (const b of document.querySelectorAll('.pb-close')) b.addEventListener('click', () => { sfx('tap'); showTab('hunt'); });
+for (const b of document.querySelectorAll('.pb-help')) b.addEventListener('click', () => openHelp(b.dataset.help));
+$('panelBack').addEventListener('click', () => showTab('hunt'));
+for (const s of document.querySelectorAll('.screen.panel')) { s.inert = true; s.setAttribute('aria-hidden', 'true'); }
+// Свайп закрывает раздел: панель уезжает туда, откуда выехала. По шапке и подвкладкам — всегда,
+// по странице — если она уже не листается дальше в эту сторону (так свайп не мешает листать подразделы)
+for (const pnl of document.querySelectorAll('.screen.panel')) {
+  const fromLeft = pnl.classList.contains('from-left');
+  let g = null;
+  const start = (x, y, target) => {
+    if (target.closest('input, select, textarea, canvas, .alb-cats, .lvl-pick, .slider-row, .shep-btn')) { g = null; return; }
+    const pages = target.closest('.pages');
+    g = { x, y, t:performance.now(), head:!!target.closest('.panel-bar, .chips'), pages, sl:pages ? pages.scrollLeft : 0 };
+  };
+  const end = (x, y) => {
+    const d = g; g = null;
+    if (!d || tab === 'hunt' || pnl.id !== 'scr-' + tab) return;
+    const dx = x - d.x, dy = y - d.y;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5 || performance.now() - d.t > 900) return;
+    if (fromLeft ? dx > 0 : dx < 0) return;
+    if (!d.head && d.pages) {
+      const P = d.pages, max = P.scrollWidth - P.clientWidth, edge = fromLeft ? d.sl >= max - 2 : d.sl <= 2;
+      if (!edge || Math.abs(P.scrollLeft - d.sl) > 4) return;
+    }
+    sfx('tap'); showTab('hunt');
+  };
+  pnl.addEventListener('touchstart', e => { if (e.touches.length === 1) start(e.touches[0].clientX, e.touches[0].clientY, e.target); else g = null; }, { passive:true });
+  pnl.addEventListener('touchend', e => { const p = e.changedTouches[0]; if (p) end(p.clientX, p.clientY); }, { passive:true });
+  pnl.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') start(e.clientX, e.clientY, e.target); });
+  pnl.addEventListener('pointerup', e => { if (e.pointerType === 'mouse') end(e.clientX, e.clientY); });
+}
+// Кнопка «Назад» на телефоне: закрывает верхнее окно, а на охоте сворачивает игру.
+// В APK её передаёт приложение (MainActivity), в браузере — история страницы
+function sferolovBack() {
+  if (dlg) { endDlg(); return true; }
+  if (hiveAskOpen) { hiveAnswer('later'); return true; }
+  if (!$('adminSheet').hidden) { closeAdmin(); return true; }
+  if (startOpen) {
+    if (!$('startPanel').hidden || !$('rulesPanel').hidden) { menuHome(); return true; }
+    if (welcomed) { closeMenu(); return true; }
+    return false;
+  }
+  if (!$('evoModal').hidden) { $('evoOk').click(); return true; }
+  if (!$('bossSheet').hidden) { if (bf && bf.over) closeBossFight(); return true; }   // посреди боя «Назад» не сбегает
+  if (!$('battleSheet').hidden) { if (battle && battle.done) $('battleDone').click(); else $('battleSkip').click(); return true; }
+  if (!$('bs').hidden) { closeSheet(); return true; }
+  if (!$('hiveSheet').hidden) { closeHive(); return true; }
+  if (!$('orbPop').hidden) { closeOrbPop(); return true; }
+  if (!$('locPop').hidden) { closeLocPop(); return true; }
+  if (tab !== 'hunt') { showTab('hunt'); return true; }
+  return false;
+}
+window.sferolovBack = sferolovBack;
+const layerOpen = () => tab !== 'hunt' || !$('bs').hidden || !$('hiveSheet').hidden || !$('adminSheet').hidden || (startOpen && welcomed);
+let backGuard = false, backIgnore = false;
+function syncBackGuard() {
+  try {
+    if (layerOpen()) { if (!backGuard) { history.pushState({ sfGuard:1 }, ''); backGuard = true; } }
+    else if (backGuard) { backGuard = false; if (history.state && history.state.sfGuard) { backIgnore = true; history.back(); } }
+  } catch (e) { backGuard = false; }
+}
+window.addEventListener('popstate', () => {
+  if (backIgnore) { backIgnore = false; return; }
+  backGuard = false;
+  if (layerOpen()) sferolovBack();
+  syncBackGuard();
+});
 
 /* ======================= СТАРТОВЫЙ ЭКРАН ======================= */
 let startOpen = true, stW = 0, stH = 0, stBalls = [], stSparks = [];
@@ -15249,6 +15530,7 @@ function layoutStart() {
 }
 function startFloor(x) { return stH * 0.86 + Math.sin(x / stW * TAU * 1.3 + 0.6) * stH * 0.025; }
 function drawStartScreen(dt) {
+  if (save.flags.motion === 'low') dt = 0;   // «Меньше анимации»: сферы в меню стоят
   if (!stW) layoutStart();
   if (!stW) return;
   const c = stx;
@@ -15314,18 +15596,26 @@ startCv.addEventListener('pointerdown', e => {
   for (let k = 0; k < 10; k++) stSparks.push({ x, y, vx:(Math.random() - 0.5) * 240, vy:(Math.random() - 0.8) * 240, life:1, col:['#ffd54f', '#ff8fab', '#81d4fa'][k % 3] });
   sfx('pop');
 });
-function syncStartSettings() {
-  $('stMusic').checked = musicOn; $('stSound').checked = !muted;
-  $('stVolume').value = Math.round(musicVol * 100);
+// Настройки и Правила живут в «Меню» (этап 1), в Альбоме на них остались ярлыки
+function menuSub(id) {
+  sfx('tap');
+  $('startMenu').hidden = true; $('startPanel').hidden = id !== 'startPanel'; $('rulesPanel').hidden = id !== 'rulesPanel';
+  $('startScreen').classList.add('sub-open');
+  if (id === 'rulesPanel') renderRules();
+  if (id === 'startPanel') renderSongRow();
+  $('startScreen').scrollTop = 0;
+  requestAnimationFrame(() => $('startScreen').classList.add('ready'));
 }
-function relayToggle(fromId, toId) {
-  $(fromId).addEventListener('change', e => { const t = $(toId); t.checked = e.target.checked; t.dispatchEvent(new Event('change')); });
+function menuHome() {
+  $('startPanel').hidden = true; $('rulesPanel').hidden = true; $('startMenu').hidden = false;
+  $('startScreen').classList.remove('sub-open'); sfx('tap');
 }
-relayToggle('stMusic', 'musicToggle'); relayToggle('stSound', 'soundToggle');
-$('stVolume').addEventListener('input', e => { const t = $('musicVolume'); t.value = e.target.value; t.dispatchEvent(new Event('input')); });
-$('stVolume').addEventListener('change', () => persist());
-$('startSetBtn').addEventListener('click', () => { sfx('tap'); syncStartSettings(); $('startMenu').hidden = true; $('startPanel').hidden = false; requestAnimationFrame(() => $('startScreen').classList.add('ready')); });
-$('startBack').addEventListener('click', () => { sfx('tap'); $('startPanel').hidden = true; $('startMenu').hidden = false; });
+$('startSetBtn').addEventListener('click', () => menuSub('startPanel'));
+$('startRulesBtn').addEventListener('click', () => menuSub('rulesPanel'));
+$('startBack').addEventListener('click', menuHome);
+$('rulesBack').addEventListener('click', menuHome);
+$('albRules').addEventListener('click', () => openMenu('rulesPanel'));
+$('albSettings').addEventListener('click', () => openMenu('startPanel'));
 // Главное меню: открывается при запуске и кнопкой «Меню» в шапке
 let welcomed = false;
 function closeMenu(go) {
@@ -15334,17 +15624,23 @@ function closeMenu(go) {
   const s = $('startScreen'); s.classList.add('hide');
   startOpen = false; last = performance.now();
   if (go) go();
-  setTimeout(() => { s.hidden = true; layout(); if (!welcomed) { welcomed = true; welcomeToasts(); } }, 560);
+  setTimeout(syncBackGuard, 0);
+  // если за эти полсекунды меню снова открыли, прятать его уже нельзя (иначе игра стоит, а меню не видно)
+  setTimeout(() => { if (!startOpen) s.hidden = true; layout(); if (!welcomed) { welcomed = true; welcomeToasts(); } }, 560);
 }
-function openMenu() {
-  if (startOpen) return;
+// sub — сразу открыть Настройки или Правила (ярлыки в Альбоме)
+function openMenu(sub) {
+  if (startOpen) { if (typeof sub === 'string') menuSub(sub); return; }
   const s = $('startScreen');
-  $('startMenu').hidden = false; $('startPanel').hidden = true; $('startOffer').hidden = true;
+  $('startMenu').hidden = false; $('startPanel').hidden = true; $('rulesPanel').hidden = true; s.classList.remove('sub-open');
   s.hidden = false; s.classList.add('ready');
   startOpen = true; persist(); sfx('tap');
   requestAnimationFrame(() => requestAnimationFrame(() => s.classList.remove('hide')));
+  if (typeof sub === 'string') menuSub(sub);
+  syncBackGuard();
 }
-$('mPlay').addEventListener('click', () => closeMenu());
+// «Играть»: сразу охота. Новичка встречает обучение прямо на поле, с шага броска
+$('mPlay').addEventListener('click', () => { if (!save.flags.tutOffered) startTutorial(true); else closeMenu(); });
 $('menuBtn').addEventListener('click', openMenu);
 setTimeout(() => $('startScreen').classList.add('ready'), 1150);
 new ResizeObserver(() => { if (startOpen) layoutStart(); }).observe(startCv);
@@ -15355,7 +15651,7 @@ new ResizeObserver(() => { if (startOpen) layoutStart(); }).observe(startCv);
    пойманный зверёк идёт в загон (если есть место) или в «Мои зверьки»;
    пастуха прогоняют нажатиями по нему в загоне, сферы для этого не тратятся. */
 const tut = { on:false, step:'', easy:false };
-const tabEl = t => document.querySelector(`.tab[data-tab="${t}"]`);
+const SEC_NAME = { farm:'Ферма', album:'Альбом', quests:'Задания', games:'Арена', shop:'Магазин' };
 function rectOf(el, pad = 6) {
   if (!el) return null;
   const r = el.getBoundingClientRect();
@@ -15390,25 +15686,25 @@ function tutStartShep() {
 }
 const TUT_STEPS = {
   intro:     { g:0, text:'Привет! За минуту покажу главное: как бросать сферу, где её улучшать и как прогнать пастуха.', next:'Начать', onNext:() => tutGo('throw') },
-  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Это бросок.',
+  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:() => (tut.first ? 'Привет! ' : '') + 'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Это бросок.',
                on:{ throw:() => tutGo('flying') } },
   flying:    { g:1, tab:'hunt', hide:true, on:{ miss:() => tutGo('missed'), caught:() => tutGo('caught'), breakout:() => tutGo('broke'), throw:() => {} } },
   missed:    { g:1, tab:'hunt', target:tutOrbRect, text:'Мимо! Сфера вернулась к тебе. Брось ещё раз, прямо в зверька.', on:{ throw:() => tutGo('flying') } },
   broke:     { g:1, tab:'hunt', target:tutOrbRect, text:'Попал, но зверёк вырвался. Брось ещё! Если зверёк вырвался, он может и убежать.', on:{ throw:() => tutGo('flying') } },
   caught:    { g:2, enter:() => { tut.easy = false; }, target:() => rectOf($('hudOrb')), text:'Поймал! Это медная сфера: она всегда с тобой и никогда не ломается. Кнопка сферы открывает выбор сфер и зелий.', next:'Понятно', onNext:() => tutGo('toFarm') },
-  toFarm:    { g:2, target:() => rectOf(tabEl('farm')), text:'Пойманный зверёк отправился на ферму. Нажми «Ферма».', on:{ tab:t => { if (t === 'farm') tutGo('pen'); } } },
+  toFarm:    { g:2, target:() => rectOf(secBtn('farm')), text:'Пойманный зверёк отправился на ферму. Нажми «Ферма» слева на поле.', on:{ tab:t => { if (t === 'farm') tutGo('pen'); } } },
   pen:       { g:2, tab:'farm', enter:() => { if (farmPager.index !== 0) farmPager.go(0); }, target:() => rectOf(penCanvas),
                text:'Это загон: зверьки здесь приносят монеты. Если места нет, новые ждут в разделе «Мои зверьки».', next:'Дальше', onNext:() => tutGo('shop') },
-  shop:      { g:2, target:() => rectOf(tabEl('shop')), text:'В «Магазине» медную сферу улучшают за монеты: серебряная, золотая и дальше. Сильная сфера ловит лучше, но изнашивается, и её чинят.', next:'Понятно', onNext:() => tutGo('shepIntro') },
+  shop:      { g:2, enter:() => showTab('hunt'), target:() => rectOf(secBtn('shop')), text:'Справа на поле — «Магазин». Там медную сферу улучшают за монеты: серебряная, золотая и дальше. Сильная сфера ловит лучше, но изнашивается, и её чинят.', next:'Понятно', onNext:() => tutGo('shepIntro') },
   shepIntro: { g:3, tab:'farm', enter:() => showTab('farm', 0), text:'Иногда приходит пастух и пытается украсть зверька из загона. Сейчас придёт учебный: он ничего не унесёт.',
                next:'Позвать пастуха', onNext:() => { if (tutStartShep()) tutGo('shepHit'); else tutGo('shepNone'); } },
-  shepHit:   { g:3, tab:'farm', target:tutShepRect, text:'Нажимай на пастуха или на красную кнопку внизу: в него полетят сферы. Сферы при этом не тратятся. Попади 3 раза!',
+  shepHit:   { g:3, tab:'farm', target:tutShepRect, text:'Нажимай на пастуха или на красную кнопку «Бросить»: в него полетят сферы. Сферы при этом не тратятся. Попади 3 раза!',
                on:{ shepDefeated:() => tutGo('shepDone'), shepGone:() => tutGo('shepAgain') } },
   shepAgain: { g:3, tab:'farm', text:'Пастух дошёл до зверька. В настоящей игре он бы его украл! Давай ещё раз.', next:'Ещё раз', onNext:() => { if (tutStartShep()) tutGo('shepHit'); else tutGo('shepNone'); } },
   shepNone:  { g:3, text:'Пастух приходит, только когда в загоне есть зверьки. Поймай кого-нибудь, и он однажды заглянет.', next:'Понятно', onNext:() => tutGo('done') },
-  shepDone:  { g:3, target:() => rectOf($('shopTabHint')) || rectOf(tabEl('shop')), text:'Отлично, пастух сбежал! В игре о нём предупредит красная полоса сверху. А пугало из «Магазина» не пускает его 5 минут.',
+  shepDone:  { g:3, enter:() => showTab('hunt'), target:() => rectOf(secBtn('shop')), text:'Отлично, пастух сбежал! В игре о нём предупредит красная полоса сверху. А пугало из «Магазина» не пускает его 5 минут.',
                next:'Понятно', onNext:() => tutGo('done') },
-  done:      { g:3, text:'Обучение пройдено! Лови зверьков, сливай одинаковых на ферме и сражайся на арене. Обучение можно повторить из главного меню.', next:'Играть', onNext:tutFinish },
+  done:      { g:3, enter:() => showTab('hunt'), text:'Обучение пройдено! Лови зверьков, сливай одинаковых на ферме и сражайся на арене. Обучение можно повторить в «Меню».', next:'Играть', onNext:tutFinish },
 };
 function tutGo(step) {
   tut.step = step;
@@ -15426,11 +15722,13 @@ function tutEvent(ev, arg) {
   const S = TUT_STEPS[tut.step];
   if (S && S.on && S.on[ev]) S.on[ev](arg);
 }
-function startTutorial() {
+// first — новичок нажал «Играть»: сразу шаг броска, без лишних экранов
+function startTutorial(first) {
   save.flags.tutOffered = true; persist();
   if (shep && shep.practice) shep = null;
-  tut.on = true; $('coach').hidden = false;
-  if (startOpen) closeMenu(() => tutGo('intro')); else tutGo('intro');
+  tut.on = true; tut.first = first === true; $('coach').hidden = false;
+  const go = () => tutGo(tut.first ? 'throw' : 'intro');
+  if (startOpen) closeMenu(go); else go();
 }
 function tutStop() {
   tut.on = false; tut.easy = false; tut.step = '';
@@ -15446,8 +15744,8 @@ function tutTick() {
   const S = TUT_STEPS[tut.step]; if (!S) return;
   let r = null, text = typeof S.text === 'function' ? S.text() : S.text;
   if (S.tab && tab !== S.tab) {
-    r = rectOf(tabEl(S.tab));
-    text = `Открой раздел «${{ hunt:'Охота', farm:'Ферма' }[S.tab]}», чтобы продолжить.`;
+    if (tab !== 'hunt') { r = rectOf(panelEl(tab).querySelector('.pb-close')); text = 'Нажми ✕, чтобы вернуться на охоту.'; }
+    else { r = rectOf(secBtn(S.tab)); text = `Нажми «${SEC_NAME[S.tab]}» на краю поля, чтобы продолжить.`; }
   } else if (S.tab === 'farm' && S.target === tutShepRect && farmPager.index !== 0) {
     r = rectOf(document.querySelector('#farmPager .chip'));
     text = 'Открой «Загон», чтобы прогнать пастуха.';
@@ -15468,14 +15766,8 @@ function tutTick() {
 }
 $('coachNext').addEventListener('click', () => { const S = TUT_STEPS[tut.step]; if (S && S.onNext) S.onNext(); });
 $('coachSkip').addEventListener('click', () => { save.flags.tutOffered = true; persist(); tutStop(); toast('Обучение можно пройти в любой момент из главного меню'); });
-function renderMenuTut() { $('mTutorial').textContent = save.flags.tutDone ? '🎓 Пройти обучение ещё раз' : '🎓 Пройти обучение'; }
-$('mTutorial').addEventListener('click', startTutorial);
-$('offerYes').addEventListener('click', startTutorial);
-$('offerNo').addEventListener('click', () => {
-  save.flags.tutOffered = true; persist(); sfx('tap');
-  $('startOffer').hidden = true; $('startMenu').hidden = false;
-});
-if (!save.flags.tutOffered) { $('startMenu').hidden = true; $('startOffer').hidden = false; }
+function renderMenuTut() { $('mTutorial').setAttribute('aria-label', save.flags.tutDone ? 'Пройти обучение ещё раз' : 'Пройти обучение'); }
+$('mTutorial').addEventListener('click', () => startTutorial());
 renderMenuTut();
 
 /* ======================= ГЛАВНЫЙ ЦИКЛ ======================= */
@@ -15497,8 +15789,9 @@ function frame(now) {
   }
   refreshWallet();
   // Игра на паузе, пока идёт диалог, вопрос пчёлок или открыт улей: зверёк замирает, погода и метеоры ждут
-  const hold = !!dlg || hiveAskOpen || !$('hiveSheet').hidden;
-  if (W > 0 && cr) { if (!hold) update(dt); if (tab === 'hunt') draw(); }
+  const hold = !!dlg || hiveAskOpen || !$('hiveSheet').hidden || tab !== 'hunt';
+  if (W > 0 && cr) { if (!hold) update(dt); if (tab === 'hunt' || !panelCovers()) draw(); }
+  if (toastQ.length && !throwBusy() && performance.now() >= toastNextAt) { const [m, k, ms] = toastQ.shift(); toastNextAt = performance.now() + Math.min(ms, 1800); toast(m, k, ms); }
   if (tab === 'farm' && farmPager.index === 0) { updatePen(dt); drawPen(dt); }
   if (evoAnim) drawEvo(dt);
   if (battle) drawBattle(dt);
@@ -15517,7 +15810,7 @@ function frame(now) {
   if (warpT > 0) warpT = Math.max(0, warpT - dt);
   // гроза: вспышка молнии (в горах и зимой ледяная), и зверёк на миг замирает
   if (!hold && weather.id === 'storm' && !noWx() && Math.random() < dt * 0.2) {
-    flash = 1; flashIce = snowy();
+    flash = save.flags.motion === 'low' ? 0.35 : 1; flashIce = snowy();
     if (!flashIce) setTimeout(() => sfx('thunder'), 300 + Math.random() * 700);
     if (cr && MOVING.has(state) && wxOn('storm') && cr.sp.rarity !== 'glitch') { cr.stun = STUN_TIME; cr.stunKind = null; }
   }
@@ -15528,7 +15821,7 @@ function frame(now) {
     if (tab === 'hunt' && inSpace()) renderSpacePill();
     if (tab === 'farm') tickFarmExtras(); if (tab === 'shop') tickShop();
     if (tab === 'quests') { tickQuests(); tickStory(); }
-    updateMood(); refreshIncome(); hiveTick();
+    updateMood(); refreshIncome(); hiveTick(); syncBackGuard();
     if (tab === 'farm') tickCare();
     updateQuestDot(); updateShopDot();
   }

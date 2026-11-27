@@ -171,6 +171,14 @@ public class MainActivity extends Activity {
         web.loadUrl("file:///android_asset/index.html");
     }
 
+    // «Назад» сначала закрывает открытый раздел или окно игры, а на охоте сворачивает игру
+    @Override
+    public void onBackPressed() {
+        web.evaluateJavascript("(window.sferolovBack && window.sferolovBack()) ? 'closed' : 'none'", value -> {
+            if (value == null || !value.contains("closed")) MainActivity.super.onBackPressed();
+        });
+    }
+
     @Override protected void onPause() { web.onPause(); super.onPause(); }
     @Override protected void onResume() { super.onResume(); web.onResume(); }
     @Override protected void onDestroy() { web.destroy(); super.onDestroy(); }
