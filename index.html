@@ -1246,6 +1246,28 @@ html[data-motion="low"] .xp-pop{animation:none!important}
 .ess-tile small{font-size:.7rem;font-weight:800;color:var(--muted)}
 .ess-note{margin:10px 0 0;font-weight:700;font-size:.8rem;color:var(--muted);line-height:1.35}
 
+/* ===== Этап 3б (версия 46): лавка красоты ===== */
+.bt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:10px}
+.bt-tile{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:96px;padding:10px 4px 8px;border-radius:16px;border:2px solid var(--border);
+  background:var(--surface-2);color:var(--text);font:inherit;text-align:center;cursor:pointer;touch-action:manipulation}
+.bt-tile:active{transform:scale(.97)}
+.bt-tile:disabled{opacity:.55;cursor:default}
+.bt-tile .bt-ico{font-size:1.6rem;line-height:1.2}
+.bt-tile b{font-weight:900;font-size:.82rem;line-height:1.2}
+.bt-tile .bt-price{display:inline-flex;align-items:center;gap:3px;font-weight:900;font-size:.76rem;color:var(--muted)}
+.bt-tile.own{border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+.bt-tile.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+.bt-tile.on .bt-price{color:var(--accent)}
+.bt-tile.armed{border-color:#ffb300} .bt-tile.armed .bt-price{color:#b26a00}
+/* рамки профиля и альбома */
+html[data-frame] .prof-hero,html[data-frame] #scr-album .alb-hero{border:3px solid transparent;
+  background:linear-gradient(135deg,color-mix(in srgb,#ffb300 14%,var(--surface)),var(--surface)) padding-box,var(--frame) border-box}
+html[data-frame] #scr-album .alb-hero{background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--frame) border-box}
+html[data-frame="fr_wood"]{--frame:linear-gradient(135deg,#8d5a2b,#c68a4a 40%,#6d4220 70%,#b9783c)}
+html[data-frame="fr_silver"]{--frame:linear-gradient(135deg,#eef2f6,#9aa7b5 35%,#ffffff 55%,#8592a0)}
+html[data-frame="fr_gold"]{--frame:linear-gradient(135deg,#fff3b0,#f0b429 35%,#b7791f 60%,#ffe08a)}
+html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47e891,#4fc3f7,#b388ff)}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1440,6 +1462,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
         <button class="chip" type="button" role="tab" id="chipOrbs"><span class="ci" aria-hidden="true">🔮</span>Сферы</button>
         <button class="chip" type="button" role="tab"><span class="ci" aria-hidden="true">💪</span>Прокачка</button>
         <button class="chip" type="button" role="tab" id="chipPots"><span class="ci" aria-hidden="true">🧪</span>Зелья</button>
+        <button class="chip" type="button" role="tab" id="chipBeauty"><span class="ci" aria-hidden="true">💎</span>Красота</button>
       </div>
       <div class="pages">
         <div class="page" role="tabpanel">
@@ -1456,6 +1479,9 @@ html[data-motion="low"] .xp-pop{animation:none!important}
         </div>
         <div class="page" role="tabpanel">
           <div class="list-gap" id="shopPots"></div>
+        </div>
+        <div class="page" role="tabpanel">
+          <div class="list-gap" id="shopBeauty"></div>
         </div>
       </div>
     </div>
@@ -1578,6 +1604,8 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <button class="btn" id="adminEss" type="button">💠 +100 каждой эссенции</button>
             <button class="btn" id="adminClockBack" type="button">⏰ Как будто часы ушли назад на 2 часа</button>
             <button class="btn" id="adminClockOk" type="button">⏰ Часы снова верные</button>
+            <button class="btn" id="adminBeauty" type="button">💎 Выдать всё из лавки красоты</button>
+            <button class="btn" id="adminMagnate" type="button">👑 Проверить «Магнат» заново</button>
           </div>
         </div>
         <div class="card">
@@ -1735,7 +1763,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 45</p>
+          <p class="version">Версия игры 46</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1749,7 +1777,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 45</p>
+    <p class="start-ver">Версия игры 46</p>
   </div>
 </div>
 
@@ -2550,6 +2578,45 @@ const COIN_BASE = { quest:400, dayBonus:1500, shepherd:100, promo:5000, mini:100
 // Часы: если время на телефоне ушло назад больше чем на 10 минут, всё, что зависит от времени, ждёт, пока часы догонят.
 // Если так играют целый час, игра верит новым часам (вдруг их просто поправили)
 const CLOCK_SLACK = 10 * 60000, CLOCK_FORGIVE = 3600;
+// «Лавка красоты» (этап 3б, версия 46): траты для богатых. Ничего отсюда не меняет шансы и доход.
+// В каждом разделе можно надеть одну вещь (титулы выбирают в профиле)
+const BEAUTY_CATS = [
+  { id:'trail',  icon:'💫', name:'Шлейф сферы',       note:'Тянется за сферой в полёте' },
+  { id:'fx',     icon:'🎇', name:'Эффект поимки',     note:'Вспыхивает, когда зверёк пойман' },
+  { id:'frame',  icon:'🖼', name:'Рамка',             note:'Для профиля и альбома' },
+  { id:'title',  icon:'🏅', name:'Титулы',            note:'Выбирай в профиле' },
+  { id:'statue', icon:'🗿', name:'Статуя на ферму',   note:'Стоит в загоне' },
+  { id:'fest',   icon:'🎉', name:'Праздник на ферме', note:'Украшает загон' },
+];
+const BEAUTY = [
+  { id:'tr_sparks',   cat:'trail',  icon:'✨', name:'Искры',             price:5e4 },
+  { id:'tr_fire',     cat:'trail',  icon:'🔥', name:'Огонь',             price:2e6 },
+  { id:'tr_rainbow',  cat:'trail',  icon:'🌈', name:'Радуга',            price:2e8 },
+  { id:'tr_stars',    cat:'trail',  icon:'⭐', name:'Звёзды',            price:2e10 },
+  { id:'fx_fireworks',cat:'fx',     icon:'🎆', name:'Фейерверк',         price:5e5 },
+  { id:'fx_hearts',   cat:'fx',     icon:'💖', name:'Сердечки',          price:5e7 },
+  { id:'fx_lightning',cat:'fx',     icon:'⚡', name:'Молния',            price:5e9 },
+  { id:'fr_wood',     cat:'frame',  icon:'🪵', name:'Деревянная',        price:1e5 },
+  { id:'fr_silver',   cat:'frame',  icon:'🥈', name:'Серебряная',        price:1e7 },
+  { id:'fr_gold',     cat:'frame',  icon:'🥇', name:'Золотая',           price:1e9 },
+  { id:'fr_rainbow',  cat:'frame',  icon:'🌈', name:'Радужная',          price:5e10 },
+  { id:'ti_dandy',    cat:'title',  icon:'🎩', name:'Модник',            price:2.5e5 },
+  { id:'ti_patron',   cat:'title',  icon:'🎭', name:'Меценат',           price:2.5e7 },
+  { id:'ti_treasure', cat:'title',  icon:'💎', name:'Сокровищник',       price:2.5e9 },
+  { id:'ti_emperor',  cat:'title',  icon:'👑', name:'Император сфер',    price:1e11 },
+  { id:'st_stone',    cat:'statue', icon:'🗿', name:'Каменный Пухляш',   price:1e6,  sp:'puff',    metal:'stone' },
+  { id:'st_bronze',   cat:'statue', icon:'🦉', name:'Бронзовый Совёнок', price:1e8,  sp:'owl',     metal:'bronze' },
+  { id:'st_silver',   cat:'statue', icon:'🐋', name:'Серебряный Китёнок',price:1e10, sp:'whale',   metal:'silver' },
+  { id:'st_gold',     cat:'statue', icon:'🏆', name:'Золотой Фениксик',  price:7.5e10, sp:'phoenix', metal:'gold' },
+  { id:'fest_garland',cat:'fest',   icon:'💡', name:'Гирлянда',          price:3e5 },
+  { id:'fest_balloons',cat:'fest',  icon:'🎈', name:'Воздушные шары',    price:3e7 },
+  { id:'fest_confetti',cat:'fest',  icon:'🎊', name:'Фонтан конфетти',   price:3e9 },
+];
+const BEAUTY_BY_ID = Object.fromEntries(BEAUTY.map(b => [b.id, b]));
+for (const b of BEAUTY) if (b.cat === 'title') TITLE_IDS.add(b.id);
+TITLE_IDS.add('magnate');
+// «Магнат»: у кого на момент обновления больше миллиарда — один раз титул и золотая статуя
+const MAGNATE_COINS = 1e9, BEAUTY_CONFIRM = 1e6;   // дорогие вещи покупаются со второго нажатия
 function cleanName(s) {
   const t = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff<>]/g, '').replace(/\s+/g, ' ').trim();
   return Array.from(t).slice(0, NAME_MAX).join('').trim();
@@ -2577,7 +2644,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2677,6 +2744,12 @@ function sanitize(d) {
   for (const k of ESS_ORDER) { const n = Math.floor(Number(es[k])); if (n > 0) d.ess[k] = Math.min(n, ESS_MAX); }
   d.maxT = Number.isFinite(+d.maxT) && +d.maxT > 0 ? +d.maxT : Date.now();
   d.clockPlay = clamp(Number(d.clockPlay) || 0, 0, CLOCK_FORGIVE);
+  const bt = d.beauty && typeof d.beauty === 'object' ? d.beauty : {}, own = {}, on = {};
+  if (bt.own && typeof bt.own === 'object') for (const id of Object.keys(bt.own)) if (BEAUTY_BY_ID[id] && bt.own[id]) own[id] = true;
+  if (bt.on && typeof bt.on === 'object') for (const c of BEAUTY_CATS) { const id = bt.on[c.id]; if (own[id] && BEAUTY_BY_ID[id].cat === c.id && c.id !== 'title') on[c.id] = id; }
+  d.beauty = { own, on };
+  if (d.title && d.title.startsWith('ti_') && !own[d.title]) d.title = '';
+  if (d.title === 'magnate' && !(d.flags && d.flags.magnate)) d.title = '';
   if (!(d.coins >= 0)) d.coins = 0;
   return d;
 }
@@ -2733,6 +2806,7 @@ function loadSave() {
         d.path = s.path && typeof s.path === 'object' ? s.path : null; d.name = s.name; d.title = s.title;
         // экономика (версия 45): эссенции и самое позднее время, которое видела игра
         d.ess = s.ess; d.maxT = Number(s.maxT) || d.last; d.clockPlay = s.clockPlay;
+        d.beauty = s.beauty;   // «Лавка красоты» (версия 46)
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -9439,14 +9513,16 @@ function burst(x, y, colors, n, spd) {
 function updateParts(dt) {
   for (let i = parts.length - 1; i >= 0; i--) {
     const p = parts[i];
-    p.life -= dt / p.dur; p.vy += 260 * dt; p.vx *= 0.98; p.x += p.vx * dt; p.y += p.vy * dt;
+    p.life -= dt / p.dur; p.vy += (p.g != null ? p.g : 260) * dt; p.vx *= 0.98; p.x += p.vx * dt; p.y += p.vy * dt;
     if (p.life <= 0) parts.splice(i, 1);
   }
 }
 function drawParts() {
   for (const p of parts) {
     ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color;
-    starPath(ctx, p.x, p.y, p.size * (0.6 + 0.4 * p.life), 4, 0.35, p.spin); ctx.fill();
+    if (p.shape === 'heart') heartPath(ctx, p.x, p.y, p.size * (0.6 + 0.4 * p.life));
+    else starPath(ctx, p.x, p.y, p.size * (0.6 + 0.4 * p.life), 4, 0.35, p.spin);
+    ctx.fill();
   }
   ctx.globalAlpha = 1;
 }
@@ -9872,6 +9948,7 @@ function finishAttempt() {
     onCaught(cr.sp, cr.trait === 'lucky');
     sfx('catch');
     burst(orb.x, orb.y, ['#ffffff', RARITY[cr.sp.rarity].aura || '#9be38f', '#ffe27a'], 34, 230);
+    catchFx(orb.x, orb.y);
     setState('caught'); tutEvent('caught');
   } else {
     // сильная сфера может треснуть (Колыбельное зелье её бережёт)
@@ -9891,6 +9968,7 @@ function finishAttempt() {
 
 function update(dt) {
   stT += dt;
+  trailStep(dt); fxStep(dt);   // «Лавка красоты»: шлейф сферы и эффект поимки
   if (cr && MOVING.has(state)) {
     if (cr.stun > 0) cr.stun = Math.max(0, cr.stun - dt); else { cr.mt += dt; cr.flT = (cr.flT || 0) + dt; }
     // Пульсарик во вспышке замирает (шанс ×1,5), вспышка идёт по тому же времени, что и на рисунке
@@ -10109,6 +10187,7 @@ function draw() {
     ctx.globalAlpha = 1 - u; ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cr.x, cr.y, cr.r * 1.4, 0, TAU); ctx.fill();
     ctx.restore();
   }
+  drawTrail();
   if (orb.alpha > 0.01) {
     const ps = easeOutBack(orb.pop), sr = ORB_R * orb.scale * ps;
     let sy = null;
@@ -10124,6 +10203,7 @@ function draw() {
   }
   drawActivePots();
   drawParts();
+  drawBolt();
   drawPops();
   drawWeatherFront(T);
   if (warpT > 0 && save.flags.motion !== 'low') drawWarp();
@@ -10652,6 +10732,7 @@ function drawPen(dt) {
   penMap = { x0, x1, y0, y1, s:r * 1.15 };
   if (guardLeft() > 0) drawScarecrow(c, x0 - r * 0.3, lerp(y0, y1, 0.3), r * 0.95, T);
   drawDecorBack(c, x0, x1, y0, y1, r);
+  drawBeautyPen(c, x0, x1, y0, y1, r, dt);
   if (save.story.dog) drawPenDog(c, x0, x1, y0, y1, r, dt);
   if (penBall) {
     const bx = lerp(x0, x1, penBall.x), by = lerp(y0, y1, penBall.y) - r * 0.4 - Math.abs(Math.sin(T * 8)) * r * 0.5;
@@ -11976,6 +12057,7 @@ function renderShop() {
   afford.shop = [];
   renderShopOrbs();
   renderShopPots();
+  renderBeauty();
   // рука
   const reach = armReach(save.arm), armMax = save.arm >= ARM_MAX;
   upCard($('armCard'), {
@@ -12048,6 +12130,11 @@ const RULES = [
     ...ESS_ORDER.map(k => `${ELEMENTS[k].icon} ${ELEMENTS[k].name} чаще всего водится: ${andList(ESS_WHERE[k].map(id => LOC_BY_ID[id].name))}.`),
     ...ORB_NEED.map((N, i) => N && `${ORB_CHAIN[i].name} сфера: ${N.lvl}-й уровень ловца и ${Object.entries(N.ess).length === ESS_ORDER.length ? `по ${Object.values(N.ess)[0]} каждой эссенции` : Object.entries(N.ess).map(([k, n]) => `${ELEMENTS[k].icon} ${n}`).join(' и ')}${ORB_CHAIN[i].loot ? ` и ${LOOT[ORB_CHAIN[i].loot].icon} ${LOOT[ORB_CHAIN[i].loot].name}` : ''}.`).filter(Boolean),
     'Эссенции тратятся на улучшение сферы, как монеты. Все твои эссенции видно в профиле ⭐.']],
+  ['💎', 'Лавка красоты', ['В «Магазине» → «Красота» продаются вещи для красоты: шлейф за сферой, эффект поимки, рамка для профиля и альбома, титулы, статуя и праздник на ферме.',
+    `Цены от ${fmt(Math.min(...BEAUTY.map(b => b.price)))} до ${fmt(Math.max(...BEAUTY.map(b => b.price)))} монет. Ничего из лавки не меняет шансы поимки и доход.`,
+    'В каждом разделе можно надеть одну вещь. Купленное остаётся навсегда: его можно снять и надеть снова. Титул выбирают в профиле.',
+    'Дорогие вещи покупаются со второго нажатия, чтобы не купить случайно.',
+    'Кто к версии 46 накопил больше миллиарда монет, получил титул «Магнат» и золотую статую на ферму.']],
   ['💰', 'Монеты', ['Монеты нужны для удобства и красоты: ремонт, зелья, корм, пугало, украшения. Силу за них не купить.',
     `Руку и загон улучшают за монеты, но каждый новый уровень руки или загона открывается на своём уровне ловца: рука 10 — на ${ARM_NEED[10]}-м, загон 10 — на ${PEN_NEED[10]}-м.`,
     'Награды монетами за задания, бонус дня, боссов, мини-игры, подарки и прогнанного пастуха растут с уровнем ловца, а не с доходом фермы. Цены корма и пугала тоже.',
@@ -12140,6 +12227,7 @@ const HELP = {
     `Звёздной сфере нужен ещё ${LOOT.frost.icon} ${LOOT.frost.name}: его даёт ${lootWhere('frost')}.`,
     'Рука: чем она сильнее, тем дальше летит сфера и тем более редких зверьков ты достаёшь. Каждый новый уровень руки открывается на своём уровне ловца.',
     'Загон: каждое расширение даёт ещё одно место для зверька. Новые расширения тоже открываются с уровнем ловца.',
+    'Красота: шлейфы сферы, эффекты поимки, рамки, титулы, статуи и праздник на ферме. Они только для красоты: шансы и доход не меняются.',
     `Пугало: каждая покупка добавляет ${GUARD_MIN} минут, но не больше ${GUARD_MAX_MIN} минут вперёд. Если пастух уже идёт, пугало его спугнёт.`,
     `Зелья варят из трофеев боссов: трофей и монеты дают ${POT_BREW} зелья. Пей их на охоте: кнопка сферы → «Зелья». Каждое действует ${POT_THROWS} бросков.`,
     `Осколки глитча дают за прогнанного пастуха, мифических и более редких зверьков, слияние в ★★★, арену, сюжет и бонус дня. Из ${SHARDS_FOR_ORB} осколков собирается глитч-сфера.`]],
@@ -16264,6 +16352,8 @@ function titlesEarned() {
   for (const T of LVL_TITLES) if (L >= T.lvl) list.push(T);
   if (save.story.title) list.push({ id:'shep', name:'Гроза пастухов' });
   if (save.hive.title) list.push({ id:'bee', name:'Друг пчёл' });
+  if (save.flags.magnate) list.push({ id:'magnate', name:'Магнат' });
+  for (const b of BEAUTY) if (b.cat === 'title' && save.beauty.own[b.id]) list.push({ id:b.id, name:b.name });
   return list;
 }
 // выбранный титул, а если не выбран или пропал — самый высокий за уровень
@@ -16487,6 +16577,8 @@ $('adminLvl10').addEventListener('click', () => {
 $('adminLvlOld').addEventListener('click', () => { save.path = null; initPath(); pathAdminDone(`Уровень посчитан по заслугам: ${pathLevel()}. Подарок «За опыт» ждёт в «Следующей цели»`); });
 $('adminEss').addEventListener('click', () => { for (const k of ESS_ORDER) addEss(k, 100); pathAdminDone('+100 каждой эссенции'); });
 $('adminClockBack').addEventListener('click', () => { save.maxT = Date.now() + 2 * 3600000; save.clockPlay = 0; pathAdminDone('Игра думает, что часы ушли назад на 2 часа: ферма, задания, реванш и мёд ждут'); });
+$('adminBeauty').addEventListener('click', () => { for (const b of BEAUTY) save.beauty.own[b.id] = true; pathAdminDone('Вся лавка красоты твоя: надень вещи в «Магазине» → «Красота»'); });
+$('adminMagnate').addEventListener('click', () => { save.flags.magnateChk = false; checkMagnate(); pathAdminDone(save.flags.magnate ? '👑 «Магнат» и золотая статуя выданы' : `Монет меньше ${fmt(MAGNATE_COINS)}: «Магнат» не положен`); });
 $('adminClockOk').addEventListener('click', () => { save.maxT = Date.now(); save.clockPlay = 0; pathAdminDone('Часы снова верные'); });
 $('adminLvlZero').addEventListener('click', () => { save.path = { xp:0, paid:1, shown:1, gift:null, v:1 }; pathAdminDone('Путь ловца сброшен: уровень 1'); });
 
@@ -16551,6 +16643,223 @@ function clockTick(dt, playing) {
     if (save.clockPlay >= CLOCK_FORGIVE) { save.maxT = now; save.clockPlay = 0; }   // час игры с такими часами — значит, их поправили
   }
 }
+
+/* ======================= ЛАВКА КРАСОТЫ (этап 3б, версия 46) =======================
+   Шлейфы сферы, эффекты поимки, рамки, титулы, статуи и праздник на ферме. Только красота: шансы и доход не меняются.
+   Каталог и цены — BEAUTY в начале файла. В каждом разделе надета одна вещь; титулы выбирают в профиле. */
+function beautyOn(cat) { return save.beauty.on[cat] || ''; }
+function applyFrame() { const f = beautyOn('frame'); if (f) document.documentElement.dataset.frame = f; else delete document.documentElement.dataset.frame; }
+function buyBeauty(b, btn) {
+  const own = !!save.beauty.own[b.id];
+  if (own) {   // уже есть: надеть или снять (титул — выбрать)
+    if (b.cat === 'title') { save.title = save.title === b.id ? '' : b.id; toast(save.title ? `🏅 Титул «${b.name}» выбран` : 'Титул снова выбирается сам', 'good'); }
+    else if (save.beauty.on[b.cat] === b.id) { delete save.beauty.on[b.cat]; toast(`${b.icon} ${b.name}: снято`); }
+    else { save.beauty.on[b.cat] = b.id; toast(`${b.icon} ${b.name}: надето`, 'good'); }
+    sfx('tap'); persist(); applyFrame(); renderBeauty();
+    return;
+  }
+  if (save.coins < b.price) { sfx('bad'); toast(`Нужно ${fmt(b.price)} монет, а у тебя ${fmt(save.coins)}`, 'bad'); return; }
+  // дорогие вещи — со второго нажатия, чтобы не купить случайно
+  if (b.price >= BEAUTY_CONFIRM && btn) {
+    const at = Number(btn.dataset.armed || 0);
+    if (!(at && Date.now() - at < 3000)) {
+      btn.dataset.armed = String(Date.now()); btn.classList.add('armed');
+      const lb = btn.querySelector('.bt-price'); if (lb) lb.textContent = 'Точно? Нажми ещё раз';
+      sfx('tap');
+      setTimeout(() => { if (btn.isConnected && btn.dataset.armed && Date.now() - Number(btn.dataset.armed) >= 2900) renderBeauty(); }, 3000);
+      return;
+    }
+  }
+  if (!spend(b.price)) return;
+  save.beauty.own[b.id] = true;
+  if (b.cat === 'title') save.title = b.id; else save.beauty.on[b.cat] = b.id;
+  persist(); refreshWallet(true); applyFrame(); sfx('buy');
+  toast(`${b.icon} ${b.name} — теперь твоё!${b.cat === 'title' ? ' Титул уже выбран' : ' Уже надето'}`, 'good', 3000);
+  renderBeauty();
+}
+function renderBeauty() {
+  const box = $('shopBeauty'); if (!box) return;
+  const keepY = box.closest('.page') ? box.closest('.page').scrollTop : 0;
+  box.innerHTML = '';
+  const hero = document.createElement('div'); hero.className = 'alb-hero';
+  hero.innerHTML = '<div class="card-head"><b>💎 Лавка красоты</b></div><small>Вещи для красоты. Они не меняют шансы поимки и доход. Надетую вещь можно снять, а купленная остаётся навсегда.</small>';
+  box.append(hero);
+  for (const C of BEAUTY_CATS) {
+    const card = document.createElement('div'); card.className = 'card';
+    const head = document.createElement('div'); head.className = 'card-head';
+    const hb = document.createElement('b'); hb.textContent = `${C.icon} ${C.name}`;
+    const hs = document.createElement('span'); hs.className = 'pill'; hs.textContent = C.note;
+    head.append(hb, hs); card.append(head);
+    const grid = document.createElement('div'); grid.className = 'bt-grid';
+    for (const b of BEAUTY.filter(x => x.cat === C.id)) {
+      const own = !!save.beauty.own[b.id], on = b.cat === 'title' ? save.title === b.id : save.beauty.on[b.cat] === b.id;
+      const t = document.createElement('button'); t.type = 'button'; t.className = 'bt-tile' + (own ? ' own' : '') + (on ? ' on' : '');
+      const i = document.createElement('span'); i.className = 'bt-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = b.icon;
+      const n = document.createElement('b'); n.textContent = b.name;
+      const p = document.createElement('small'); p.className = 'bt-price';
+      if (on) p.textContent = b.cat === 'title' ? '✓ выбран' : '✓ надето';
+      else if (own) p.textContent = b.cat === 'title' ? 'выбрать' : 'надеть';
+      else { const ci = document.createElement('span'); ci.className = 'coin sm'; ci.setAttribute('aria-hidden', 'true'); p.append(ci, document.createTextNode(fmt(b.price))); }
+      t.append(i, n, p);
+      t.setAttribute('aria-label', `${b.name}. ${on ? 'Надето' : own ? 'Есть, нажми, чтобы надеть' : `Купить за ${fmt(b.price)} монет`}`);
+      t.addEventListener('click', () => buyBeauty(b, t));
+      if (!own) { afford.shop.push({ el:t, cost:b.price, blocked:false }); t.disabled = save.coins < b.price; }
+      grid.append(t);
+    }
+    card.append(grid); box.append(card);
+  }
+  if (box.closest('.page')) box.closest('.page').scrollTop = keepY;
+}
+
+// ---- шлейф за сферой в полёте ----
+const trailParts = [];
+function trailStep(dt) {
+  for (let i = trailParts.length - 1; i >= 0; i--) {
+    const p = trailParts[i]; p.life -= dt / p.dur; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += dt * 4;
+    if (p.life <= 0) trailParts.splice(i, 1);
+  }
+  const id = beautyOn('trail');
+  if (!id || state !== 'flying') return;
+  const n = lowMotion() ? 1 : 3, fire = id === 'tr_fire';
+  for (let i = 0; i < n; i++) trailParts.push({ k:id, x:orb.x + (Math.random() - 0.5) * 8, y:orb.y + (Math.random() - 0.5) * 8, vx:(Math.random() - 0.5) * 40,
+    vy:(Math.random() - 0.5) * 40 - (fire ? 50 : 0), life:1, dur:0.35 + Math.random() * 0.3, hue:(T * 300 + i * 50) % 360, rot:Math.random() * 6 });
+  if (trailParts.length > 120) trailParts.splice(0, trailParts.length - 120);
+}
+function drawTrail() {
+  if (!trailParts.length) return;
+  const s0 = ORB_R * 0.28;
+  ctx.save();
+  for (const p of trailParts) {
+    const a = Math.max(0, p.life);
+    ctx.globalAlpha = a;
+    if (p.k === 'tr_sparks') { ctx.fillStyle = p.hue % 2 < 1 ? '#ffffff' : '#fff59d'; starPath(ctx, p.x, p.y, s0 * (0.5 + a), 4, 0.35, p.rot); ctx.fill(); }
+    else if (p.k === 'tr_fire') {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = a > 0.66 ? '#fff59d' : a > 0.33 ? '#ff9800' : '#e53935';
+      ctx.beginPath(); ctx.arc(p.x, p.y, s0 * (0.6 + 1.4 * a), 0, TAU); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+    } else if (p.k === 'tr_rainbow') { ctx.fillStyle = `hsl(${p.hue},95%,62%)`; ctx.beginPath(); ctx.arc(p.x, p.y, s0 * (0.5 + a), 0, TAU); ctx.fill(); }
+    else { ctx.fillStyle = '#ffd54f'; starPath(ctx, p.x, p.y, s0 * (0.7 + 1.3 * a), 5, 0.45, p.rot); ctx.fill(); }
+  }
+  ctx.restore();
+}
+
+// ---- эффект поимки ----
+const fxQueue = [];
+let bolt = null;
+function catchFx(x, y) {
+  const id = beautyOn('fx'), low = lowMotion();
+  if (id === 'fx_fireworks') {
+    const cols = [['#ff5252', '#ffeb3b'], ['#40c4ff', '#ffffff'], ['#69f0ae', '#e040fb']];
+    [[0, 0, 0], [0.18, -W * 0.16, -H * 0.1], [0.34, W * 0.16, -H * 0.12]].slice(0, low ? 1 : 3).forEach(([t, dx, dy], i) => fxQueue.push({ t, x:x + dx, y:y + dy, cols:cols[i] }));
+  } else if (id === 'fx_hearts') {
+    for (let i = 0; i < (low ? 5 : 14); i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.2, v = 90 + Math.random() * 120;
+      parts.push({ x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v, life:1, dur:0.9 + Math.random() * 0.5, size:7 + Math.random() * 6, color:['#ff4f9a', '#ff80ab', '#e91e63'][i % 3], spin:0, shape:'heart', g:-40 });
+    }
+  } else if (id === 'fx_lightning') {
+    const pts = [[x + (Math.random() - 0.5) * 40, 0]];
+    const steps = 7;
+    for (let i = 1; i < steps; i++) pts.push([x + (Math.random() - 0.5) * 60, y * i / steps]);
+    pts.push([x, y]);
+    bolt = { pts, t:0.35 };
+    if (!low) flash = Math.max(flash, 0.55);
+    burst(x, y, ['#ffffff', '#fff176', '#80d8ff'], low ? 8 : 20, 260);
+  }
+}
+function fxStep(dt) {
+  for (let i = fxQueue.length - 1; i >= 0; i--) {
+    const f = fxQueue[i]; f.t -= dt;
+    if (f.t <= 0) { burst(f.x, f.y, f.cols, 26, 240); fxQueue.splice(i, 1); }
+  }
+  if (bolt) { bolt.t -= dt; if (bolt.t <= 0) bolt = null; }
+}
+function drawBolt() {
+  if (!bolt) return;
+  ctx.save(); ctx.globalAlpha = Math.min(1, bolt.t / 0.2); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  for (const [w, col] of [[9, 'rgba(128,216,255,0.45)'], [3.5, '#ffffff']]) {
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath();
+    bolt.pts.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ---- статуя и праздник в загоне ----
+const METALS = { stone:['#9e9e9e', '#e0e0e0'], bronze:['#b06a2c', '#f0b27a'], silver:['#aab4c0', '#ffffff'], gold:['#f2b01e', '#fff3b0'] };
+const statueCache = {};
+function statueImg(b, size) {
+  const key = b.id + ':' + size;
+  if (statueCache[key]) return statueCache[key];
+  const d = Math.min(window.devicePixelRatio || 1, 2), px = Math.round(size * d);
+  const a = document.createElement('canvas'); a.width = a.height = px;
+  const c = a.getContext('2d'); c.scale(d, d);
+  drawCreature(c, SPECIES_BY_ID[b.sp], size / 2, size * 0.58, size * 0.3, 0.5, { shadow:false });
+  const m = document.createElement('canvas'); m.width = m.height = px; m.getContext('2d').drawImage(a, 0, 0);
+  const [base, hi] = METALS[b.metal] || METALS.stone;
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.globalCompositeOperation = 'color'; c.fillStyle = base; c.fillRect(0, 0, px, px);
+  c.globalCompositeOperation = 'source-atop';
+  const g = c.createLinearGradient(0, 0, px, px); g.addColorStop(0, hi); g.addColorStop(0.5, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.25)');
+  c.globalAlpha = 0.45; c.fillStyle = g; c.fillRect(0, 0, px, px); c.globalAlpha = 1;
+  c.globalCompositeOperation = 'destination-in'; c.drawImage(m, 0, 0);
+  c.globalCompositeOperation = 'source-over';
+  return (statueCache[key] = a);
+}
+const confetti = [];
+function drawBeautyPen(c, x0, x1, y0, y1, r, dt) {
+  const st = BEAUTY_BY_ID[beautyOn('statue')];
+  if (st) {
+    const s = r * 2.6, sx = x1 - r * 0.2, sy = y0 - r * 0.15;
+    c.fillStyle = 'rgba(0,0,0,0.18)'; c.beginPath(); c.ellipse(sx, sy + r * 0.32, r * 0.95, r * 0.22, 0, 0, TAU); c.fill();
+    c.fillStyle = '#cfd8dc'; c.strokeStyle = '#90a4ae'; c.lineWidth = 1.5;
+    c.beginPath(); c.roundRect ? c.roundRect(sx - r * 0.75, sy - r * 0.15, r * 1.5, r * 0.45, 4) : c.rect(sx - r * 0.75, sy - r * 0.15, r * 1.5, r * 0.45); c.fill(); c.stroke();
+    c.drawImage(statueImg(st, Math.round(s)), sx - s / 2, sy - s * 0.92, s, s);
+  }
+  const f = beautyOn('fest'), low = lowMotion();
+  if (f === 'fest_garland') {
+    const cols = ['#ff5252', '#ffeb3b', '#40c4ff', '#69f0ae', '#e040fb'], n = 14, y = 34;
+    c.strokeStyle = 'rgba(60,40,20,0.6)'; c.lineWidth = 1.2; c.beginPath();
+    for (let i = 0; i <= n; i++) { const x = lerp(10, pW - 10, i / n), yy = y + Math.sin(i / n * Math.PI * 3) * 4 + 4; i ? c.lineTo(x, yy) : c.moveTo(x, yy); }
+    c.stroke();
+    for (let i = 0; i <= n; i++) {
+      const x = lerp(10, pW - 10, i / n), yy = y + Math.sin(i / n * Math.PI * 3) * 4 + 8, on = low || (Math.floor(T * 3) + i) % 3 !== 0;
+      c.globalAlpha = on ? 1 : 0.35; c.fillStyle = cols[i % cols.length];
+      c.beginPath(); c.ellipse(x, yy, 3, 4.2, 0, 0, TAU); c.fill();
+    }
+    c.globalAlpha = 1;
+  } else if (f === 'fest_balloons') {
+    const bx = x0 - r * 0.5, by = y0 - r * 0.2;
+    [['#ff5252', -0.6], ['#ffd740', 0], ['#40c4ff', 0.6]].forEach(([col, k], i) => {
+      const t = low ? 0 : T * 1.6 + i, x = bx + k * r * 0.9 + Math.sin(t) * 2, y = by - r * 1.6 - i % 2 * r * 0.35 + Math.cos(t * 0.8) * 2;
+      c.strokeStyle = 'rgba(80,80,80,0.6)'; c.lineWidth = 1; c.beginPath(); c.moveTo(bx, by); c.quadraticCurveTo(x - 3, (by + y) / 2, x, y + r * 0.42); c.stroke();
+      c.fillStyle = col; c.beginPath(); c.ellipse(x, y, r * 0.34, r * 0.42, 0, 0, TAU); c.fill();
+      c.fillStyle = 'rgba(255,255,255,0.55)'; c.beginPath(); c.ellipse(x - r * 0.1, y - r * 0.14, r * 0.07, r * 0.12, -0.4, 0, TAU); c.fill();
+    });
+  } else if (f === 'fest_confetti') {
+    if (!low && confetti.length < 40 && Math.random() < dt * 30) confetti.push({ x:Math.random() * pW, y:-6, vy:30 + Math.random() * 30, vx:(Math.random() - 0.5) * 20, rot:Math.random() * 6, col:['#ff5252', '#ffeb3b', '#40c4ff', '#69f0ae', '#e040fb'][Math.floor(Math.random() * 5)] });
+    for (let i = confetti.length - 1; i >= 0; i--) {
+      const p = confetti[i]; p.y += p.vy * dt; p.x += p.vx * dt; p.rot += dt * 5;
+      if (p.y > pH) { confetti.splice(i, 1); continue; }
+      c.save(); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.col; c.fillRect(-2.5, -1.5, 5, 3); c.restore();
+    }
+    if (low) for (let i = 0; i < 18; i++) { c.fillStyle = ['#ff5252', '#ffeb3b', '#40c4ff'][i % 3]; c.fillRect((i * 53) % pW, 40 + (i * 37) % (pH - 70), 4, 3); }
+  }
+}
+
+// ---- «Магнат»: один раз тем, у кого на момент обновления больше миллиарда ----
+var magnateNote = false;
+function checkMagnate() {
+  if (save.flags.magnateChk) return;
+  save.flags.magnateChk = true;
+  if (save.coins > MAGNATE_COINS) {
+    save.flags.magnate = true; save.beauty.own.st_gold = true;
+    if (!save.beauty.on.statue) save.beauty.on.statue = 'st_gold';
+    magnateNote = true;
+  }
+  persist();
+}
+checkMagnate();
+applyFrame();
 
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
@@ -16661,6 +16970,7 @@ function welcomeToasts() {
   if (circleWas > 0) { setTimeout(() => toast('🌀 «Новых кругов» больше нет: игра идёт дальше без сброса, а их бонусы убраны', '', 4600), 4100 + late); circleWas = 0; }
   if (guardRefund > 0) { const back = guardRefund; guardRefund = 0; setTimeout(() => { sfx('coin'); toast(`🛡 Пугало теперь ставится максимум на ${GUARD_MAX_MIN} минут. За лишнее время вернули ${fmt(back)} монет`, 'good', 5200); }, 4300 + late); }
   if (save.flags.tutDone && !save.flags.storyHint) { save.flags.storyHint = true; persist(); setTimeout(() => { sfx('rare'); toast('🗺 Новое: сюжет «Банда Пастуха»! Открой «Задания» → «Сюжет»', 'good', 4200); }, 3800 + late); }
+  if (magnateNote) { magnateNote = false; setTimeout(() => { sfx('evo'); toast('👑 Ты накопил больше миллиарда монет! Тебе титул «Магнат» и золотая статуя на ферму. Ещё больше красоты — в «Магазине» → «Красота»', 'good', 6000); }, late + 900); }
   if (save.migrated) toast('Твои зверьки из прошлой версии уже на ферме', 'good', 3200);
   else if (offlineEarned > 0 && offline > 30) toast(`Пока тебя не было, ферма принесла ${fmt(offlineEarned)} монет`, 'good', 3200);
   else if (WINTER && !save.flags.winterHi) { save.flags.winterHi = true; persist(); toast('Зима пришла! Снегопад, снеговики и зимняя музыка ❄', 'good', 3400); }
