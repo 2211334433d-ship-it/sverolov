@@ -1222,12 +1222,18 @@ html[data-motion="low"] .xp-pop{animation:none!important}
 .lvl-rw{justify-content:center}
 .lvl-next{margin:0;font-weight:800;font-size:.86rem;color:var(--muted);line-height:1.35}
 .lvl-modal .lvl-card{animation:lvIn .45s cubic-bezier(.2,1.4,.4,1)}
+/* версия 50: длинный подарок не уходит за экран — окно прокручивается, «Забрать» прилипает к низу */
+.lvl-modal{padding:12px}
+.lvl-card{max-height:100%;overflow:hidden auto;overscroll-behavior:contain}
+.lvl-card>*{flex-shrink:0}
+.lvl-card #lvlTake{position:sticky;bottom:0;z-index:1;box-shadow:0 -6px 12px var(--surface)}
 @keyframes lvIn{from{transform:scale(.7);opacity:0}}
 @keyframes lvSpin{to{transform:rotate(360deg)}}
 @media (orientation:landscape) and (max-height:540px){
   .top .lvl-btn{min-height:44px}
   .goal{height:44px} .goal-txt small{display:none} .goal-txt b{-webkit-line-clamp:2;font-size:.78rem}
   .lvl-card{gap:6px;padding:12px 16px 14px} .lvl-burst{width:84px;height:84px} .lvl-burst b{font-size:2rem} .lvl-rays{inset:-22px}
+  .lvl-modal .lvl-card{width:min(100%,580px)}   /* шире: длинный подарок влезает без прокрутки */
 }
 
 /* ===== Этап 3 (версия 45): честная экономика — эссенции, требования, часы ===== */
@@ -1298,6 +1304,44 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
 .dex-prog small{font-weight:800;color:var(--muted);font-size:.84rem}
 .first-meet{font-weight:800}
 .cl-size{color:#c5e1a5}
+
+/* ===== Этап 5б (версия 50): записки зоолога и цели коллекций ===== */
+.notes-card{display:flex;flex-direction:column;gap:6px}
+.note-row{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:14px;background:var(--surface-2)}
+.note-row .note-ico{flex:none;font-size:1.2rem;line-height:1.3}
+.note-row div{display:flex;flex-direction:column;gap:1px;min-width:0}
+.note-row small{font-weight:900;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.02em}
+.note-row b{font-weight:800;font-size:.9rem;line-height:1.35}
+.note-row.locked{opacity:.62}
+.note-row.locked b{color:var(--muted);font-weight:800}
+.alb-coll{display:contents}
+.alb-coll.framed{display:flex;flex-direction:column;gap:8px;margin:0 -8px;padding:6px 8px 10px;border-radius:20px;border:3px solid transparent;
+  background:linear-gradient(color-mix(in srgb,var(--cc) 7%,var(--surface)),color-mix(in srgb,var(--cc) 7%,var(--surface))) padding-box,
+  linear-gradient(135deg,var(--cc),color-mix(in srgb,var(--cc) 35%,#ffffff) 45%,var(--cc) 70%,#ffd54f) border-box}
+.alb-coll.framed .alb-sec{margin-top:2px}
+.alb-sec .as-goal{flex:none;font-size:.95rem;line-height:1;font-weight:900;color:var(--cc)}
+.coll-goals{--cc:var(--accent);display:flex;flex-direction:column;gap:6px}
+.cg-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:var(--surface);border:2px solid var(--border)}
+.cg-row.ok{border-color:color-mix(in srgb,var(--cc) 60%,var(--border))}
+.cg-ico{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--cc) 16%,var(--surface));font-weight:900;font-size:.95rem}
+.cg-row.ok .cg-ico{background:var(--cc);color:#fff}
+.cg-row div{display:flex;flex-direction:column;gap:1px;min-width:0}
+.cg-row b{font-weight:900;font-size:.9rem}
+.cg-row small{font-weight:800;color:var(--muted);font-size:.78rem;line-height:1.3}
+.bt-tile.coll-frame.own .bt-ico{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--cc) 60%,transparent))}
+.bt-tile.coll-frame.locked{opacity:.6}
+.bt-tile.coll-frame.locked .bt-price{color:var(--muted);font-size:.7rem;text-align:center}
+/* рамки за коллекции (профиль и альбом), как рамки из лавки */
+html[data-frame="fc_forest"]{--frame:linear-gradient(135deg,#2e7d32,#a5d6a7 35%,#43a047 60%,#c5e1a5)}
+html[data-frame="fc_water"]{--frame:linear-gradient(135deg,#0d47a1,#90caf9 35%,#1e88e5 60%,#b3e5fc)}
+html[data-frame="fc_fire"]{--frame:linear-gradient(135deg,#bf360c,#ffab91 35%,#f4511e 60%,#ffcc80)}
+html[data-frame="fc_winter"]{--frame:linear-gradient(135deg,#01579b,#e1f5fe 35%,#4fc3f7 60%,#ffffff)}
+html[data-frame="fc_earth"]{--frame:linear-gradient(135deg,#4e342e,#bcaaa4 35%,#8d6e63 60%,#d7ccc8)}
+html[data-frame="fc_sky"]{--frame:linear-gradient(135deg,#283593,#c5cae9 35%,#5c8fd6 60%,#fff59d)}
+html[data-frame="fc_night"]{--frame:linear-gradient(135deg,#311b92,#b39ddb 35%,#7e57c2 60%,#ffe082)}
+html[data-frame="fc_space"]{--frame:linear-gradient(135deg,#1a237e,#9fa8da 30%,#5c6bc0 55%,#e1bee7 80%,#fff59d)}
+html[data-frame="fc_pets"]{--frame:linear-gradient(135deg,#ad1457,#f8bbd0 35%,#ec407a 60%,#ffffff)}
+html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 8px,#80deea 8px 16px,#006064 16px 24px)}
 
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
@@ -1642,6 +1686,10 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <button class="btn" id="adminChest" type="button">🧰 Сундук на поле</button>
             <button class="btn" id="adminDexOld" type="button">🏅 Пересчитать медали, как у старого сохранения</button>
             <button class="btn" id="adminDex50" type="button">🏅 +50 поимок зверьку на поле</button>
+            <button class="btn" id="adminNotes" type="button">📒 Все записки зоолога открыть (15 поимок каждому виду)</button>
+            <button class="btn" id="adminCollHalf" type="button">🗂 Коллекция «Лес»: найти половину</button>
+            <button class="btn" id="adminCollAll" type="button">🗂 Все коллекции собрать</button>
+            <button class="btn" id="adminCollOld" type="button">🗂 Пересчитать цели коллекций, как у старого сохранения</button>
             <button class="btn" id="adminGiant" type="button">🦣 Великан</button>
             <button class="btn" id="adminBaby" type="button">🐣 Малыш</button>
             <button class="btn" id="adminRunner" type="button">💨 Беглец</button>
@@ -1804,7 +1852,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 49</p>
+          <p class="version">Версия игры 50</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1818,7 +1866,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 49</p>
+    <p class="start-ver">Версия игры 50</p>
   </div>
 </div>
 
@@ -2416,6 +2464,15 @@ const SIZE_CM = { puff:18, mush:12, leaf:16, bee:7, chameleon:20, deer:55, lotus
   rock:14, mole:17, spiky:19, armadillo:26, crystal:21, nugget:12, pinwheel:15, spark:22, storm:36, star:48, galaxy:42, divine:52, owl:21, firefly:6,
   bat:15, moth:14, mist:40, moon:32, shadow:38, dezya:30, makarsha:28, graf:32, vr:25, hare:27, piggy:24, cloudy:33, hedge:16, cricket:8, jelly:20,
   crater:18, rover:22, dusty:9, sputnik:17, rocket:26, alien:23, saturn:30, meteor:20, comet:34, pulsar:28, astro:35, queen:25 };
+// Записки зоолога: у каждого вида три записки, открываются на 1-й, 5-й и 15-й поимке (тексты — NOTES рядом с картой вида)
+const NOTE_AT = [1, 5, 15], NOTE_KIND = [{ icon:'❤', name:'Что любит' }, { icon:'😱', name:'Чем испугать' }, { icon:'😄', name:'Смешной факт' }];
+// Цели коллекций: половина (с округлением вверх) и вся коллекция. Награды только для красоты и эссенции — силы в бою не дают
+const COLL_GOAL = { half:0.5, halfEss:20, fullEss:50 };
+const COLL_ESS = { forest:'nature', water:'water', fire:'fire', winter:'ice', earth:'earth', sky:'thunder', night:'dark', space:'light', pets:'light', digital:'thunder' };
+const COLL_TITLE = { forest:'Лесовик', water:'Морской волк', fire:'Хранитель огня', winter:'Снежный странник', earth:'Хранитель недр',
+  sky:'Покоритель небес', night:'Ночной дозорный', space:'Звёздный путешественник', pets:'Друг любимчиков', digital:'Цифровой гений' };
+const COLL_FRAME = { forest:'Лесная', water:'Морская', fire:'Огненная', winter:'Снежная', earth:'Каменная', sky:'Небесная', night:'Ночная',
+  space:'Звёздная', pets:'Пушистая', digital:'Пиксельная' };
 // Тряска и вспышка при поимке по редкости (сила тряски в пикселях, цвет вспышки)
 const CATCH_FEEL = { rare:[2, null], epic:[3, '186,104,255'], legendary:[5, '255,213,79'], mythic:[6, '255,90,79'], secret:[7, '143,124,255'],
                      divine:[8, '255,245,157'], pet:[7, '255,126,182'], glitch:[5, '0,229,255'] };
@@ -2718,6 +2775,7 @@ const BEAUTY = [
 const BEAUTY_BY_ID = Object.fromEntries(BEAUTY.map(b => [b.id, b]));
 for (const b of BEAUTY) if (b.cat === 'title') TITLE_IDS.add(b.id);
 TITLE_IDS.add('magnate');
+for (const k of Object.keys(COLL_TITLE)) TITLE_IDS.add('c_' + k);   // титулы за собранные коллекции (версия 50)
 // «Магнат»: у кого на момент обновления больше миллиарда — один раз титул и золотая статуя
 const MAGNATE_COINS = 1e9, BEAUTY_CONFIRM = 1e6;   // дорогие вещи покупаются со второго нажатия
 function cleanName(s) {
@@ -2747,7 +2805,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, dex:{}, dexGift:null, last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, dex:{}, dexGift:null, coll:{}, collGift:null, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2847,9 +2905,20 @@ function sanitize(d) {
   for (const k of ESS_ORDER) { const n = Math.floor(Number(es[k])); if (n > 0) d.ess[k] = Math.min(n, ESS_MAX); }
   d.maxT = Number.isFinite(+d.maxT) && +d.maxT > 0 ? +d.maxT : Date.now();
   d.clockPlay = clamp(Number(d.clockPlay) || 0, 0, CLOCK_FORGIVE);
+  // цели коллекций (версия 50): 1 — половина собрана, 2 — вся; null у старого сохранения — посчитаем в initColl
+  if (d.coll && typeof d.coll === 'object') { const c = {}; for (const id of Object.keys(COLL_TITLE)) { const v = Math.floor(Number(d.coll[id]) || 0); if (v > 0) c[id] = Math.min(2, v); } d.coll = c; }
+  else d.coll = null;
+  const cgf = d.collGift && typeof d.collGift === 'object' ? d.collGift : null;
+  d.collGift = null;
+  if (cgf) { const ess = {}; for (const k of ESS_ORDER) { const n = Math.floor(Number(cgf.ess && cgf.ess[k]) || 0); if (n > 0) ess[k] = Math.min(n, 1e6); }
+    const full = Array.isArray(cgf.full) ? [...new Set(cgf.full.filter(id => COLL_TITLE[id] && d.coll && d.coll[id] >= 2))] : [];
+    const n = clamp(Math.floor(Number(cgf.n) || 0), 0, 100); if (n) d.collGift = { ess, n, full }; }
   const bt = d.beauty && typeof d.beauty === 'object' ? d.beauty : {}, own = {}, on = {};
   if (bt.own && typeof bt.own === 'object') for (const id of Object.keys(bt.own)) if (BEAUTY_BY_ID[id] && bt.own[id]) own[id] = true;
   if (bt.on && typeof bt.on === 'object') for (const c of BEAUTY_CATS) { const id = bt.on[c.id]; if (own[id] && BEAUTY_BY_ID[id].cat === c.id && c.id !== 'title') on[c.id] = id; }
+  // рамка за собранную коллекцию: её нельзя купить, она есть, пока коллекция отмечена собранной
+  const fc = bt.on && typeof bt.on.frame === 'string' && bt.on.frame.startsWith('fc_') ? bt.on.frame.slice(3) : '';
+  if (fc && COLL_FRAME[fc] && d.coll && d.coll[fc] >= 2) on.frame = 'fc_' + fc;
   d.beauty = { own, on };
   const sk = d.streak && typeof d.streak === 'object' ? d.streak : {};
   d.streak = { n:clamp(Math.floor(Number(sk.n)) || 0, 0, 9999), t:Number.isFinite(+sk.t) && +sk.t > 0 ? +sk.t : 0 };
@@ -2871,6 +2940,7 @@ function sanitize(d) {
   if (dg) { const ess = {}; for (const k of ESS_ORDER) { const n = Math.floor(Number(dg.ess && dg.ess[k]) || 0); if (n > 0) ess[k] = Math.min(n, 1e6); }
     const xp = clamp(Math.floor(Number(dg.xp) || 0), 0, 1e7), n = clamp(Math.floor(Number(dg.n) || 0), 0, 1000); if (xp || n) d.dexGift = { xp, ess, n }; }
   if (d.title && d.title.startsWith('ti_') && !own[d.title]) d.title = '';
+  if (d.title && d.title.startsWith('c_') && !(d.coll && d.coll[d.title.slice(2)] >= 2)) d.title = '';
   if (d.title === 'magnate' && !(d.flags && d.flags.magnate)) d.title = '';
   if (!(d.coins >= 0)) d.coins = 0;
   return d;
@@ -2932,6 +3002,8 @@ function loadSave() {
         d.streak = s.streak;   // серия поимок (версия 47)
         // записи о видах (версия 49): у старых сохранений их нет — посчитаем медали по зверькам в initDex
         d.dex = s.dex && typeof s.dex === 'object' ? s.dex : null; d.dexGift = s.dexGift;
+        // цели коллекций (версия 50): у старых сохранений их нет — посчитаем по альбому в initColl
+        d.coll = s.coll && typeof s.coll === 'object' ? s.coll : null; d.collGift = s.collGift;
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -3320,7 +3392,8 @@ let toastTimer = 0, toastQ = [], toastNextAt = 0;
 const throwBusy = () => tab === 'hunt' && (state === 'dragging' || state === 'flying');
 function whenIdle(fn) { if (!throwBusy() && !dlg) fn(); else setTimeout(() => whenIdle(fn), 250); }
 function toast(msg, kind = '', ms = 2200) {
-  if (throwBusy()) { toastQ.push([msg, kind, ms]); if (toastQ.length > 3) toastQ.shift(); return; }
+  // во время броска и пока открыто окно награды сообщения ждут (версия 50: раньше всплывали поверх окна)
+  if (throwBusy() || !$('lvlModal').hidden) { toastQ.push([msg, kind, ms]); if (toastQ.length > 3) toastQ.shift(); return; }
   const stEl = document.getElementById('startScreen');
   if (stEl && !stEl.hidden && !stEl.classList.contains('hide')) return;  // пока открыт стартовый экран, подсказки игры не показываем
   const coachEl = document.getElementById('coach');
@@ -10085,13 +10158,14 @@ function onCaught(sp, lucky) {
   // итог поимки — короткая строка (сама исчезает через 1,5 с); сообщение — только если есть что-то особенное
   showCatchLine([rk > 1 ? ['special', `${SPk.icon} ×${rk}`] : null, dx ? ['size', `📏 ${fmtSize(dx.size)}${dx.rec ? ' 🏆' : ''}`] : null,
     ...(dx ? dx.medals.map(x => ['medal', x.M.icon]) : []), ['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
-  const notes = [sp.shiny ? `✨ Сияющий ${sp.name}! Доход ×${SHINY_MULT}` : '', first ? `Новый в альбоме: ${dexNo(sp.no)} ${sp.name}!` : '',
+  const notes = [sp.shiny ? `✨ Сияющий ${sp.name}! Доход ×${SHINY_MULT}` : '', first ? `Новый в альбоме: ${dexNo(sp.no)} ${sp.name}!${NOTES[sp.id] ? ' 📒 Первая записка зоолога — в его карточке.' : ''}` : '',
+    dx && dx.note ? `📒 Записка зоолога «${sp.name}» — ${NOTE_KIND[dx.note].name.toLowerCase()}: ${NOTES[sp.id][dx.note]}` : '',
     full ? `${sp.name} ждёт на ферме: загон полон, замени кого-нибудь` : '',
     ...(dx ? dx.medals.map(x => `${x.M.icon} Медаль «${sp.name}»: ${x.M.name}! +${x.R.xp} ⭐ +${x.R.ess} ${ELEMENTS[essOf(sp)].icon}`) : []),
     dx && dx.rec ? `📏 Новый рекорд: самый ${dx.rec === 'big' ? 'крупный' : 'маленький'} ${sp.name} — ${fmtSize(dx.size)}!` : '', spaceMsg.trim(), shardMsg.trim(), sp.shiny ? '' : noteMerge(sp).trim()].filter(Boolean);
   if (notes.length) setTimeout(() => toast(notes.join(' '), 'good', 3400), 1500);   // после строки итога, чтобы не закрывать её
-  const K = COLL_BY_ID[sp.coll];
-  if (first && K && collDone(K)) setTimeout(() => { sfx('rare'); toast(`🗂 Коллекция ${K.icon} «${K.name}» собрана целиком! Награда ждёт в «Заданиях» → «Достижения»`, 'good', 4600); updateQuestDot(); }, 3600);
+  // цели коллекций: половина и вся коллекция (версия 50)
+  if (first) { const cg = collCheck(); if (cg.length) collToast(cg, notes.length ? 5000 : 1700); }   // после сообщения «Новый в альбоме», не поверх него
 }
 
 function finishAttempt() {
@@ -12278,6 +12352,14 @@ const RULES = [
     'В карточке вида в альбоме: сколько поймано, где впервые встретил, рекорды, в какую погоду ловил и сколько осталось до следующей медали.',
     'В альбоме есть поиск по имени и номеру. У ненайденного вида написано, куда идти за первой встречей и какая у него стихия.',
     'Если ты играл до версии 49, медали посчитаны по твоим зверькам (на ферме, в запасе и слитым), а награды за них собраны в подарок «Первые медали».']],
+  ['📒', 'Записки зоолога', [`У каждого вида три записки: ${NOTE_KIND.map(k => `${k.icon} ${k.name.toLowerCase()}`).join(', ')}.`,
+    `Они открываются на ${NOTE_AT.slice(0, -1).join('-й, ')}-й и ${NOTE_AT[NOTE_AT.length - 1]}-й поимке этого вида. Читай их в карточке вида в альбоме.`,
+    'Если ты играл до версии 50, записки открыты по тому, сколько у тебя было зверьков этого вида.']],
+  ['🗂', 'Цели коллекций', [`Собери половину коллекции (с округлением вверх) — получишь +${COLL_GOAL.halfEss} эссенции стихии коллекции.`,
+    `Собери всю коллекцию — ещё +${COLL_GOAL.fullEss} эссенции, титул и рамку для профиля и альбома. Собранная коллекция в альбоме обведена рамкой.`,
+    'Рамки за коллекции лежат в «Магазине» → «Красота» → «Рамка». Купить их за монеты нельзя, только собрать коллекцию.',
+    'Награды за коллекции — только эссенции и красота: силы в бою они не дают.',
+    'Если ты играл до версии 50, титулы и рамки за собранные коллекции уже твои, а эссенция ждёт в подарке «Цели коллекций».']],
   ['🧰', 'Сундуки и особые встречи', ['Иногда вместо зверька на поле стоит сундук: деревянный, серебряный или золотой. Попади в него сферой — он откроется.',
     'В сундуке монеты и эссенции, бывает зелье, в космосе — звёздная пыль, а изредка — осколок глитча или украшение из «Лавки красоты». Чем лучше сундук, тем больше внутри.',
     `${SPECIAL.giant.icon} Великан: в полтора раза больше и ловится труднее, зато награды ×${SPECIAL.giant.reward}.`,
@@ -12440,7 +12522,9 @@ const HELP = {
     'Фильтры показывают коллекцию, редкость, найденных или ещё не найденных.',
     'В карточке зверька написано, где его искать. Кнопка «Ловить здесь» сразу отправит на охоту в нужное место.',
     'Медали вида: 🥉 🥈 🥇 💎 за число поимок. За каждую — опыт и эссенция. Есть поиск по имени.',
-    'За собранные коллекции дают награды в «Заданиях» → «Достижения».']],
+    `Записки зоолога о каждом виде открываются на ${NOTE_AT.join(', ')}-й поимке.`,
+    'За половину и всю коллекцию — эссенция, а за всю ещё титул и рамка. Цели видно, если выбрать коллекцию вверху.',
+    'За собранные коллекции есть и достижение в «Заданиях» → «Достижения».']],
 };
 function openHelp(id) {
   const H = HELP[id]; if (!H) return;
@@ -12507,10 +12591,14 @@ function renderAlbum() {
     const all = collMembers(k.id), list = all.filter(pass); if (!list.length) continue;
     shown += list.length;
     const have = seenIn(all), head = document.createElement('div'); head.className = 'alb-sec' + (have === all.length ? ' done' : ''); head.style.setProperty('--cc', k.color);
-    head.innerHTML = `<span class="as-ico" aria-hidden="true">${k.icon}</span><b>${k.name}</b><span class="as-bar" aria-hidden="true"><i style="width:${have / all.length * 100}%"></i></span><span class="as-n">${have === all.length ? '✓ ' : ''}${have} из ${all.length}</span>`;
+    head.innerHTML = `<span class="as-ico" aria-hidden="true">${k.icon}</span><b>${k.name}</b><span class="as-bar" aria-hidden="true"><i style="width:${have / all.length * 100}%"></i></span><span class="as-n">${have === all.length ? '✓ ' : ''}${have} из ${all.length}</span>${collLv(k.id) ? `<span class="as-goal" title="${collLv(k.id) >= 2 ? 'Собрана целиком: титул и рамка получены' : 'Половина собрана'}">${collLv(k.id) >= 2 ? '🏅' : '½'}</span>` : ''}`;
     const g = document.createElement('div'); g.className = 'alb-grid';
     for (const sp of list) g.append(albumCard(sp, V.coll !== 'all'));
-    grid.append(head, g);
+    // собранная коллекция — в рамке своего цвета; в выбранной коллекции видно её цели
+    const wrap = document.createElement('div'); wrap.className = 'alb-coll' + (collLv(k.id) >= 2 ? ' framed' : ''); wrap.style.setProperty('--cc', k.color);
+    wrap.append(head);
+    if (V.coll !== 'all' && COLL_TITLE[k.id]) wrap.append(collGoalCard(k));
+    wrap.append(g); grid.append(wrap);
   }
   if (!shown) {
     const e = document.createElement('div'); e.className = 'empty-card';
@@ -12685,6 +12773,7 @@ function adminGivePet(sp, n) {
   if ((save.pets[sp.id] || 0) >= MERGE_NEED) farmNotice = true;
   persist(); refreshIncome(); refreshPenAnimals(); updateEvoDot();
   toast(`Получено: ${sp.name} ×${n}${put ? `, в загон сели ${put}` : ''}`, 'good');
+  const cg = collCheck(); if (cg.length) collToast(cg, 1600);
 }
 function renderAdminPets() {
   const grid = $('adminPets'); grid.innerHTML = '';
@@ -12809,6 +12898,7 @@ function redeemPromo() {
     persist(); refreshIncome(); refreshPenAnimals(); updateEvoDot(); refreshWallet(true);
     sfx('evo');
     toast(`🎁 Промокод принят! К тебе пришёл любимчик ${sp.name}${put ? ', он уже в загоне' : ''}`, 'good', 4200);
+    const cg = collCheck(); if (cg.length) collToast(cg, 4600);
     setTimeout(() => openPetSheet(sp.id), 350);
   } else {
     const gift = lvlCoins(COIN_BASE.promo);
@@ -16445,6 +16535,8 @@ function rewardChips(s) {
   for (const [k, n] of Object.entries(s.pots || {})) out.push(rwChip('orb', `🧪 ${potTitle(k)}${n > 1 ? ' ×' + n : ''}`));
   for (const k of ESS_ORDER) if (s.ess && s.ess[k]) out.push(rwChip('orb', `${ELEMENTS[k].icon} +${s.ess[k]}`));
   for (const T of s.titles || []) out.push(rwChip('orb', `🏅 «${T.name}»`));
+  for (const F of s.frames || []) out.push(rwChip('orb', `🖼 ${F.name}`));
+  for (const t of s.extra || []) out.push(rwChip('orb', t));
   return out;
 }
 // что откроется дальше: ближайшая большая награда и ближайший титул
@@ -16491,12 +16583,12 @@ function refreshLvl(bump) {
   if (L !== lvlShown) { lvlShown = L; $('lvlNum').textContent = L; }
   if (Math.abs(frac - lvlFracShown) > 0.001) { lvlFracShown = frac; $('lvlFill').style.width = `${(frac * 100).toFixed(1)}%`; }
   b.setAttribute('aria-label', max ? `Уровень ловца ${L}, максимальный. Открыть профиль` : `Уровень ловца ${L}: ${fmt(xp - LVL_CUM[L])} из ${fmt(LVL_CUM[L + 1] - LVL_CUM[L])} опыта. Открыть профиль`);
-  const want = lvlPending() || !!save.path.gift || !!save.dexGift;
+  const want = lvlPending() || !!save.path.gift || !!save.dexGift || !!save.collGift;
   b.classList.toggle('ready', want);
   if (dotWant.lvl !== want) { dotWant.lvl = want; applyDots(); }
   if (bump) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
 }
-function lvlDot() { dotWant.lvl = lvlPending() || !!(save.path && save.path.gift); applyDots(); }
+function lvlDot() { dotWant.lvl = lvlPending() || !!(save.path && save.path.gift) || !!save.dexGift || !!save.collGift; applyDots(); }
 
 // ---- окно «Новый уровень!» и подарок «За опыт» ----
 var lvlMode = null;   // 'lvl' — награда за уровень, 'gift' — подарок «За опыт»
@@ -16520,7 +16612,7 @@ function lvlFill(o) {
   setTimeout(() => $('lvlTake').focus({ preventScroll:true }), 60);
 }
 function openLvl() {
-  if (!lvlPending()) { if (save.path.gift) openGift(); else if (save.dexGift) openMedalGift(); return; }
+  if (!lvlPending()) { if (save.path.gift) openGift(); else if (save.dexGift) openMedalGift(); else if (save.collGift) openCollGift(); return; }
   const L = pathLevel(), from = save.path.paid + 1, s = lvlRewardsSum(from, L);
   lvlMode = 'lvl'; sfx('level');
   lvlFill({ lvl:L, title:'Новый уровень!', text:from < L ? `Уровни ${from}–${L}: награды за все сразу` : `Ты теперь ловец ${L}-го уровня`, rewards:s, next:lvlNextText(L) });
@@ -16539,14 +16631,15 @@ function takeLvl() {
     save.path.paid = L; save.path.shown = Math.max(save.path.shown, L);
   } else if (lvlMode === 'gift' && save.path.gift) { got = save.path.gift; save.path.gift = null; }
   else if (lvlMode === 'medals' && save.dexGift) { got = save.dexGift; save.dexGift = null; }
+  else if (lvlMode === 'coll' && save.collGift) { got = collGiftRewards(save.collGift); save.collGift = null; }
   closeLvl();
   if (got) {
     grantRewards(got); persist(); refreshWallet(true); renderOrbs(); refreshLvl(); lvlDot(); updateQuestDot(); updateShopDot();
     sfx('coin');
     if (tab === 'profile') renderProfile();
     // если и подарок, и уровень ждали вместе — следующее окно сразу, без сообщения поверх него
-    if (lvlPending() || save.path.gift || save.dexGift) { setTimeout(() => { if (lvlCanShow()) openLvl(); }, 350); return; }
-    const ttl = got.titles && got.titles.length ? ` Новый титул: «${got.titles[got.titles.length - 1].name}» — выбери его в профиле` : '';
+    if (lvlPending() || save.path.gift || save.dexGift || save.collGift) { setTimeout(() => { if (lvlCanShow()) openLvl(); }, 350); return; }
+    const ttl = got.titles && got.titles.length ? ` Новый титул: «${got.titles[got.titles.length - 1].name}» — выбери его в профиле` : got.titlesN ? ' Новые титулы — выбери их в профиле' : '';
     toast(`🎁 Награда получена!${ttl}`, 'good', ttl ? 3600 : 2200);
   }
 }
@@ -16562,6 +16655,7 @@ function titlesEarned() {
   if (save.hive.title) list.push({ id:'bee', name:'Друг пчёл' });
   if (save.flags.magnate) list.push({ id:'magnate', name:'Магнат' });
   for (const b of BEAUTY) if (b.cat === 'title' && save.beauty.own[b.id]) list.push({ id:b.id, name:b.name });
+  for (const id of Object.keys(COLL_TITLE)) if (save.coll && save.coll[id] >= 2) list.push({ id:'c_' + id, name:COLL_TITLE[id] });
   return list;
 }
 // выбранный титул, а если не выбран или пропал — самый высокий за уровень
@@ -16590,6 +16684,7 @@ function goalNow() {
   if (lvlPending()) return { id:'lvl', ico:'🎁', txt:`Забери награду за ${pathLevel()}-й уровень`, hot:true, go:openLvl };
   if (P.gift) return { id:'gift', ico:'🎁', txt:'Подарок «За опыт» ждёт тебя', hot:true, go:openGift };
   if (save.dexGift) return { id:'medals', ico:'🎁', txt:'Подарок «Первые медали» ждёт тебя', hot:true, go:openMedalGift };
+  if (save.collGift) return { id:'collgift', ico:'🎁', txt:'Подарок «Цели коллекций» ждёт тебя', hot:true, go:openCollGift };
   const qs = save.quests && save.quests.day === playDay(save.quests.day) ? save.quests.list : [];
   if (qs.some(q => q.prog >= q.n && !q.claimed)) return { id:'quest', ico:'📋', txt:'Задание выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
   const a = ACH.find(achClaimable);
@@ -16787,6 +16882,19 @@ $('adminLvlOld').addEventListener('click', () => { save.path = null; initPath();
 $('adminEss').addEventListener('click', () => { for (const k of ESS_ORDER) addEss(k, 100); pathAdminDone('+100 каждой эссенции'); });
 $('adminClockBack').addEventListener('click', () => { save.maxT = Date.now() + 2 * 3600000; save.clockPlay = 0; pathAdminDone('Игра думает, что часы ушли назад на 2 часа: ферма, задания, реванш и мёд ждут'); });
 $('adminDexOld').addEventListener('click', () => { save.dex = null; initDex(); pathAdminDone(save.dexGift ? `Медали посчитаны по зверькам: ${save.dexGift.n}. Подарок «Первые медали» ждёт в цели` : 'Медалей пока нет'); });
+$('adminNotes').addEventListener('click', () => {
+  for (const sp of SPECIES) if (NOTES[sp.id]) { const d = dexOf(sp.id); d.n = Math.max(d.n || 0, NOTE_AT[NOTE_AT.length - 1]); }
+  pathAdminDone('📒 У каждого вида теперь не меньше 15 поимок: все записки открыты (медали — со следующей поимки)');
+});
+// найти зверьков, как будто поймал: альбом и запись вида, без монет; цели коллекций — как в игре
+function adminSeeColl(list) {
+  for (const sp of list) { if (sp.solo || save.seen[sp.id]) continue; save.seen[sp.id] = true; const d = dexOf(sp.id); d.n = Math.max(d.n || 0, 1); }
+  const cg = collCheck(); closeAdmin(); if (cg.length) collToast(cg, 300); else toast('Новых целей коллекций нет');
+  persist(); renderAlbum();
+}
+$('adminCollHalf').addEventListener('click', () => { const m = collMembers('forest'), need = collHalf(COLL_BY_ID.forest); adminSeeColl(m.filter(s => !save.seen[s.id]).slice(0, Math.max(0, need - seenIn(m)))); });
+$('adminCollAll').addEventListener('click', () => adminSeeColl(SPECIES));
+$('adminCollOld').addEventListener('click', () => { save.coll = null; save.collGift = null; initColl(); pathAdminDone(save.collGift ? `Целей коллекций: ${save.collGift.n}. Подарок «Цели коллекций» ждёт в цели` : 'Ни одна коллекция ещё не собрана даже наполовину'); });
 $('adminDex50').addEventListener('click', () => { closeAdmin(); showTab('hunt'); if (!cr || cr.sp.chest || cr.sp.hiveItem) { toast('На поле нет зверька'); return; } for (let i = 0; i < 50; i++) { cr.grade = RING_NORMAL; onCaught(cr.sp, false); } toast(`+50 поимок: ${cr.sp.name}`, 'good'); });
 $('adminChest').addEventListener('click', () => { closeAdmin(); showTab('hunt'); spawn(chestSp(Math.random() < 0.5 ? 'gold' : 'silver')); });
 for (const k of ['giant', 'baby', 'runner', 'pack']) $('admin' + k[0].toUpperCase() + k.slice(1)).addEventListener('click', () => {
@@ -16909,6 +17017,7 @@ function renderBeauty() {
     for (const b of BEAUTY.filter(x => x.cat === C.id)) {
       const own = !!save.beauty.own[b.id], on = b.cat === 'title' ? save.title === b.id : save.beauty.on[b.cat] === b.id;
       const t = document.createElement('button'); t.type = 'button'; t.className = 'bt-tile' + (own ? ' own' : '') + (on ? ' on' : '');
+      t.dataset.id = b.id;
       const i = document.createElement('span'); i.className = 'bt-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = b.icon;
       const n = document.createElement('b'); n.textContent = b.name;
       const p = document.createElement('small'); p.className = 'bt-price';
@@ -16921,6 +17030,7 @@ function renderBeauty() {
       if (!own) { afford.shop.push({ el:t, cost:b.price, blocked:false }); t.disabled = save.coins < b.price; }
       grid.append(t);
     }
+    if (C.id === 'frame') collFrameTiles(grid);
     card.append(grid); box.append(card);
   }
   if (box.closest('.page')) box.closest('.page').scrollTop = keepY;
@@ -17274,6 +17384,7 @@ function dexCatch(sp, special) {
   else if (d.n > 1 && d.min != null && out.size < d.min) out.rec = 'small';
   d.max = Math.max(d.max || 0, out.size); d.min = d.min == null ? out.size : Math.min(d.min, out.size);
   d.wx = d.wx || []; const w = wxNow(); if (!d.wx.includes(w)) d.wx.push(w);
+  const ni = NOTES[sp.id] ? NOTE_AT.indexOf(d.n) : -1; if (ni > 0) out.note = ni;   // новая записка зоолога (первая — вместе с «Новый в альбоме»)
   const lv = medalLevel(sp, d.n);
   while ((d.m || 0) < lv) {   // медаль: опыт и эссенция стихии вида
     const R = MEDAL_REWARD[d.m]; d.m = (d.m || 0) + 1;
@@ -17344,6 +17455,7 @@ function dexSection(sp) {
   ];
   for (const [k, v] of rows) { const c = document.createElement('div'); const s = document.createElement('small'); s.textContent = k; const b = document.createElement('b'); b.textContent = v; c.append(s, b); facts.append(c); }
   box.append(facts);
+  const nt = notesSection(sp); if (nt) box.append(nt);
   return box;
 }
 // у ненайденного: куда идти за первой встречей и какая у него стихия
@@ -17359,6 +17471,188 @@ function firstMeetText(sp) {
   return `Для первой встречи нужно дойти до локации ${L.icon} «${L.name}»: она откроется, когда ${need}. ${els}`;
 }
 const normName = s => String(s || '').toLowerCase().replace(/ё/g, 'е').trim();
+
+/* ======================= ЗАПИСКИ ЗООЛОГА И ЦЕЛИ КОЛЛЕКЦИЙ (этап 5б, версия 50) =======================
+   Три записки у каждого вида: что любит, чем испугать, смешной факт. Открываются на поимках из NOTE_AT.
+   Цели коллекций: половина и вся коллекция — эссенция стихии коллекции, за всю ещё титул и рамка (только для красоты). */
+const NOTES = {
+  puff:['Любит тёплые ладошки и мягкий мох после дождя.', 'Пугается громкого чиха и сразу сворачивается в клубок.', 'Когда спит, его уши сами завязываются бантиком.'],
+  mush:['Любит прохладную тень под папоротником.', 'Боится улиток: они норовят откусить кусочек шляпки.', 'Чихает спорами, и вокруг вырастают крошечные грибочки.'],
+  leaf:['Любит ветреные дни: хвостом-листиком можно махать без устали.', 'Пугается гусениц, которые принимают его хвост за обед.', 'Осенью его хвост желтеет, а весной снова зеленеет.'],
+  bee:['Обожает клевер и жужжит над ним песенки.', 'Боится дождя: мокрые крылышки плохо летают.', 'Танцует «восьмёрку» — так рассказывает друзьям, где растут цветы.'],
+  chameleon:['Любит греться на тёплом камне и качаться на ветке.', 'Пугается зеркала: не узнаёт, какого он сейчас цвета.', 'Когда смеётся, становится в полосочку.'],
+  deer:['Любит утренний туман и тихие поляны.', 'Пугается дятлов, которые стучат прямо по рогам.', 'Когда кивает, с рогов осыпаются лепестки, и за ним остаётся цветочная тропинка.'],
+  lotus:['Любит лунный свет и капли росы на лепестках.', 'Морщит лепестки от холодного ветра.', 'Лягушкам так нравится его аромат, что они поют ему серенады.'],
+  hare:['Любит повторять последние слова.', 'Пугается, когда эхо отвечает чужим голосом.', 'Если крикнуть «привет», он ответит три раза.'],
+  bubble:['Любит газировку и мыльную пену.', 'Боится колючек: от них можно лопнуть.', 'В солнечный день внутри него переливается маленькая радуга.'],
+  crab:['Любит тёплый песок и закаты на берегу.', 'Пугается чаек и прячется в свою ямку.', 'Клешнями умеет щёлкать ритм любой песенки.'],
+  shell:['Любит собирать гладкие камешки у самой воды.', 'Боится сильных волн, которые катают его по пляжу.', 'Каждое утро полирует раковину до блеска.'],
+  fin:['Любит солёные брызги и прыжки через волны.', 'Пугается медуз и обходит их стороной.', 'Умеет делать сальто над водой три раза подряд.'],
+  manta:['Любит скользить над песчаным дном.', 'Боится сетей рыбаков.', 'Умеет зарываться в песок так, что торчат одни глазки.'],
+  whale:['Любит катать на спине маленьких рыбок.', 'Пугается громких моторов лодок.', 'Его фонтанчик бывает радужным, если светит солнце.'],
+  angler:['Любит темноту и светлячков в глубине.', 'Боится яркого солнца: щурится и уплывает вниз.', 'Своим фонариком читает рыбкам книжки на ночь.'],
+  jelly:['Любит тёплые течения и плавать вверх-вниз.', 'Боится сухого берега.', 'Светится розовым, когда радуется.'],
+  pepper:['Любит острые шутки и горячий чай.', 'Боится снега: тает от смущения.', 'Когда сердится, краснеет ещё сильнее, хотя казалось бы, куда уж.'],
+  flame:['Любит костры и сказки у огня.', 'Пугается брызг воды и шипит.', 'Может подогреть кружку какао одним выдохом.'],
+  volcano:['Любит греть лапки на тёплых камнях.', 'Боится холодного дождя: от него он пыхтит паром.', 'Когда чихает, из макушки вылетает маленький фейерверк.'],
+  salamander:['Любит угольки и тёплые трещинки в камнях.', 'Боится сырых пещер, где не согреться.', 'Его хвост оставляет на земле светящиеся следы.'],
+  samovar:['Любит баранки и вишнёвое варенье.', 'Боится, что гости уйдут, не допив чай.', 'Когда закипает, насвистывает весёлую песенку.'],
+  dragon:['Любит тёплые пещеры и блестящие камушки.', 'Боится мышей, хотя в сто раз больше их.', 'Каждое утро пересчитывает свои сокровища, и каждый раз выходит по-разному.'],
+  phoenix:['Любит рассветы и тёплый ветер.', 'Боится сырости: перья тускнеют.', 'Каждую весну меняет перья на новые, ещё ярче прежних.'],
+  snowy:['Любит снегопад и лепить снеговиков.', 'Как только видит подснежник, прячется в самую глубокую пещеру.', 'Носит морковку вместо носа и никому не даёт её откусить.'],
+  icicle:['Любит хрустальный звон капели.', 'Боится солнечных зайчиков.', 'Играет мелодию, постукивая по другим сосулькам.'],
+  yeti:['Любит горячий мятный чай и вязаные шарфы.', 'Пугается фотоаппаратов и прячется за сугроб.', 'Его следы такие большие, что в них зимуют зайцы.'],
+  fox:['Любит метели и прятки в сугробах.', 'Боится оттепели: хвост становится мокрым и тяжёлым.', 'Кончиком хвоста рисует на снегу узоры.'],
+  aurora:['Любит полярные ночи и звёзды.', 'Боится городских фонарей: в их свете её не видно.', 'Когда она танцует, небо переливается зелёным.'],
+  mammoth:['Любит морковку и катание с горок.', 'Пугается своего эха в горах.', 'Хоботом лепит идеально круглые снежки.'],
+  hedge:['Любит морозные утра и хрустящий иней.', 'Боится тёплых варежек.', 'Если его погладить, на ладошке остаются снежинки.'],
+  rock:['Любит, когда на нём сидят бабочки.', 'Пугается, когда его пинают ногой.', 'Может катиться с горы целый час и ни разу не устать.'],
+  mole:['Любит прохладную землю и червячков.', 'Боится яркого света и надевает очки.', 'Прокопал под поляной лабиринт с двадцатью выходами.'],
+  spiky:['Любит яблоки и накалывает их на иголки.', 'Боится воздушных шариков: вдруг лопнут от его иголок.', 'Иголок у него ровно тысяча — он пересчитывал.'],
+  armadillo:['Любит кататься колесом с горки.', 'Пугается щекотки по пузу.', 'Его панцирь звенит, как маленький барабан.'],
+  crystal:['Любит лучи света, чтобы пускать радуги.', 'Боится трещин и ходит очень осторожно.', 'Каждый год у него вырастает новая грань.'],
+  nugget:['Любит прятаться в речном песке.', 'Боится сорок: они тащат всё блестящее.', 'Втайне мечтает стать монеткой, но ему и так хорошо.'],
+  piggy:['Любит монетки и звон в животике.', 'Боится молотков.', 'Считает до тысячи, но только монетками.'],
+  pinwheel:['Любит сквозняки и ветряные мельницы.', 'Боится, что ветер унесёт его слишком далеко от дома.', 'Крутится так быстро, что сам себе дует в нос.'],
+  spark:['Любит грозовые тучи и молнии.', 'Боится резиновых сапог.', 'От его взмахов волосы встают дыбом.'],
+  storm:['Любит летние грозы и запах дождя.', 'Боится радуги: она слишком тихая.', 'Хлопнет в ладоши — и над поляной гремит гром.'],
+  star:['Любит ночные прогулки по облакам.', 'Боится тумана: в нём грива тускнеет.', 'Каждую ночь пересчитывает звёзды в своей гриве.'],
+  galaxy:['Любит смотреть, как рождаются звёзды.', 'Боится чёрных дыр, хотя сам немножко на неё похож.', 'В его шёрстке можно разглядеть целые созвездия.'],
+  divine:['Любит добрые дела и тёплые слова.', 'Боится ссор: от них его нимб гаснет.', 'Где он прошёл, распускаются цветы.'],
+  cloudy:['Любит прыгать с облака на облако.', 'Боится жарких дней: начинает таять дождиком.', 'Может стать похожим на любого зверька, но всегда остаётся пушистым.'],
+  owl:['Любит ночные загадки и шорохи леса.', 'Боится будильников.', 'Поворачивает голову почти по кругу, чтобы ничего не пропустить.'],
+  firefly:['Любит тёплые летние ночи.', 'Боится банок с крышками.', 'Мигает азбукой Морзе, но пока знает только слово «привет».'],
+  bat:['Любит спелые груши и ночные полёты.', 'Не выносит запах чеснока и улетает подальше.', 'Слышит, как растёт трава.'],
+  moth:['Любит ночные цветы с медовым запахом.', 'Боится пауков.', 'На крыльях у него узор, похожий на улыбку.'],
+  mist:['Любит туманные рассветы над болотом.', 'Боится яркого полдня: от солнца туман рассеивается.', 'Его рог тихо гудит, когда рядом кто-то грустит.'],
+  moon:['Любит полнолуние и тихие песни сверчков.', 'Боится новолуния: тогда ему одиноко.', 'Умеет ходить по лунной дорожке на воде и не намочить лапки.'],
+  shadow:['Любит прятки и длинные вечерние тени.', 'Боится фонариков.', 'Умеет становиться тенью любого предмета.'],
+  cricket:['Любит играть на скрипке до утра.', 'Боится лягушек: они хотят петь громче него.', 'Его песня меняется вместе с погодой.'],
+  dezya:['Любит спать на тёплых коробках.', 'Боится пылесоса.', 'Знает, что откроют холодильник, за секунду до этого.'],
+  makarsha:['Любит гоняться за солнечными зайчиками.', 'Боится огурцов на полу.', 'Мурчит громче маленького трактора.'],
+  graf:['Любит важно сидеть на подоконнике.', 'Не любит, когда гладят против шерсти.', 'Ходит так гордо, что даже голуби уступают дорогу.'],
+  vr:['Любит быстрый интернет и новые пиксели.', 'Боится, когда выключают свет.', 'Иногда телепортируется посреди фразы и заканчивает её в другом месте.'],
+  crater:['Любит лунную пыль и мягкие кратеры.', 'Боится метеоритов: от них появляются новые ямки.', 'В невесомости прыгает на три метра вверх.'],
+  rover:['Любит изучать камни и записывать находки.', 'Боится крутых склонов.', 'Его колёсики оставляют на Луне смешные узоры.'],
+  dusty:['Любит кружиться в лучах солнца.', 'Боится сквозняков: улетает неизвестно куда.', 'Весит меньше пёрышка, зато очень гордая.'],
+  sputnik:['Любит кружить вокруг планет.', 'Боится космического мусора.', 'Облетает Землю так быстро, что встречает рассвет шестнадцать раз в день.'],
+  rocket:['Любит обратный отсчёт: «три, два, один!».', 'Боится, что кончится топливо.', 'Взлетает так громко, что сама себя пугается.'],
+  alien:['Любит земные песни и хороводы.', 'Боится кошек: они смотрят слишком внимательно.', 'Учит русский и уже знает слово «ням».'],
+  saturn:['Любит смотреть на свои маленькие луны.', 'Боится, что кольцо соскользнёт.', 'Кольцо у него для красоты, а ещё на нём удобно сидеть.'],
+  meteor:['Любит метеоритные дожди и быстрые полёты.', 'Боится не успеть загадать желание.', 'Каждый раз, когда он падает, где-то сбывается мечта.'],
+  comet:['Любит длинные путешествия вокруг Солнца.', 'Боится остаться без хвоста.', 'Возвращается в одно и то же место раз в сто лет.'],
+  pulsar:['Любит ритм и стучит, как сердце.', 'Боится тишины.', 'Мигает так точно, что по нему можно сверять часы.'],
+  astro:['Любит смотреть на Землю в иллюминатор.', 'Боится потерять шлем.', 'В невесомости ест суп из тюбика и ни капли не пролил.'],
+};
+// сколько записок вида открыто (по числу поимок из записи вида)
+function notesOpen(sp) { const d = save.dex && save.dex[sp.id]; return NOTES[sp.id] ? NOTE_AT.filter(t => (d ? d.n || 0 : 0) >= t).length : 0; }
+function notesSection(sp) {
+  const L = NOTES[sp.id]; if (!L) return null;
+  const n = save.dex && save.dex[sp.id] ? save.dex[sp.id].n || 0 : 0, open = notesOpen(sp);
+  const box = document.createElement('div'); box.className = 'notes-card';
+  const h = document.createElement('h3'); h.className = 'sec-title'; h.textContent = `📒 Записки зоолога · ${open} из ${L.length}`; box.append(h);
+  L.forEach((txt, i) => {
+    const row = document.createElement('div'); row.className = 'note-row' + (n >= NOTE_AT[i] ? '' : ' locked');
+    const ic = document.createElement('span'); ic.className = 'note-ico'; ic.setAttribute('aria-hidden', 'true'); ic.textContent = n >= NOTE_AT[i] ? NOTE_KIND[i].icon : '🔒';
+    const tx = document.createElement('div'); const k = document.createElement('small'); k.textContent = NOTE_KIND[i].name;
+    const b = document.createElement('b');
+    b.textContent = n >= NOTE_AT[i] ? txt : `Откроется на ${NOTE_AT[i]}-й поимке (ещё ${NOTE_AT[i] - n})`;
+    tx.append(k, b); row.append(ic, tx); box.append(row);
+  });
+  return box;
+}
+// ---- цели коллекций ----
+const collHalf = k => Math.ceil(collMembers(k.id).length * COLL_GOAL.half);
+function collStep(k) { const all = collMembers(k.id), have = seenIn(all); return have >= all.length ? 2 : have >= collHalf(k) ? 1 : 0; }
+const collLv = id => (save.coll && save.coll[id]) || 0;
+// отметить всё, до чего коллекции уже доросли, и выдать эссенцию (give = false — эссенцию отдаст подарок); вернуть, что получено
+function collCheck(give = true) {
+  const out = [];
+  if (!save.coll) return out;
+  for (const k of COLLECTIONS) {
+    if (k.special || !COLL_TITLE[k.id]) continue;
+    const lv = collStep(k);
+    while (collLv(k.id) < lv) {
+      const s = collLv(k.id) + 1, n = s === 1 ? COLL_GOAL.halfEss : COLL_GOAL.fullEss;
+      save.coll[k.id] = s; if (give) addEss(COLL_ESS[k.id], n); out.push({ k, s, n });
+    }
+  }
+  if (out.length) persist();
+  return out;
+}
+// сообщение о выданном: по одному на коллекцию, через паузу после итога поимки
+function collToast(list, delay = 3600) {
+  const by = {};
+  for (const x of list) { const e = by[x.k.id] || (by[x.k.id] = { k:x.k, s:0, n:0 }); e.s = Math.max(e.s, x.s); e.n += x.n; }
+  Object.values(by).forEach((e, i) => setTimeout(() => {
+    const K = e.k, E = ELEMENTS[COLL_ESS[K.id]];
+    sfx('rare');
+    const ach = ACH.find(a => a.id === 'curator'), more = ach && achClaimable(ach) ? '. И ещё награда ждёт в «Заданиях» → «Достижения»' : '';
+    if (e.s >= 2) toast(`🗂 Коллекция ${K.icon} «${K.name}» собрана целиком! +${e.n} ${E.icon}, титул «${COLL_TITLE[K.id]}» и рамка «${COLL_FRAME[K.id]}» (её можно надеть в «Магазине» → «Красота»)${more}`, 'good', 5200);
+    else toast(`🗂 Собрана половина коллекции ${K.icon} «${K.name}»: +${e.n} ${E.icon}. Собери всю — будут титул и рамка`, 'good', 4200);
+    updateQuestDot(); if (tab === 'album') renderAlbum();
+  }, delay + i * 4400));
+}
+// старые сохранения: цели, до которых уже дорос альбом, — сразу; эссенция — подарком «Цели коллекций»
+function initColl() {
+  if (save.coll) return;
+  save.coll = {};
+  const gift = { ess:{}, n:0, full:[] };
+  for (const x of collCheck(false)) { gift.ess[COLL_ESS[x.k.id]] = (gift.ess[COLL_ESS[x.k.id]] || 0) + x.n; gift.n++; if (x.s === 2) gift.full.push(x.k.id); }
+  save.collGift = gift.n ? gift : null;
+  persist();
+}
+initColl();
+// больше двух коллекций — титулы и рамки одной строкой, чтобы окно не вырастало выше экрана
+function collGiftRewards(g) {
+  const n = g.full.length, many = n > 2;
+  return { ess:g.ess, titlesN:n, titles:many ? [] : g.full.map(id => ({ id:'c_' + id, name:COLL_TITLE[id] })), frames:many ? [] : g.full.map(id => ({ name:`Рамка «${COLL_FRAME[id]}»` })),
+    extra:many ? [`🏅 ${n} ${plural(n, 'титул', 'титула', 'титулов')}`, `🖼 ${n} ${plural(n, 'рамка', 'рамки', 'рамок')}`] : [] };
+}
+function openCollGift() {
+  const g = save.collGift; if (!g) return;
+  lvlMode = 'coll'; sfx('level');
+  const full = g.full.length, half = g.n - full;
+  lvlFill({ lvl:pathLevel(), title:'Подарок «Цели коллекций»',
+    text:`За коллекции, которые ты собрал раньше: ${[full ? `целиком — ${full}` : '', half ? `наполовину — ${half}` : ''].filter(Boolean).join(', ')}.${full ? ' Титулы и рамки уже твои: выбери их в профиле и в «Магазине» → «Красота».' : ' Собери коллекцию целиком — будут титул и рамка.'}`,
+    rewards:collGiftRewards(g), next:'' });
+}
+// цели коллекции в альбоме: что уже получено и что будет
+function collGoalCard(k) {
+  const all = collMembers(k.id).length, have = seenIn(collMembers(k.id)), half = collHalf(k), lv = collLv(k.id), E = ELEMENTS[COLL_ESS[k.id]];
+  const box = document.createElement('div'); box.className = 'coll-goals'; box.style.setProperty('--cc', k.color);
+  const row = (ok, ico, name, need, what) => {
+    const r = document.createElement('div'); r.className = 'cg-row' + (ok ? ' ok' : '');
+    const i = document.createElement('span'); i.className = 'cg-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = ok ? '✓' : ico;
+    const t = document.createElement('div'); const b = document.createElement('b'); b.textContent = `${name} (${need})`; const s = document.createElement('small'); s.textContent = ok ? `Получено: ${what}` : `${what} · ещё ${need - have}`;
+    t.append(b, s); r.append(i, t); return r;
+  };
+  if (half < all) box.append(row(lv >= 1, '½', 'Половина коллекции', half, `+${COLL_GOAL.halfEss} ${E.icon}`));
+  box.append(row(lv >= 2, '🏅', 'Вся коллекция', all, `+${COLL_GOAL.fullEss} ${E.icon}, титул «${COLL_TITLE[k.id]}», рамка «${COLL_FRAME[k.id]}»`));
+  return box;
+}
+// рамки за коллекции в «Лавке красоты»: купить нельзя, только собрать коллекцию
+function collFrameTiles(grid) {
+  for (const k of COLLECTIONS) {
+    if (!COLL_FRAME[k.id]) continue;
+    const id = 'fc_' + k.id, own = collLv(k.id) >= 2, on = save.beauty.on.frame === id;
+    const t = document.createElement('button'); t.type = 'button'; t.className = 'bt-tile coll-frame' + (own ? ' own' : ' locked') + (on ? ' on' : '');
+    t.dataset.id = id;
+    t.style.setProperty('--cc', k.color);
+    const i = document.createElement('span'); i.className = 'bt-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = own ? k.icon : '🔒';
+    const n = document.createElement('b'); n.textContent = COLL_FRAME[k.id];
+    const p = document.createElement('small'); p.className = 'bt-price'; p.textContent = on ? '✓ надето' : own ? 'надеть' : `собери «${k.name}»`;
+    t.append(i, n, p);
+    t.setAttribute('aria-label', `Рамка «${COLL_FRAME[k.id]}». ${on ? 'Надето' : own ? 'Есть, нажми, чтобы надеть' : `Даётся за всю коллекцию «${k.name}», купить нельзя`}`);
+    t.addEventListener('click', () => {
+      if (!own) { sfx('bad'); toast(`Эту рамку не купить: собери всю коллекцию ${k.icon} «${k.name}» (${seenIn(collMembers(k.id))} из ${collMembers(k.id).length})`); return; }
+      if (on) { delete save.beauty.on.frame; toast(`${k.icon} Рамка «${COLL_FRAME[k.id]}»: снято`); }
+      else { save.beauty.on.frame = id; toast(`${k.icon} Рамка «${COLL_FRAME[k.id]}»: надето`, 'good'); }
+      sfx('tap'); persist(); applyFrame(); renderBeauty();
+    });
+    grid.append(t);
+  }
+}
 
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
@@ -17381,7 +17675,7 @@ function frame(now) {
   // Игра на паузе, пока идёт диалог, вопрос пчёлок или открыт улей: зверёк замирает, погода и метеоры ждут
   const hold = !!dlg || hiveAskOpen || !$('hiveSheet').hidden || tab !== 'hunt' || !$('lvlModal').hidden;
   if (W > 0 && cr) { if (!hold) update(dt); if (tab === 'hunt' || !panelCovers()) draw(); }
-  if (toastQ.length && !throwBusy() && performance.now() >= toastNextAt) { const [m, k, ms] = toastQ.shift(); toastNextAt = performance.now() + Math.min(ms, 1800); toast(m, k, ms); }
+  if (toastQ.length && !throwBusy() && $('lvlModal').hidden && performance.now() >= toastNextAt) { const [m, k, ms] = toastQ.shift(); toastNextAt = performance.now() + Math.min(ms, 1800); toast(m, k, ms); }
   if (tab === 'farm' && farmPager.index === 0) { updatePen(dt); drawPen(dt); }
   if (evoAnim) drawEvo(dt);
   if (battle) drawBattle(dt);
