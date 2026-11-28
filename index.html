@@ -1343,6 +1343,35 @@ html[data-frame="fc_space"]{--frame:linear-gradient(135deg,#1a237e,#9fa8da 30%,#
 html[data-frame="fc_pets"]{--frame:linear-gradient(135deg,#ad1457,#f8bbd0 35%,#ec407a 60%,#ffffff)}
 html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 8px,#80deea 8px 16px,#006064 16px 24px)}
 
+/* ===== Этап 6а (версия 51): календарь входа, задания недели, событие недели ===== */
+.cal-card{display:flex;flex-direction:column;gap:10px}
+.cal-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-day{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:54px;padding:4px 0;border-radius:12px;
+  background:var(--surface-2);border:2px solid transparent;text-align:center}
+.cal-day small{font-weight:900;font-size:.68rem;color:var(--muted)}
+.cal-day span{font-size:1.15rem;line-height:1.2}
+.cal-day.got{opacity:.55}
+.cal-day.got span{color:#2e7d32;font-weight:900}
+.cal-day.big{background:color-mix(in srgb,#ffb300 18%,var(--surface-2))}
+.cal-day.next{border-style:dashed;border-color:var(--border)}
+.cal-day.now{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--surface-2));animation:calPulse 1.6s ease-in-out infinite}
+@keyframes calPulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}50%{box-shadow:0 0 0 5px transparent}}
+@media (prefers-reduced-motion:reduce){.cal-day.now{animation:none}}
+.cal-foot{display:flex;flex-direction:column;gap:6px}
+.cal-foot small{font-weight:800;color:var(--muted);font-size:.84rem;line-height:1.35}
+.cal-foot .btn{min-height:46px}
+.cal-foot .cal-note{font-size:.76rem}
+.cal-foot .cal-chest{color:#b26a00}
+.week-box{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.ev-pill{--ev:#7e57c2;flex:none;display:flex;align-items:center;gap:5px;min-height:44px;padding:4px 12px 4px 8px;border-radius:12px;border:2px solid var(--ev);
+  background:color-mix(in srgb,var(--ev) 22%,var(--glass));color:var(--text);font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ev-pill span{font-size:1.05rem;line-height:1}
+.ev-pill:active{transform:scale(.96)}
+.ev-pill[hidden]{display:none}
+.ev-lead{margin:0 0 10px;font-weight:800;line-height:1.4}
+.ev-note{margin:10px 0 0;font-weight:800;color:var(--muted);font-size:.86rem;line-height:1.35}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1417,7 +1446,7 @@ html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 
           <div class="stat" id="wallet" role="status" aria-label="Монеты"><span class="coin" aria-hidden="true"></span><span class="stat-txt"><b class="coins" id="coins">0</b><small id="income">+0/с</small></span></div>
         </header>
         <!-- полоса под шапкой: «Следующая цель» и улей (на этапе 6 — событие недели). Пустая не показывается -->
-        <div class="hunt-strip" id="huntStrip" hidden><div class="goal" id="goal" hidden><button class="goal-btn" id="goalBtn" type="button"><span class="goal-ico" id="goalIco" aria-hidden="true">⭐</span><span class="goal-txt"><small>Следующая цель</small><b id="goalTxt"></b></span></button><button class="goal-min" id="goalMin" type="button" aria-label="Свернуть подсказку">–</button></div><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
+        <div class="hunt-strip" id="huntStrip" hidden><div class="goal" id="goal" hidden><button class="goal-btn" id="goalBtn" type="button"><span class="goal-ico" id="goalIco" aria-hidden="true">⭐</span><span class="goal-txt"><small>Следующая цель</small><b id="goalTxt"></b></span></button><button class="goal-min" id="goalMin" type="button" aria-label="Свернуть подсказку">–</button></div><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button><button class="ev-pill" id="evPill" type="button" hidden><span id="evPillIco" aria-hidden="true">✨</span><b id="evPillTxt"></b></button></div>
       <div class="info" id="info">
         <div class="info-main">
           <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span><span class="trait" id="cTrait" role="button" hidden></span><span class="trait special" id="cSpecial" hidden></span></div>
@@ -1602,12 +1631,14 @@ html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 
           <div id="storyPage"></div>
         </div>
         <div class="page" role="tabpanel">
+          <div class="card cal-card" id="calCard"></div>
           <div class="day-hero">
             <div class="day-num" id="questDone" aria-label="Выполнено заданий">0/3</div>
             <div class="day-info"><b>Задания дня</b><small id="questTimer"></small></div>
           </div>
           <div class="list-gap" id="questList"></div>
           <div class="bonus-card" id="questBonus"></div>
+          <div class="week-box" id="weekBox"></div>
         </div>
         <div class="page" role="tabpanel">
           <div class="alb-hero">
@@ -1690,6 +1721,11 @@ html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 
             <button class="btn" id="adminCollHalf" type="button">🗂 Коллекция «Лес»: найти половину</button>
             <button class="btn" id="adminCollAll" type="button">🗂 Все коллекции собрать</button>
             <button class="btn" id="adminCollOld" type="button">🗂 Пересчитать цели коллекций, как у старого сохранения</button>
+            <button class="btn" id="adminCalDay" type="button">🗓 Календарь: как будто наступил новый день</button>
+            <button class="btn" id="adminCalReset" type="button">🗓 Календарь: снова с 1-го дня</button>
+            <button class="btn" id="adminWeekNew" type="button">📅 Задания недели: как будто новая неделя</button>
+            <button class="btn" id="adminWeekDone" type="button">📅 Задания недели: всё выполнено</button>
+            <button class="btn" id="adminEvNext" type="button">✨ Событие недели: следующая стихия (до перезагрузки)</button>
             <button class="btn" id="adminGiant" type="button">🦣 Великан</button>
             <button class="btn" id="adminBaby" type="button">🐣 Малыш</button>
             <button class="btn" id="adminRunner" type="button">💨 Беглец</button>
@@ -1852,7 +1888,7 @@ html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 50</p>
+          <p class="version">Версия игры 51</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1866,7 +1902,7 @@ html[data-frame="fc_digital"]{--frame:repeating-linear-gradient(90deg,#00acc1 0 
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 50</p>
+    <p class="start-ver">Версия игры 51</p>
   </div>
 </div>
 
@@ -2473,6 +2509,28 @@ const COLL_TITLE = { forest:'Лесовик', water:'Морской волк', f
   sky:'Покоритель небес', night:'Ночной дозорный', space:'Звёздный путешественник', pets:'Друг любимчиков', digital:'Цифровой гений' };
 const COLL_FRAME = { forest:'Лесная', water:'Морская', fire:'Огненная', winter:'Снежная', earth:'Каменная', sky:'Небесная', night:'Ночная',
   space:'Звёздная', pets:'Пушистая', digital:'Пиксельная' };
+/* ======================= КАЖДЫЙ ДЕНЬ: ЧИСЛА (этап 6а, версия 51) ======================= */
+// Календарь входа: 7 подарков по кругу. Пропущенный день не сбрасывает: следующий заход даёт следующий подарок.
+// Монеты — база × множитель уровня ловца (как все награды с этапа 3), от дохода фермы не зависят
+const CAL_DAYS = [{ kind:'coins', base:1000 }, { kind:'pot', pot:'comet', n:2 }, { kind:'ess', n:15 }, { kind:'coins', base:2000 },
+  { kind:'shard', n:1 }, { kind:'pot', pot:'net', n:2 }, { kind:'chest', tier:'gold' }];
+// Неделя начинается в понедельник; стихии недели идут по кругу ESS_ORDER от понедельника 1 января 2024
+const WEEK_EPOCH = Date.UTC(2024, 0, 1);
+// Событие недели: зверьки стихии недели в EVENT_MULT раз чаще среди зверьков своей редкости (редкость не меняется),
+// но доля одного зверька на локации не выше EVENT_SHARE_MAX; эссенция этой стихии за поимку ×EVENT_ESS
+const EVENT_MULT = 2, EVENT_SHARE_MAX = 0.2, EVENT_ESS = 2;
+// Задания недели: первое всегда «Поймай 30», второе и третье по очереди из своих списков (9 сочетаний)
+const WEEK_TASKS = [[{ id:'catch', n:30 }], [{ id:'arena', n:5 }, { id:'event', n:10 }, { id:'perfect', n:10 }], [{ id:'chest', n:3 }, { id:'rare', n:5 }, { id:'merge', n:3 }]];
+const WEEK_REWARD = { xp:300, ess:20 };   // за каждое: опыт и эссенция стихии недели
+const WEEK_DEF = {
+  catch:   { icon:'🎯', text:n => `Поймай ${n} ${plural(n, 'зверька', 'зверьков', 'зверьков')}` },
+  arena:   { icon:'⚔', text:n => `Победи на арене ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
+  event:   { icon:'✨', text:(n, el) => `Поймай ${n} ${plural(n, 'зверька', 'зверьков', 'зверьков')} стихии недели: ${ELEMENTS[el].icon} ${ELEMENTS[el].name}` },
+  perfect: { icon:'🏹', text:n => `Попади в самый центр ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
+  chest:   { icon:'🧰', text:n => `Открой ${n} ${plural(n, 'сундук', 'сундука', 'сундуков')} на охоте` },
+  rare:    { icon:'💎', text:n => `Поймай ${n} ${plural(n, 'редкого', 'редких', 'редких')} или ещё реже` },
+  merge:   { icon:'🔁', text:n => `Сделай ${n} ${plural(n, 'слияние', 'слияния', 'слияний')} на ферме` },
+};
 // Тряска и вспышка при поимке по редкости (сила тряски в пикселях, цвет вспышки)
 const CATCH_FEEL = { rare:[2, null], epic:[3, '186,104,255'], legendary:[5, '255,213,79'], mythic:[6, '255,90,79'], secret:[7, '143,124,255'],
                      divine:[8, '255,245,157'], pet:[7, '255,126,182'], glitch:[5, '0,229,255'] };
@@ -2534,18 +2592,14 @@ function pickSpecies() {
   const L = LOC_BY_ID[save.loc] || LOCATIONS[0], boost = new Set(noWx() ? [] : weather.boost);
   // метеоритный дождь в космосе: часто прилетает Метеорик (в другое время его не бывает)
   if (mapOf(L) === 'space' && meteor.on && Math.random() < METEOR_SPAWN) return SPECIES.find(s => s.event === 'meteor');
-  // кто живёт на этой карте: космические только в космосе, земные только на Земле; Виарик телепортируется куда угодно
-  const fits = s => !s.solo && (s.rarity === 'glitch' || ((s.map || 'earth') === mapOf(L) && (!s.home || s.home === L.id) && (!s.event || (s.event === 'meteor' && meteor.on && inSpace()))));
-  const rw = k => (SPECIES.some(s => s.rarity === k && fits(s)) ? RARITY[k].weight : 0) * (k === 'pet' && L.id !== 'meadow' ? 0 : 1) *
-    (L.rareBoost && RARITY_ORDER.indexOf(k) >= 2 && k !== 'glitch' ? L.rareBoost : 1);
-  const total = RARITY_ORDER.reduce((s, k) => s + rw(k), 0);
-  let x = Math.random() * total, rk = RARITY_ORDER[0];
-  for (const k of RARITY_ORDER) { x -= rw(k); if (x < 0) { rk = k; break; } }
-  const pool = SPECIES.filter(s => s.rarity === rk && fits(s));
-  const sw = s => 1 + (L.native.includes(s.id) ? 4 : 0) + (boost.has(s.id) ? 3 : 0);
-  let y = Math.random() * pool.reduce((s, sp) => s + sw(sp), 0);
-  for (const sp of pool) { y -= sw(sp); if (y < 0) return sp; }
-  return pool[0];
+  // кто живёт на этой карте (космические только в космосе, земные только на Земле, Виарик где угодно) — в spawnTable;
+  // сначала редкость, потом зверёк внутри неё. Событие недели (этап 6а) меняет только выбор внутри редкости
+  const tiers = spawnTable(L, boost, eventEl()), total = tiers.reduce((s, t) => s + t.w, 0);
+  let x = Math.random() * total, T = tiers[0];
+  for (const t of tiers) { x -= t.w; if (x < 0) { T = t; break; } }
+  let y = Math.random() * T.pool.reduce((s, p) => s + p[1], 0);
+  for (const [sp, w] of T.pool) { y -= w; if (y < 0) return sp; }
+  return T.pool[0][0];
 }
 function rollDistance(sp) {
   const [a, b] = RARITY[sp.rarity].dist;
@@ -2805,7 +2859,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, dex:{}, dexGift:null, coll:{}, collGift:null, last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, dex:{}, dexGift:null, coll:{}, collGift:null, cal:{ n:0, last:'', got:0 }, calChest:null, week:null, carry:null, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2913,6 +2967,24 @@ function sanitize(d) {
   if (cgf) { const ess = {}; for (const k of ESS_ORDER) { const n = Math.floor(Number(cgf.ess && cgf.ess[k]) || 0); if (n > 0) ess[k] = Math.min(n, 1e6); }
     const full = Array.isArray(cgf.full) ? [...new Set(cgf.full.filter(id => COLL_TITLE[id] && d.coll && d.coll[id] >= 2))] : [];
     const n = clamp(Math.floor(Number(cgf.n) || 0), 0, 100); if (n) d.collGift = { ess, n, full }; }
+  // календарь входа и задания недели (версия 51)
+  const cl = d.cal && typeof d.cal === 'object' ? d.cal : {};
+  d.cal = { n:clamp(Math.floor(Number(cl.n)) || 0, 0, CAL_DAYS.length - 1), last:typeof cl.last === 'string' && /^\d{4}-\d{1,2}-\d{1,2}$/.test(cl.last) ? cl.last : '',
+    got:clamp(Math.floor(Number(cl.got)) || 0, 0, 1e6) };
+  d.calChest = CHEST[d.calChest] ? d.calChest : null;
+  const wk = d.week && typeof d.week === 'object' ? d.week : null;
+  d.week = null;
+  if (wk && typeof wk.id === 'string' && /^\d{4}-\d{1,2}-\d{1,2}$/.test(wk.id) && Number.isFinite(+wk.idx) && Array.isArray(wk.list)) {
+    const list = wk.list.slice(0, 3).filter(q => q && WEEK_DEF[q.id]).map(q => { const n = clamp(Math.floor(Number(q.n)) || 1, 1, 999); return { id:q.id, n, prog:clamp(Math.floor(Number(q.prog)) || 0, 0, n), claimed:!!q.claimed }; });
+    if (list.length === 3) d.week = { id:wk.id, idx:Math.floor(+wk.idx), list };
+  }
+  // выполненные, но не забранные задания прошлого дня или недели — зачисляются сами (не отнимаем награды)
+  const cr0 = d.carry && typeof d.carry === 'object' ? d.carry : null;
+  d.carry = null;
+  if (cr0) { const ess = {}; for (const k of ESS_ORDER) { const n = Math.floor(Number(cr0.ess && cr0.ess[k]) || 0); if (n > 0) ess[k] = Math.min(n, 1e6); }
+    const c = { xp:clamp(Math.floor(Number(cr0.xp)) || 0, 0, 1e7), coins:clamp(Math.floor(Number(cr0.coins)) || 0, 0, 1e15), shards:clamp(Math.floor(Number(cr0.shards)) || 0, 0, 100), ess,
+      src:Array.isArray(cr0.src) ? [...new Set(cr0.src.filter(x => x === 'day' || x === 'week'))] : [] };
+    if (c.xp || c.coins || c.shards || Object.keys(ess).length) d.carry = c; }
   const bt = d.beauty && typeof d.beauty === 'object' ? d.beauty : {}, own = {}, on = {};
   if (bt.own && typeof bt.own === 'object') for (const id of Object.keys(bt.own)) if (BEAUTY_BY_ID[id] && bt.own[id]) own[id] = true;
   if (bt.on && typeof bt.on === 'object') for (const c of BEAUTY_CATS) { const id = bt.on[c.id]; if (own[id] && BEAUTY_BY_ID[id].cat === c.id && c.id !== 'title') on[c.id] = id; }
@@ -3004,6 +3076,8 @@ function loadSave() {
         d.dex = s.dex && typeof s.dex === 'object' ? s.dex : null; d.dexGift = s.dexGift;
         // цели коллекций (версия 50): у старых сохранений их нет — посчитаем по альбому в initColl
         d.coll = s.coll && typeof s.coll === 'object' ? s.coll : null; d.collGift = s.collGift;
+        // календарь и неделя (версия 51): у старых сохранений календарь начинается с 1-го дня
+        d.cal = s.cal; d.calChest = s.calChest; d.week = s.week; d.carry = s.carry;
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -10000,6 +10074,7 @@ function spawn(forced) {
   // этап 4б: вместо зверька сундук, особая встреча или следующий из стаи (не в обучении и не по приказу телескопа или улья)
   if (!forced && !tut.on) {
     if (packNext) { sp = packNext.sp; enc = { special:'pack' }; packLeft = packNext.left; packNext = null; }
+    else if (save.calChest) { enc = { chest:save.calChest }; sp = Object.assign(chestSp(save.calChest), { cal:true }); }   // подарок 7-го дня календаря
     else { enc = encounterRoll(); if (enc.chest) sp = chestSp(enc.chest); else if (enc.special && !specialOk(sp)) enc = {}; }
   }
   if (!forced && !easy && !sp.chest && canShiny(sp) && Math.random() < SHINY_CHANCE) sp = shinyOf(sp);
@@ -10135,12 +10210,14 @@ function onCaught(sp, lucky) {
   if (SPk && cr.special === 'pack' && cr.packLeft > 0) packNext = { sp:SPECIES_BY_ID[sp.id] || sp, left:cr.packLeft - 1 };
   const xpGot = Math.round(catchXp(sp, first) * G.xp * sm * rk); gainXp(xpGot);
   const dx = sp.solo ? null : dexCatch(sp, cr && cr.sp === sp ? cr.special : null);   // этап 5: счёт вида, размер, рекорд, медали
-  const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess * rk); addEss(essEl, essN);
+  const evOn = !sp.solo && essOf(sp) === eventEl();   // событие недели: эссенция этой стихии ×EVENT_ESS
+  const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess * rk * (evOn ? EVENT_ESS : 1)); addEss(essEl, essN);
   if (essN && typeof orb !== 'undefined') addPop(orb.x, orb.y - ORB_R * 1.6, `+${essN} ${ELEMENTS[essEl].icon}`, ELEMENTS[essEl].color);
   if (essN && !save.flags.essIntro) { save.flags.essIntro = true; const E = ELEMENTS[essEl]; setTimeout(() => toast(`${E.icon} Это эссенция ${E.gen}. Эссенции дают поимки, а нужны они, чтобы улучшать сферу с Жемчужной. Все эссенции — в профиле ⭐`, 'good', 5200), 3800); }
   const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1) * sm * rk;
   questProgress('catch');
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('rare')) questProgress('rare');
+  if (evOn) weekProgress('event');
   questProgress('loc', 1, { loc:save.loc });
   if (!noWx() && weather.id !== 'clear') questProgress('weather');
   const newLoc = LOCATIONS.find(l => !l.map && l.need > 0 && l.need === save.caught);
@@ -12355,6 +12432,17 @@ const RULES = [
   ['📒', 'Записки зоолога', [`У каждого вида три записки: ${NOTE_KIND.map(k => `${k.icon} ${k.name.toLowerCase()}`).join(', ')}.`,
     `Они открываются на ${NOTE_AT.slice(0, -1).join('-й, ')}-й и ${NOTE_AT[NOTE_AT.length - 1]}-й поимке этого вида. Читай их в карточке вида в альбоме.`,
     'Если ты играл до версии 50, записки открыты по тому, сколько у тебя было зверьков этого вида.']],
+  ['🗓', 'Календарь входа', [`Каждый день можно забрать подарок. День ${CAL_DAYS.map((D, i) => `${i + 1} — ${D.kind === 'coins' ? 'монеты' : D.kind === 'ess' ? `${D.n} эссенции стихии недели` : D.kind === 'chest' ? CHEST[D.tier].name.toLowerCase() : calRewardText(D)}`).join(', ')}.`,
+    'После 7-го дня круг начинается заново. Пропустил день — ничего не теряешь: следующий заход даст следующий подарок.',
+    'Монеты в календаре не зависят от дохода фермы: чем выше уровень ловца, тем их больше. Эссенция — стихии недели.',
+    'Сундук 7-го дня появится на охоте следующим: попади в него сферой. Если отойти, он подождёт.',
+    'Если часы на телефоне перевести назад, новый день не наступит, пока они не догонят.']],
+  ['📅', 'Задания недели', [`Три больших задания на неделю. Первое всегда «Поймай ${WEEK_TASKS[0][0].n} зверьков», два других меняются каждую неделю.`,
+    `За каждое — ${WEEK_REWARD.xp} опыта и ${WEEK_REWARD.ess} эссенции стихии недели.`,
+    'Новые задания — в понедельник. Если задание выполнено, а награду не забрал, она зачислится сама. С заданиями дня так же.']],
+  ['✨', 'Событие недели', ['Каждую неделю одна стихия: её зверьки попадаются чаще, а эссенция этой стихии за поимку вдвое больше.',
+    `Чаще — значит в ${EVENT_MULT} раза среди зверьков той же редкости: редких от этого больше не становится. Ни один зверёк не займёт больше ${Math.round(EVENT_SHARE_MAX * 100)}% появлений на локации.`,
+    `Стихии идут по очереди: ${ESS_ORDER.map(k => ELEMENTS[k].icon).join(' ')} — 8 стихий за 8 недель. Название и значок события — на плашке на охоте.`]],
   ['🗂', 'Цели коллекций', [`Собери половину коллекции (с округлением вверх) — получишь +${COLL_GOAL.halfEss} эссенции стихии коллекции.`,
     `Собери всю коллекцию — ещё +${COLL_GOAL.fullEss} эссенции, титул и рамку для профиля и альбома. Собранная коллекция в альбоме обведена рамкой.`,
     'Рамки за коллекции лежат в «Магазине» → «Красота» → «Рамка». Купить их за монеты нельзя, только собрать коллекцию.',
@@ -12512,7 +12600,9 @@ const HELP = {
     'Звездопад: води пальцем, лови звёзды в корзинку и уворачивайся от туч.']],
   quests:['Задания', () => ['Сюжет: главы с заданиями и боссами. Кнопка рядом с заданием ведёт туда, где его выполнить.',
     'Глава «Улей» тоже здесь, в «Сюжете».',
-    'Сегодня: 3 задания дня. За все три — бонус дня.',
+    'Сегодня: календарь входа — подарок каждый день, 7 дней по кругу. Пропуск не сбрасывает.',
+    'Там же 3 задания дня (за все три — бонус дня) и 3 задания недели: они обновляются в понедельник.',
+    'Событие недели — плашка на охоте: зверьки одной стихии чаще, а её эссенция вдвое больше.',
     'Достижения: у каждого несколько ступеней, и награда растёт.']],
   profile:['Профиль ловца', () => ['Уровень растёт от опыта за игру: поимки, броски в центр, задания, арену, боссов, слияния и мини-игры. За монеты опыт не купить.',
     `Чем реже зверёк, тем больше опыта. Новый вид в альбоме — опыт ×${XP_GAIN.firstMult}.`,
@@ -12930,7 +13020,7 @@ const QUEST_POOL = [
 ];
 // Бонус дня за все три задания: монеты (примерно как за три задания) и осколок глитча
 const dayBonus = () => lvlCoins(COIN_BASE.dayBonus);
-const dayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+const dayKey = () => { const d = new Date(Date.now()); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 const questDef = q => QUEST_POOL.find(p => p.id === q.id);
 function ensureQuests() {
   const day = playDay(save.quests && save.quests.day);
@@ -12954,6 +13044,12 @@ function ensureQuests() {
     });
     persist(); return;
   }
+  // этап 6а: выполненные, но не забранные вчерашние задания не пропадают — награды зачислятся сами
+  if (save.quests && Array.isArray(save.quests.list)) {
+    const left = save.quests.list.filter(q => questDef(q) && q.prog >= q.n && !q.claimed), all = save.quests.list.every(q => q.claimed || q.prog >= q.n);
+    if (left.length) addCarry({ coins:lvlCoins(COIN_BASE.quest) * left.length, xp:XP_GAIN.quest * left.length }, 'day');
+    if (left.length && all && !save.quests.bonus) addCarry({ coins:dayBonus(), shards:1, xp:XP_GAIN.questAll }, 'day');
+  }
   const picks = [];
   while (picks.length < 3 && pool.length) picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
   save.quests = { day, bonus:false, list:picks.map(make) };
@@ -12961,6 +13057,7 @@ function ensureQuests() {
 }
 function questProgress(type, amount = 1, ctx = {}) {
   storyEvent(type, amount, ctx);
+  if (WEEK_DEF[type] && type !== 'event') weekProgress(type, amount);   // задания недели (этап 6а)
   ensureQuests();
   let done = null;
   for (const q of save.quests.list) {
@@ -12992,7 +13089,7 @@ function claimQuest(i) {
 }
 function fmtHM(ms) { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 3600)} ч ${Math.floor(s % 3600 / 60)} мин`; }
 function tickQuests() {
-  const d = new Date(), mid = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+  const d = new Date(Date.now()), mid = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
   $('questTimer').textContent = clockBack() ? '⏰ новые появятся, когда часы на телефоне догонят' : `новые через ${fmtHM(mid - d)}`;
   if (save.quests && save.quests.day !== playDay(save.quests.day)) renderQuests();
 }
@@ -13044,6 +13141,7 @@ function renderQuests() {
   const rws = document.createElement('div'); rws.className = 'rewards';
   rws.append(rwChip('coin', '+' + fmt(dayBonus())), rwChip('orb', '🧩 осколок'));
   bonus.append(rws);
+  renderCal(); renderWeek();
   tickQuests();
 }
 
@@ -13113,9 +13211,10 @@ function updateQuestDot() {
   const q = save.quests && save.quests.day === playDay(save.quests.day) && save.quests.list.some(x => x.prog >= x.n && !x.claimed);
   const a = ACH.some(achClaimable);
   const st = storyAttention() || hiveAttention();
-  dotWant.quests = !!(q || a || st); applyDots();
+  const day = !!q || calReady() || weekClaimable();   // этап 6а: подарок дня и задания недели
+  dotWant.quests = !!(day || a || st); applyDots();
   $('chipStory').classList.toggle('dot', st);
-  $('chipDaily').classList.toggle('dot', !!q); $('chipAch').classList.toggle('dot', a);
+  $('chipDaily').classList.toggle('dot', day); $('chipAch').classList.toggle('dot', a);
 }
 
 $('cTrait').addEventListener('click', () => { if (cr && cr.trait) toast(`${TRAITS[cr.trait].icon} ${TRAITS[cr.trait].name}: ${TRAITS[cr.trait].tip}`); });
@@ -15559,6 +15658,7 @@ $('beeSongPlay').addEventListener('click', () => {
 
 /* ---------- кнопки и клавиши ---------- */
 $('hivePill').addEventListener('click', () => { sfx('tap'); if (hiveCanAsk()) openHiveAsk(); else openHive(); });
+$('evPill').addEventListener('click', openEventSheet);   // событие недели (этап 6а)
 $('hiveClose').addEventListener('click', closeHive);
 $('haYes').addEventListener('click', e => { e.stopPropagation(); hiveAnswer('yes'); });
 $('haNo').addEventListener('click', e => { e.stopPropagation(); hiveAnswer('no'); });
@@ -16685,8 +16785,10 @@ function goalNow() {
   if (P.gift) return { id:'gift', ico:'🎁', txt:'Подарок «За опыт» ждёт тебя', hot:true, go:openGift };
   if (save.dexGift) return { id:'medals', ico:'🎁', txt:'Подарок «Первые медали» ждёт тебя', hot:true, go:openMedalGift };
   if (save.collGift) return { id:'collgift', ico:'🎁', txt:'Подарок «Цели коллекций» ждёт тебя', hot:true, go:openCollGift };
+  if (calReady()) return { id:'cal', ico:'🗓', txt:'Подарок дня ждёт тебя', hot:true, go:() => showTab('quests', 1) };
   const qs = save.quests && save.quests.day === playDay(save.quests.day) ? save.quests.list : [];
   if (qs.some(q => q.prog >= q.n && !q.claimed)) return { id:'quest', ico:'📋', txt:'Задание выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
+  if (weekClaimable()) return { id:'week', ico:'📅', txt:'Задание недели выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
   const a = ACH.find(achClaimable);
   if (a) return { id:'ach', ico:'🏆', txt:`Достижение «${a.name}»: забери награду`, hot:true, go:() => showTab('quests', 2) };
   if (mainNeedsFix()) return { id:'fix', ico:'🔧', txt:'Сфера сломалась: почини её в Магазине', go:() => showTab('shop', 0) };
@@ -16895,6 +16997,11 @@ function adminSeeColl(list) {
 $('adminCollHalf').addEventListener('click', () => { const m = collMembers('forest'), need = collHalf(COLL_BY_ID.forest); adminSeeColl(m.filter(s => !save.seen[s.id]).slice(0, Math.max(0, need - seenIn(m)))); });
 $('adminCollAll').addEventListener('click', () => adminSeeColl(SPECIES));
 $('adminCollOld').addEventListener('click', () => { save.coll = null; save.collGift = null; initColl(); pathAdminDone(save.collGift ? `Целей коллекций: ${save.collGift.n}. Подарок «Цели коллекций» ждёт в цели` : 'Ни одна коллекция ещё не собрана даже наполовину'); });
+$('adminCalDay').addEventListener('click', () => { save.cal.last = ''; calWas = null; pathAdminDone(`🗓 Можно забрать день ${save.cal.n + 1}`); });
+$('adminCalReset').addEventListener('click', () => { save.cal = { n:0, last:'', got:0 }; save.calChest = null; calWas = null; pathAdminDone('🗓 Календарь снова с 1-го дня'); });
+$('adminWeekNew').addEventListener('click', () => { const w = ensureWeek(); save.week = { id:w.id, idx:w.idx + 1, list:weekTasks(w.idx + 1) }; evPillKey = ''; pathAdminDone(`📅 Новые задания недели: ${save.week.list.map(q => WEEK_DEF[q.id].icon).join(' ')}`); });
+$('adminWeekDone').addEventListener('click', () => { for (const q of ensureWeek().list) q.prog = q.n; pathAdminDone('📅 Все задания недели выполнены: забери награды'); });
+$('adminEvNext').addEventListener('click', () => { const e = eventEl(); evForce = ESS_ORDER[(ESS_ORDER.indexOf(e) + 1) % ESS_ORDER.length]; evPillKey = ''; updateEventPill(); pathAdminDone(`✨ Теперь ${eventName()}`); });
 $('adminDex50').addEventListener('click', () => { closeAdmin(); showTab('hunt'); if (!cr || cr.sp.chest || cr.sp.hiveItem) { toast('На поле нет зверька'); return; } for (let i = 0; i < 50; i++) { cr.grade = RING_NORMAL; onCaught(cr.sp, false); } toast(`+50 поимок: ${cr.sp.name}`, 'good'); });
 $('adminChest').addEventListener('click', () => { closeAdmin(); showTab('hunt'); spawn(chestSp(Math.random() < 0.5 ? 'gold' : 'silver')); });
 for (const k of ['giant', 'baby', 'runner', 'pack']) $('admin' + k[0].toUpperCase() + k.slice(1)).addEventListener('click', () => {
@@ -17319,6 +17426,7 @@ function openChest() {
     const pool = BEAUTY.filter(b => !save.beauty.own[b.id] && b.price <= CHEST_DECO_MAX);
     if (pool.length) { const b = pool[Math.floor(Math.random() * pool.length)]; save.beauty.own[b.id] = true; deco = `${b.icon} ${b.name}`; got.push(['deco', b.icon]); }
   }
+  if (cr.sp.cal) save.calChest = null;   // сундук календаря открыт — больше не появится
   save.stats.chests = (save.stats.chests || 0) + 1; questProgress('chest');
   persist(); refreshWallet(true); renderOrbs(); updateShopDot();
   burst(cr.x, cr.y - cr.r * 0.3, tier === 'gold' ? ['#ffd54f', '#fff59d', '#ffffff'] : tier === 'silver' ? ['#e3ecf7', '#90caf9', '#ffffff'] : ['#ffcc80', '#a1887f', '#ffe082'], tier === 'gold' ? 40 : 26, 240);
@@ -17654,6 +17762,212 @@ function collFrameTiles(grid) {
   }
 }
 
+/* ======================= КАЖДЫЙ ДЕНЬ ЧТО-ТО НОВОЕ (этап 6а, версия 51) =======================
+   Календарь входа (7 подарков по кругу), задания недели и событие недели. Числа — CAL_DAYS, WEEK_…, EVENT_… в начале файла.
+   Дни и недели считаются с защитой часов (playDay, playWeek): если часы ушли назад, новый день и новая неделя не наступают. */
+// ---- неделя: с понедельника; номер недели от WEEK_EPOCH — по нему идут стихии ----
+function weekInfo(t = Date.now()) {
+  const d = new Date(t), dow = (d.getDay() + 6) % 7, m = new Date(d.getFullYear(), d.getMonth(), d.getDate() - dow);
+  const idx = Math.floor(Math.round((Date.UTC(m.getFullYear(), m.getMonth(), m.getDate()) - WEEK_EPOCH) / 864e5) / 7);
+  return { key:`${m.getFullYear()}-${m.getMonth() + 1}-${m.getDate()}`, idx };
+}
+function playWeek(stored) {
+  const w = weekInfo();
+  return stored && stored.key !== w.key && (clockBack() || w.idx < stored.idx) ? stored : w;
+}
+function weekTasks(idx) {
+  const i = ((idx % 9) + 9) % 9;
+  return [WEEK_TASKS[0][0], WEEK_TASKS[1][i % 3], WEEK_TASKS[2][Math.floor(i / 3)]].map(t => ({ id:t.id, n:t.n, prog:0, claimed:false }));
+}
+function ensureWeek() {
+  const W = save.week, w = playWeek(W && { key:W.id, idx:W.idx });
+  if (!W || W.id !== w.key) {
+    if (W) { const el = ESS_ORDER[((W.idx % 8) + 8) % 8]; for (const q of W.list) if (q.prog >= q.n && !q.claimed) addCarry({ xp:WEEK_REWARD.xp, ess:{ [el]:WEEK_REWARD.ess } }, 'week'); weekNews = true; }
+    save.week = { id:w.key, idx:w.idx, list:weekTasks(w.idx) };   // запишется с ближайшим сохранением
+  }
+  return save.week;
+}
+var weekNews = false;   // неделя сменилась во время игры: событие и задания новые
+var evForce = '';       // панель разработчика: другая стихия недели (до перезагрузки)
+function eventEl() { if (evForce) return evForce; const w = ensureWeek(); return ESS_ORDER[((w.idx % ESS_ORDER.length) + ESS_ORDER.length) % ESS_ORDER.length]; }
+const eventName = (el = eventEl()) => `Неделя ${ELEMENTS[el].gen}`;
+// ---- появление зверьков: редкость по весам, внутри редкости — по весам зверьков; событие недели меняет только второе ----
+function spawnTable(L, boost, el) {
+  const fits = s => !s.solo && (s.rarity === 'glitch' || ((s.map || 'earth') === mapOf(L) && (!s.home || s.home === L.id) && (!s.event || (s.event === 'meteor' && meteor.on && inSpace()))));
+  const rw = k => RARITY[k].weight * (k === 'pet' && L.id !== 'meadow' ? 0 : 1) * (L.rareBoost && RARITY_ORDER.indexOf(k) >= 2 && k !== 'glitch' ? L.rareBoost : 1);
+  const tiers = RARITY_ORDER.map(k => ({ k, w:rw(k), pool:SPECIES.filter(s => s.rarity === k && fits(s)).map(sp => [sp, 1 + (L.native.includes(sp.id) ? 4 : 0) + (boost.has(sp.id) ? 3 : 0)]) }))
+    .filter(t => t.w > 0 && t.pool.length);
+  if (el) { const tot = tiers.reduce((s, t) => s + t.w, 0); for (const t of tiers) eventBoost(t, t.w / tot, el); }
+  return tiers;
+}
+// зверьки стихии недели — вес ×EVENT_MULT; если кто-то так займёт больше EVENT_SHARE_MAX локации, его вес снижаем до границы (но не ниже обычного)
+function eventBoost(t, R, el) {
+  const ev = t.pool.filter(x => essOf(x[0]) === el); if (!ev.length) return;
+  const base = ev.map(x => x[1]);
+  for (const x of ev) x[1] *= EVENT_MULT;
+  if (R <= EVENT_SHARE_MAX) return;
+  for (let it = 0; it < 8; it++) {
+    let changed = false;
+    ev.forEach((x, i) => {
+      const sum = t.pool.reduce((s, y) => s + y[1], 0);
+      if (R * x[1] / sum <= EVENT_SHARE_MAX + 1e-9) return;
+      const w = Math.max(base[i], EVENT_SHARE_MAX * (sum - x[1]) / (R - EVENT_SHARE_MAX));
+      if (w < x[1] - 1e-9) { x[1] = w; changed = true; }
+    });
+    if (!changed) break;
+  }
+}
+// доли зверьков на локации (для проверок и карточки события)
+function spawnShares(L, boost, el) {
+  const T = spawnTable(L, boost, el), tot = T.reduce((s, t) => s + t.w, 0), out = {};
+  for (const t of T) { const s = t.pool.reduce((a, x) => a + x[1], 0); for (const [sp, w] of t.pool) out[sp.id] = t.w / tot * w / s; }
+  return out;
+}
+// ---- календарь входа ----
+function calReady() { return playDay(save.cal.last) !== save.cal.last; }
+function calRewardText(D, compact) {
+  const E = D.kind === 'ess' ? ELEMENTS[eventEl()] : null;
+  if (D.kind === 'coins') return compact ? '🪙' : `${fmt(lvlCoins(D.base))} монет`;
+  if (D.kind === 'pot') return compact ? '🧪' : `${potTitle(D.pot)} ×${D.n}`;
+  if (D.kind === 'ess') return compact ? E.icon : `+${D.n} ${E.icon} эссенции ${E.gen}`;
+  if (D.kind === 'shard') return compact ? '🧩' : 'осколок глитча 🧩';
+  return compact ? '🧰' : `${CHEST[D.tier].name} на охоте`;
+}
+function claimCal() {
+  if (!calReady()) return;
+  const i = save.cal.n, D = CAL_DAYS[i];
+  if (D.kind === 'coins') save.coins += lvlCoins(D.base);
+  else if (D.kind === 'pot') save.pot[D.pot] = (save.pot[D.pot] || 0) + D.n;
+  else if (D.kind === 'ess') addEss(eventEl(), D.n);
+  else if (D.kind === 'shard') save.shards = (save.shards || 0) + D.n;
+  else save.calChest = D.tier;
+  const txt = calRewardText(D);
+  save.cal.last = playDay(save.cal.last); save.cal.n = (i + 1) % CAL_DAYS.length; save.cal.got++;
+  persist(); refreshWallet(true); renderOrbs(); updateShopDot(); sfx('coin'); buzz(20);
+  toast(D.kind === 'chest' ? `🗓 День ${i + 1}: ${CHEST[D.tier].name}! Он появится на охоте следующим — попади в него сферой` : `🗓 День ${i + 1}: ${txt}!`, 'good', 3600);
+  if (tab === 'quests') renderQuests();
+  updateQuestDot(); goalSoon();
+}
+function renderCal() {
+  const box = $('calCard'); if (!box) return;
+  const ready = calReady(), cur = save.cal.n;
+  box.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'card-head';
+  const hb = document.createElement('b'); hb.textContent = '🗓 Календарь входа';
+  const hs = document.createElement('span'); hs.className = 'pill'; hs.textContent = `${CAL_DAYS.length} дней по кругу`;
+  head.append(hb, hs);
+  const row = document.createElement('div'); row.className = 'cal-row'; row.setAttribute('role', 'list');
+  CAL_DAYS.forEach((D, i) => {
+    // забранные в этом круге — до текущего; текущий светится, если его можно забрать сегодня
+    const got = i < cur, now = i === cur;
+    const c = document.createElement('div'); c.className = 'cal-day' + (got ? ' got' : '') + (now && ready ? ' now' : now ? ' next' : '') + (D.kind === 'chest' ? ' big' : '');
+    c.setAttribute('role', 'listitem'); c.setAttribute('aria-label', `День ${i + 1}: ${calRewardText(D)}${got ? ', получено' : now && ready ? ', можно забрать' : ''}`);
+    const n = document.createElement('small'); n.textContent = `${i + 1}`;
+    const ic = document.createElement('span'); ic.setAttribute('aria-hidden', 'true'); ic.textContent = got ? '✓' : calRewardText(D, true);
+    c.append(n, ic); row.append(c);
+  });
+  const D = CAL_DAYS[cur], foot = document.createElement('div'); foot.className = 'cal-foot';
+  const t = document.createElement('small');
+  t.textContent = ready ? `Сегодня — день ${cur + 1}: ${calRewardText(D)}.` : `Следующий подарок — завтра: день ${cur + 1}, ${calRewardText(D)}.`;
+  foot.append(t);
+  if (ready) foot.append(makeBtn('🎁 Забрать подарок дня', 'primary wide', claimCal));
+  const note = document.createElement('small'); note.className = 'cal-note'; note.textContent = 'Пропустил день — не страшно: продолжишь с того же места.';
+  foot.append(note);
+  if (save.calChest) { const ch = document.createElement('small'); ch.className = 'cal-chest'; ch.textContent = `🧰 ${CHEST[save.calChest].name} ждёт тебя на охоте.`; foot.append(ch); }
+  box.append(head, row, foot);
+}
+// ---- задания недели ----
+function weekProgress(type, amount = 1) {
+  const W = ensureWeek(); let done = null;
+  for (const q of W.list) {
+    if (q.id !== type || q.claimed || q.prog >= q.n) continue;
+    q.prog = Math.min(q.n, q.prog + amount); if (q.prog >= q.n) done = q;
+  }
+  if (done) setTimeout(() => { sfx('ok'); toast(`📅 Задание недели выполнено: ${WEEK_DEF[done.id].text(done.n, eventEl())}. Забери награду!`, 'good', 3600); }, 2600);
+}
+function claimWeek(i) {
+  const W = ensureWeek(), q = W.list[i]; if (!q || q.claimed || q.prog < q.n) return;
+  q.claimed = true; const el = eventEl();
+  gainXp(WEEK_REWARD.xp); addEss(el, WEEK_REWARD.ess);
+  persist(); sfx('coin'); refreshWallet(true);
+  toast(`📅 +${WEEK_REWARD.xp} опыта ⭐ и +${WEEK_REWARD.ess} ${ELEMENTS[el].icon} эссенции ${ELEMENTS[el].gen}`, 'good', 3000);
+  renderQuests(); updateQuestDot(); goalSoon();
+}
+const weekClaimable = () => { const W = save.week; return !!W && W.id === playWeek({ key:W.id, idx:W.idx }).key && W.list.some(q => q.prog >= q.n && !q.claimed); };
+function renderWeek() {
+  const box = $('weekBox'); if (!box) return;
+  const W = ensureWeek(), el = eventEl(), E = ELEMENTS[el];
+  box.innerHTML = '';
+  const hero = document.createElement('div'); hero.className = 'day-hero week-hero';
+  const num = document.createElement('div'); num.className = 'day-num'; num.textContent = `${W.list.filter(q => q.claimed).length}/${W.list.length}`;
+  const inf = document.createElement('div'); inf.className = 'day-info';
+  const b = document.createElement('b'); b.textContent = 'Задания недели';
+  const s = document.createElement('small'); s.textContent = clockBack() ? '⏰ новые появятся, когда часы на телефоне догонят' : 'новые — в понедельник';
+  inf.append(b, s); hero.append(num, inf); box.append(hero);
+  const list = document.createElement('div'); list.className = 'list-gap';
+  W.list.forEach((q, i) => {
+    const D = WEEK_DEF[q.id], go = q.id === 'event' ? ['🎯 На охоту', () => goHunt()] : taskGo(q.id, q);
+    list.append(questCard({ icon:q.id === 'event' ? E.icon : D.icon, title:D.text(q.n, el), frac:q.prog / q.n, progText:`${q.prog} из ${q.n}`, ready:q.prog >= q.n, claimed:q.claimed,
+      rewards:q.claimed ? [] : [rwChip('orb', `+${WEEK_REWARD.xp} ⭐`), rwChip('orb', `+${WEEK_REWARD.ess} ${E.icon}`)], onClaim:() => claimWeek(i), go }));
+  });
+  box.append(list);
+}
+// ---- событие недели: плашка на охоте и карточка ----
+var evPillKey = '';
+function updateEventPill() {
+  const el = $('evPill'); if (!el) return;
+  const hide = tut.on, e = eventEl(), key = hide ? '' : e;
+  if (evPillKey === key) return;
+  evPillKey = key; el.hidden = hide;
+  if (!hide) { const E = ELEMENTS[e]; el.style.setProperty('--ev', E.color); $('evPillIco').textContent = E.icon; $('evPillTxt').textContent = eventName(e); el.setAttribute('aria-label', `Событие недели: ${eventName(e)}. Подробнее`); }
+  syncStrip();
+}
+function openEventSheet() {
+  const el = eventEl(), E = ELEMENTS[el];
+  sheetKey = null; sfx('tap'); showSheet(`${E.icon} ${eventName(el)}`);
+  const body = $('bsBody'); body.innerHTML = '';
+  const p = document.createElement('p'); p.className = 'ev-lead';
+  p.textContent = `Всю неделю зверьки стихии «${E.name}» попадаются вдвое чаще среди зверьков своей редкости, а эссенция ${E.gen} за поимку — вдвое больше. В понедельник придёт новая стихия.`;
+  body.append(p);
+  const h = document.createElement('h3'); h.className = 'sec-title'; h.textContent = 'Зверьки этой стихии'; body.append(h);
+  const g = document.createElement('div'); g.className = 'alb-grid';
+  for (const sp of DEX.filter(s => !s.solo && essOf(s) === el)) g.append(albumCard(sp, false));
+  body.append(g);
+  const L = LOC_BY_ID[save.loc] || LOCATIONS[0], sh = spawnShares(L, new Set(noWx() ? [] : weather.boost), el), here = Object.entries(sh).filter(([id]) => essOf(SPECIES_BY_ID[id]) === el).reduce((s, x) => s + x[1], 0);
+  const n = document.createElement('p'); n.className = 'ev-note';
+  n.textContent = `Здесь, в локации ${L.icon} «${L.name}», зверьки этой стихии сейчас — ${pct(here)} всех появлений.`;
+  body.append(n);
+}
+// ---- отложенные награды: задания, выполненные, но не забранные до смены дня или недели ----
+function addCarry(o, src) {
+  const c = save.carry || (save.carry = { xp:0, coins:0, shards:0, ess:{}, src:[] });
+  c.xp += o.xp || 0; c.coins += o.coins || 0; c.shards += o.shards || 0;
+  for (const [k, n] of Object.entries(o.ess || {})) c.ess[k] = (c.ess[k] || 0) + n;
+  if (!c.src.includes(src)) c.src.push(src);
+}
+function payCarry() {
+  const c = save.carry; if (!c) return;
+  save.carry = null;
+  save.coins += c.coins; save.shards = (save.shards || 0) + c.shards;
+  for (const [k, n] of Object.entries(c.ess)) addEss(k, n);
+  gainXp(c.xp);
+  persist(); refreshWallet(true); renderOrbs();
+  const parts = [c.coins ? `+${fmt(c.coins)} монет` : '', c.xp ? `+${fmt(c.xp)} опыта ⭐` : '', c.shards ? `осколок 🧩${c.shards > 1 ? ' ×' + c.shards : ''}` : '',
+    ...ESS_ORDER.filter(k => c.ess[k]).map(k => `+${c.ess[k]} ${ELEMENTS[k].icon}`)].filter(Boolean);
+  const from = c.src.includes('week') && c.src.includes('day') ? 'прошлого дня и прошлой недели' : c.src.includes('week') ? 'прошлой недели' : 'прошлого дня';
+  toast(`🎁 Задания ${from} были выполнены — награды зачислены: ${parts.join(', ')}`, 'good', 4200);
+}
+// ---- раз в полсекунды: наступил новый день или неделя — точки, цель, плашка ----
+var calWas = null;
+function dayTick() {
+  ensureWeek(); ensureQuests();   // сначала смена недели и дня (они откладывают незабранные награды), потом выплата
+  if (save.carry) payCarry();
+  const r = calReady();
+  if (r !== calWas) { calWas = r; updateQuestDot(); goalSoon(); if (tab === 'quests') renderQuests(); }
+  if (weekNews) { weekNews = false; evPillKey = ''; if (tab === 'quests') renderQuests(); toast(`✨ Новая неделя: ${ELEMENTS[eventEl()].icon} ${eventName()} и новые задания недели`, 'good', 3600); }
+  updateEventPill();
+}
+
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
   // ферма платит только за новое время: если часы ушли назад, уже прожитое время второй раз не оплачивается (версия 45)
@@ -17707,7 +18021,7 @@ function frame(now) {
     if (tab === 'hunt' && inSpace()) renderSpacePill();
     if (tab === 'farm') tickFarmExtras(); if (tab === 'shop') tickShop();
     if (tab === 'quests') { tickQuests(); tickStory(); }
-    updateMood(); refreshIncome(); hiveTick(); syncBackGuard(); pathTick();
+    updateMood(); refreshIncome(); hiveTick(); syncBackGuard(); pathTick(); dayTick();
     if (cr && cr.special === 'runner' && tab === 'hunt') $('cSpecial').textContent = specialChip();
     if (tab === 'hunt') refreshGoal();
     if (tab === 'farm') tickCare();
