@@ -1201,7 +1201,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
 .chip.locked{opacity:.65;border-style:dashed;cursor:default}
 .st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .st-tile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:14px;background:var(--surface-2);text-align:center;min-width:0}
-.st-ico{font-size:1.2rem;line-height:1.2}
+.st-tile .st-ico{font-size:1.2rem;line-height:1.2}
 .st-tile b{font-weight:900;font-size:1rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .st-tile small{font-weight:800;font-size:.72rem;color:var(--muted);line-height:1.2}
 .lv-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
@@ -1229,6 +1229,22 @@ html[data-motion="low"] .xp-pop{animation:none!important}
   .goal{height:44px} .goal-txt small{display:none} .goal-txt b{-webkit-line-clamp:2;font-size:.78rem}
   .lvl-card{gap:6px;padding:12px 16px 14px} .lvl-burst{width:84px;height:84px} .lvl-burst b{font-size:2rem} .lvl-rays{inset:-22px}
 }
+
+/* ===== Этап 3 (версия 45): честная экономика — эссенции, требования, часы ===== */
+.need-list{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px}
+.need-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:var(--surface-2);font-weight:800;font-size:.88rem;line-height:1.25}
+.need-row .nr-ico{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface);font-size:1rem}
+.need-row.ok .nr-ico{background:#2b9a5c;color:#fff;font-weight:900}
+.need-row .nr-text{display:flex;flex-direction:column;min-width:0}
+.need-row small{font-weight:700;font-size:.76rem;color:var(--muted)}
+.clock-note{margin:0;padding:10px 12px;border-radius:14px;background:var(--surface-2);font-weight:800;font-size:.84rem;line-height:1.35;color:var(--muted)}
+.clock-note[hidden]{display:none}
+.ess-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.ess-tile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;border-radius:14px;background:color-mix(in srgb,var(--ec) 18%,var(--surface-2));text-align:center;min-width:0}
+.ess-tile span{font-size:1.25rem;line-height:1.2}
+.ess-tile b{font-weight:900;font-variant-numeric:tabular-nums;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.ess-tile small{font-size:.7rem;font-weight:800;color:var(--muted)}
+.ess-note{margin:10px 0 0;font-weight:700;font-size:.8rem;color:var(--muted);line-height:1.35}
 
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
@@ -1345,6 +1361,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
       <div class="pages">
         <div class="page" role="tabpanel">
           <div class="pen-card"><canvas id="penCanvas" aria-label="Загон со зверьками"></canvas></div>
+          <p class="clock-note" id="clockNote" hidden>⏰ Часы на телефоне показывают время раньше, чем в прошлый раз. Ферма, новые задания и реванш подождут, пока время догонит.</p>
           <div class="stat-row">
             <div class="stat-tile"><span class="st-ico" aria-hidden="true">🪙</span><b id="penIncome">0</b><small>монет в секунду</small></div>
             <div class="stat-tile"><span class="st-ico" aria-hidden="true">🏠</span><b id="penSlots">0/0</b><small>мест занято</small></div>
@@ -1558,6 +1575,9 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <button class="btn" id="adminLvl10" type="button">⭐ +10 уровней</button>
             <button class="btn" id="adminLvlOld" type="button">🔁 Пересчитать уровень, как у старого сохранения</button>
             <button class="btn" id="adminLvlZero" type="button">0️⃣ Уровень 1, опыт 0</button>
+            <button class="btn" id="adminEss" type="button">💠 +100 каждой эссенции</button>
+            <button class="btn" id="adminClockBack" type="button">⏰ Как будто часы ушли назад на 2 часа</button>
+            <button class="btn" id="adminClockOk" type="button">⏰ Часы снова верные</button>
           </div>
         </div>
         <div class="card">
@@ -1715,7 +1735,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 44</p>
+          <p class="version">Версия игры 45</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1729,7 +1749,7 @@ html[data-motion="low"] .xp-pop{animation:none!important}
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 44</p>
+    <p class="start-ver">Версия игры 45</p>
   </div>
 </div>
 
@@ -2488,7 +2508,7 @@ for (let L = 1; L < LVL_MAX; L++) LVL_CUM[L + 1] = LVL_CUM[L] + xpNeed(L);
 const XP_CAP = LVL_CUM[LVL_MAX] * 4;
 function levelOfXp(xp) { let lo = 1, hi = LVL_MAX; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (xp >= LVL_CUM[m]) lo = m; else hi = m - 1; } return lo; }
 // Награда за уровень: монеты фиксированные (не от дохода фермы). Каждый 5-й — большая, каждый 10-й — ещё и титул
-const LVL_REWARD = { coin:100, bigEvery:5, bigMult:5, bigShards:2, bigPots:2, potAt:3 };
+const LVL_REWARD = { coin:100, bigEvery:5, bigMult:5, bigShards:2, bigPots:2, potAt:3, essBase:3, essPer:3 };
 const LVL_POT_ORDER = ['comet', 'net', 'lull', 'moon'];
 const LVL_TITLES = [
   { lvl:10, id:'t10', name:'Следопыт' }, { lvl:20, id:'t20', name:'Ловкач' }, { lvl:30, id:'t30', name:'Меткий глаз' },
@@ -2499,12 +2519,37 @@ const LVL_TITLES = [
 const TITLE_IDS = new Set(['novice', 'shep', 'bee', ...LVL_TITLES.map(t => t.id)]);
 // Старые сохранения: стартовый уровень по прошлым заслугам. perCatch — средний опыт за поимку без бонуса нового вида
 // (столько вышло в симуляции за 60 дней), ach — за ступень достижения (вместо заданий дня, которых игра не помнит)
-const OLD_XP = { perCatch:24, ach:100 };
+const OLD_XP = { perCatch:24, ach:100, skipAch:['rich', 'orbs', 'decorator'] };   // достижения за монеты и покупки опыта не дают
 // Подарок «За опыт» вместо наград за пройденные уровни: монеты за каждый уровень, осколок за каждые 5, зелья за каждые 10
 const XP_GIFT = { coin:500, shardEvery:5, shardMax:20, potEvery:10 };
 // «Следующая цель»: локация «близко», если осталось поймать не больше max(min, part × сколько нужно)
 const GOAL_LOC_NEAR = { min:15, part:0.25 };
 const NAME_MAX = 16, NAME_DEFAULT = 'Ловец';
+
+/* ======================= ЧЕСТНАЯ ЭКОНОМИКА: ВСЕ ЧИСЛА (этап 3, версия 45) ======================= */
+// Эссенции стихий: их дают только поимки и награды уровней. Купить за монеты нельзя никак.
+const ESS_ORDER = ['water', 'nature', 'earth', 'fire', 'dark', 'ice', 'light', 'thunder'];   // в том же порядке их просят сферы
+const ESS_BY_RARITY = { common:1, uncommon:2, rare:3, epic:5, legendary:8, mythic:12, secret:20, divine:30, pet:20, glitch:15 };
+const ESS_SHINY = 3, ESS_MAX = 1e9;
+// где стихия водится чаще всего (посчитано по настоящей функции появления зверьков)
+const ESS_WHERE = { water:['beach'], nature:['meadow', 'swamp'], earth:['cave'], fire:['meadow', 'swamp'], dark:['swamp', 'cave'],
+                    ice:['peaks', 'nebula'], light:['swamp', 'mars'], thunder:['sky', 'mars'] };
+// Сферы с Жемчужной: вдобавок к монетам нужны уровень ловца и эссенции (номер — место в цепочке ORB_CHAIN).
+// Серебряная и Золотая — только за монеты, чтобы новичок не застревал
+const ORB_NEED = [null, null, null,
+  { lvl:7,  ess:{ water:20 } },  { lvl:12, ess:{ nature:40 } }, { lvl:16, ess:{ earth:60 } }, { lvl:20, ess:{ fire:90 } },
+  { lvl:25, ess:{ dark:130 } },  { lvl:30, ess:{ ice:180 } },   { lvl:36, ess:{ light:120, thunder:120 } },
+  { lvl:42, ess:{ water:50, nature:50, earth:50, fire:50, dark:50, ice:50, light:50, thunder:50 } }];
+// Рука и загон: цена в монетах прежняя, но каждый уровень требует уровня ловца (номер — уровень руки или загона)
+const ARM_NEED = [0, 0, 2, 5, 8, 12, 16, 21, 26, 31, 36];
+const PEN_NEED = [0, 0, 2, 4, 7, 10, 13, 16, 19, 23, 27];
+// Награды и цены в монетах больше не растут от дохода фермы: база × множитель уровня ловца
+// (1 на 1-м уровне, ≈3 на 10-м, ≈6,5 на 20-м, ≈15 на 40-м, ≈48 на 100-м)
+const LVL_COIN = { a:0.12, p:1.3 };
+const COIN_BASE = { quest:400, dayBonus:1500, shepherd:100, promo:5000, mini:100, hiveDone:3000, swarm:500, honey:200, guard:150, feed:50 };
+// Часы: если время на телефоне ушло назад больше чем на 10 минут, всё, что зависит от времени, ждёт, пока часы догонят.
+// Если так играют целый час, игра верит новым часам (вдруг их просто поправили)
+const CLOCK_SLACK = 10 * 60000, CLOCK_FORGIVE = 3600;
 function cleanName(s) {
   const t = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff<>]/g, '').replace(/\s+/g, ' ').trim();
   return Array.from(t).slice(0, NAME_MAX).join('').trim();
@@ -2532,7 +2577,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2628,6 +2673,10 @@ function sanitize(d) {
   delete d.orbLv; delete d.circle;
   sanitizeHive(d);
   sanitizePath(d);
+  const es = d.ess && typeof d.ess === 'object' ? d.ess : {}; d.ess = {};
+  for (const k of ESS_ORDER) { const n = Math.floor(Number(es[k])); if (n > 0) d.ess[k] = Math.min(n, ESS_MAX); }
+  d.maxT = Number.isFinite(+d.maxT) && +d.maxT > 0 ? +d.maxT : Date.now();
+  d.clockPlay = clamp(Number(d.clockPlay) || 0, 0, CLOCK_FORGIVE);
   if (!(d.coins >= 0)) d.coins = 0;
   return d;
 }
@@ -2682,6 +2731,8 @@ function loadSave() {
         if (s.hive && typeof s.hive === 'object') d.hive = s.hive;   // глава «Улей» (версия 42), проверяется в sanitizeHive
         // путь ловца (версия 44): у старых сохранений его нет, уровень посчитаем по прошлым заслугам в initPath
         d.path = s.path && typeof s.path === 'object' ? s.path : null; d.name = s.name; d.title = s.title;
+        // экономика (версия 45): эссенции и самое позднее время, которое видела игра
+        d.ess = s.ess; d.maxT = Number(s.maxT) || d.last; d.clockPlay = s.clockPlay;
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -2717,6 +2768,8 @@ function loadSave() {
   return sanitize(d);
 }
 const save = loadSave();
+// когда игру видели в прошлый раз: запоминаем сразу, до любых сохранений при запуске (иначе доход «пока тебя не было» терялся)
+const lastAtLoad = save.last, maxTAtLoad = save.maxT;
 
 /* ======================= ЗВУКИ И МУЗЫКА ======================= */
 // Всё синтезируется в браузере (Web Audio): мягкие волны, плавные затухания и лёгкое эхо.
@@ -9781,6 +9834,9 @@ function onCaught(sp, lucky) {
   const first = !save.seen[sp.id];
   save.seen[sp.id] = true; save.caught++;
   gainXp(catchXp(sp, first));
+  const essEl = essOf(sp), essN = essFor(sp); addEss(essEl, essN);
+  if (essN && typeof orb !== 'undefined') addPop(orb.x, orb.y - ORB_R * 1.6, `+${essN} ${ELEMENTS[essEl].icon}`, ELEMENTS[essEl].color);
+  if (essN && !save.flags.essIntro) { save.flags.essIntro = true; const E = ELEMENTS[essEl]; setTimeout(() => toast(`${E.icon} Это эссенция ${E.gen}. Эссенции дают поимки, а нужны они, чтобы улучшать сферу с Жемчужной. Все эссенции — в профиле ⭐`, 'good', 5200), 3800); }
   const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1);
   questProgress('catch');
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('rare')) questProgress('rare');
@@ -9799,7 +9855,7 @@ function onCaught(sp, lucky) {
     refreshIncome(); refreshPenAnimals();
   } else where = '. Загон полон, замени кого-нибудь на ферме';
   persist(); refreshWallet(true);
-  toast(`${sp.shiny ? '✨ Сияющий! Доход ×' + SHINY_MULT + '. ' : ''}${first ? `Новый в альбоме: ${dexNo(sp.no)}! ` : ''}${sp.name} пойман${where}. +${fmt(reward)} монет.${spaceMsg}${shardMsg}${sp.shiny ? '' : noteMerge(sp)}`, 'good', 3400);
+  toast(`${sp.shiny ? '✨ Сияющий! Доход ×' + SHINY_MULT + '. ' : ''}${first ? `Новый в альбоме: ${dexNo(sp.no)}! ` : ''}${sp.name} пойман${where}. +${fmt(reward)} монет${essN ? `, +${essN} ${ELEMENTS[essEl].icon}` : ''}.${spaceMsg}${shardMsg}${sp.shiny ? '' : noteMerge(sp)}`, 'good', 3400);
   const K = COLL_BY_ID[sp.coll];
   if (first && K && collDone(K)) setTimeout(() => { sfx('rare'); toast(`🗂 Коллекция ${K.icon} «${K.name}» собрана целиком! Награда ждёт в «Заданиях» → «Достижения»`, 'good', 4600); updateQuestDot(); }, 3600);
 }
@@ -10245,8 +10301,12 @@ function upgradeMain() {
   if (N.loot && (save.story.loot[N.loot] || 0) < 1) {
     sfx('bad'); toast(`Для ${ofName(N.name)} сферы нужен ещё ${LOOT[N.loot].icon} ${LOOT[N.loot].name}. Где взять: ${lootWhere(N.loot)}`, 'bad', 3800); return;
   }
+  // с Жемчужной: уровень ловца и эссенции (за монеты их не купить)
+  const miss = orbNeedLeft(t + 1);
+  if (miss.length) { sfx('bad'); toast(`Для ${ofName(N.name)} сферы нужно: ${miss.map(needText).join(', ')}`, 'bad', 4200); return; }
   if (!spend(N.cost)) return;
   if (N.loot) save.story.loot[N.loot]--;
+  const need = ORB_NEED[t + 1]; if (need) for (const [k, n] of Object.entries(need.ess)) save.ess[k] = Math.max(0, essHave(k) - n);
   save.chain = { t:t + 1, dur:N.dur, broken:false };
   if (!ORBS[selected].item) { selected = MAIN; if (['ready','spawning'].includes(state)) orb.defIdx = MAIN; }
   persist(); sfx('evo');
@@ -10335,7 +10395,7 @@ function lootWhere(id) { const n = lootChapters(id); return n.length > 1 ? `бо
 function orbActionable() {
   const t = chainT();
   const N = ORB_CHAIN[t + 1];
-  return (!!N && save.coins >= N.cost && (!N.loot || (save.story.loot[N.loot] || 0) > 0)) || (mainNeedsFix() && save.coins >= fixCost()) ||
+  return (!!N && save.coins >= N.cost && (!N.loot || (save.story.loot[N.loot] || 0) > 0) && orbNeedOk(t + 1)) || (mainNeedsFix() && save.coins >= fixCost()) ||
     (save.shards || 0) >= SHARDS_FOR_ORB;
 }
 const potActionable = () => POTIONS.some(P => (save.story.loot[P.loot] || 0) > 0 && save.coins >= P.cost);
@@ -10352,7 +10412,7 @@ function applyDots() {
     if (el && el.classList.contains('dot') !== on) el.classList.toggle('dot', on);
   }
 }
-function nextOrbAffordable() { const N = ORB_CHAIN[chainT() + 1]; return !!N && save.coins >= N.cost && (!N.loot || (save.story.loot[N.loot] || 0) > 0); }
+function nextOrbAffordable() { const N = ORB_CHAIN[chainT() + 1]; return !!N && save.coins >= N.cost && (!N.loot || (save.story.loot[N.loot] || 0) > 0) && orbNeedOk(chainT() + 1); }
 // в магазин заглянул — новая сфера уже не «новость», пока не станет по карману следующая
 function markShopSeen() { if (save.flags.shopSeen !== chainT()) { save.flags.shopSeen = chainT(); updateShopDot(); } }
 function updateShopDot() {
@@ -10398,9 +10458,10 @@ function renderMainCard() {
     : `Зверьки убегают на ${held(t)}% реже. Это последняя сфера цепочки.`;
   el.append(note);
   if (N) {
-    const noLoot = !!N.loot && (save.story.loot[N.loot] || 0) < 1;
+    const noLoot = !!N.loot && (save.story.loot[N.loot] || 0) < 1, need = ORB_NEED[t + 1], blocked = noLoot || !orbNeedOk(t + 1);
+    if (need) el.append(needRows(need.lvl, need.ess));
     const b = makeBtn(`Улучшить до ${ofName(N.name)}${N.loot ? ' + ' + LOOT[N.loot].icon : ''} `, 'primary', upgradeMain, N.cost);
-    afford.shop.push({ el:b, cost:N.cost, blocked:noLoot }); b.disabled = noLoot || save.coins < N.cost;
+    afford.shop.push({ el:b, cost:N.cost, blocked }); b.disabled = blocked || save.coins < N.cost;
     el.append(b);
   } else { const m = document.createElement('p'); m.className = 'up-max'; m.textContent = '✓ Сфера улучшена до конца'; el.append(m); }
 }
@@ -10414,7 +10475,8 @@ function renderChainCard() {
     d.className = 'chain-tile' + (i === t ? ' now' : i < t ? ' done' : i === t + 1 ? ' next' : ' lock');
     // под названием: твоя / пройдена / цена следующей / сила
     const tx = document.createElement('span'); tx.className = 'ct-text';
-    const sub = i === t ? `твоя · ×${fx2(C.power)}` : i === 0 ? 'запасная · ×1' : i < t ? `✓ ×${fx2(C.power)}` : i === t + 1 ? `🪙 ${fmt(C.cost)}${C.loot ? ' + ' + LOOT[C.loot].icon : ''}` : `×${fx2(C.power)}`;
+    const nd = ORB_NEED[i];
+    const sub = i === t ? `твоя · ×${fx2(C.power)}` : i === 0 ? 'запасная · ×1' : i < t ? `✓ ×${fx2(C.power)}` : i === t + 1 ? `🪙 ${fmt(C.cost)}${C.loot ? ' + ' + LOOT[C.loot].icon : ''}` : nd ? `⭐ ${nd.lvl} · ×${fx2(C.power)}` : `×${fx2(C.power)}`;
     tx.innerHTML = `<b>${C.name}</b><small>${sub}</small>`;
     d.append(orbIcon(C, 34), tx);
     g.append(d);
@@ -10661,6 +10723,7 @@ function penUpgradeButton(list) {
 }
 function upgradePen() {
   if (save.pen >= PEN_MAX) return;
+  if (!penLvlOk()) { sfx('bad'); toast(`Расширить загон можно с ${PEN_NEED[save.pen + 1]}-го уровня ловца. Сейчас у тебя ${pathLevel()}-й`, 'bad', 3400); return; }
   if (!spend(penCost(save.pen))) return;
   save.pen++; persist();
   toast(`Загон расширен, теперь в нём ${penSlots(save.pen)} мест`, 'good');
@@ -11009,8 +11072,8 @@ $('evoOk').addEventListener('click', () => { $('evoModal').hidden = true; evoAni
 let shep = null, playTime = 0, nextShepAt = 150 + Math.random() * 90, uiTick = 0, penMap = null;
 const shots = [];
 let stolenMetaEls = [];
-const guardLeft = () => Math.max(0, (save.guardUntil || 0) - Date.now());
-const guardPrice = () => Math.max(150, Math.round(curIncome * 60));
+const guardLeft = () => clamp((save.guardUntil || 0) - Date.now(), 0, GUARD_MAX_MIN * 60000);
+const guardPrice = () => lvlCoins(COIN_BASE.guard);
 // Пугало ставится не больше чем на 30 минут вперёд: дальше покупать бессмысленно, а деньги жалко
 const guardFull = () => guardLeft() + GUARD_MIN * 60000 > GUARD_MAX_MIN * 60000 + 1000;
 const ransomPrice = key => Math.max(100, Math.round(incomeOfKey(key) * 120));
@@ -11736,7 +11799,7 @@ function shepSteal() {
 function shepDefeated() {
   if (shep.practice) { sfx('win'); shepFlee(); tutEvent('shepDefeated'); return; }
   sfx('win'); questProgress('shepherd');
-  const reward = Math.max(100, Math.round(curIncome * 30));
+  const reward = lvlCoins(COIN_BASE.shepherd);
   save.coins += reward; save.shepherdWins = (save.shepherdWins || 0) + 1;
   let extra = '';
   if (Math.random() < 0.35) { save.shards = (save.shards || 0) + 1; extra = ' и осколок глитча 🧩'; }
@@ -11830,6 +11893,7 @@ function renderFarmExtras() {
   tickFarmExtras();
 }
 function tickFarmExtras() {
+  $('clockNote').hidden = !clockBack();
   const left = guardLeft();
   $('guardLine').innerHTML = left > 0 ? `🛡 Пугало охраняет загон ещё <b>${fmtTime(left)}</b>`
     : '👨‍🌾 Пастух может прийти в любой момент';
@@ -11870,6 +11934,7 @@ function reachSummary(reach) {
 }
 function upgradeArm() {
   if (save.arm >= ARM_MAX) return;
+  if (!armLvlOk()) { sfx('bad'); toast(`Тренировать руку дальше можно с ${ARM_NEED[save.arm + 1]}-го уровня ловца. Сейчас у тебя ${pathLevel()}-й`, 'bad', 3400); return; }
   if (!spend(armCost(save.arm))) return;
   save.arm++; persist();
   toast(`Рука стала сильнее! Теперь бросаешь на ${armReach(save.arm)} м`, 'good');
@@ -11917,14 +11982,16 @@ function renderShop() {
     ico:'💪', title:'Рука', sub:'Чем сильнее рука, тем дальше летит сфера', lvl:`${save.arm} из ${ARM_MAX}`, pips:[save.arm, ARM_MAX],
     now:`${reach} м`, next:armMax ? null : `${armReach(save.arm + 1)} м`,
     note:reachSummary(armMax ? reach : armReach(save.arm + 1)) + (armMax ? '.' : ' после тренировки.'),
-    btn:armMax ? null : ['Тренировать руку ', armCost(save.arm), upgradeArm], maxText:'Рука прокачана до максимума',
+    extra:armMax || armLvlOk() ? null : [needRows(ARM_NEED[save.arm + 1])],
+    btn:armMax ? null : ['Тренировать руку ', armCost(save.arm), upgradeArm, !armLvlOk()], maxText:'Рука прокачана до максимума',
   });
   // загон
   const penMax = save.pen >= PEN_MAX;
   upCard($('penShopCard'), {
     ico:'🏠', title:'Загон', sub:'Больше мест, больше дохода', lvl:`${save.pen} из ${PEN_MAX}`, pips:[save.pen, PEN_MAX],
     now:`${penSlots(save.pen)} мест`, next:penMax ? null : `${penSlots(save.pen + 1)} мест`,
-    btn:penMax ? null : ['Расширить загон ', penCost(save.pen), upgradePen], maxText:'Загон уже самый большой',
+    extra:penMax || penLvlOk() ? null : [needRows(PEN_NEED[save.pen + 1])],
+    btn:penMax ? null : ['Расширить загон ', penCost(save.pen), upgradePen, !penLvlOk()], maxText:'Загон уже самый большой',
   });
   // пугало
   upCard($('guardCard'), {
@@ -11973,7 +12040,19 @@ const RULES = [
     'Каждый бросок сильной сферой тратит 1 прочность. Когда прочность кончится, сферу надо починить за монеты. Чинить можно и раньше: платишь только за износ.',
     'Если зверёк вырвался, сильная сфера может треснуть и сломаться. Чем зверёк реже, тем чаще это бывает, а чем лучше сфера, тем реже. Сломанную чинят вдвое дороже полного ремонта.',
     'Пока сильная сфера сломана или износилась, бросаешь медной. Медной удобно ловить обычных зверьков, чтобы не тратить прочность.',
-    'Глитч-сфера отдельная: ловит только Виарика и тратится при попадании.']],
+    'Глитч-сфера отдельная: ловит только Виарика и тратится при попадании.',
+    'Серебряную и Золотую сферы покупают только за монеты. С Жемчужной нужны ещё уровень ловца и эссенции стихий — смотри «Эссенции».']],
+  ['💠', 'Эссенции', ['Эссенции стихий дают поимки: зверёк приносит эссенцию своей стихии. За монеты их не купить.',
+    `Сколько: обычный ${ESS_BY_RARITY.common}, необычный ${ESS_BY_RARITY.uncommon}, редкий ${ESS_BY_RARITY.rare}, эпический ${ESS_BY_RARITY.epic}, легендарный ${ESS_BY_RARITY.legendary}, ` +
+      `мифический ${ESS_BY_RARITY.mythic}, секретный ${ESS_BY_RARITY.secret}, божественный ${ESS_BY_RARITY.divine}. Сияющий — втрое больше. Ещё эссенция приходит за каждый уровень ловца.`,
+    ...ESS_ORDER.map(k => `${ELEMENTS[k].icon} ${ELEMENTS[k].name} чаще всего водится: ${andList(ESS_WHERE[k].map(id => LOC_BY_ID[id].name))}.`),
+    ...ORB_NEED.map((N, i) => N && `${ORB_CHAIN[i].name} сфера: ${N.lvl}-й уровень ловца и ${Object.entries(N.ess).length === ESS_ORDER.length ? `по ${Object.values(N.ess)[0]} каждой эссенции` : Object.entries(N.ess).map(([k, n]) => `${ELEMENTS[k].icon} ${n}`).join(' и ')}${ORB_CHAIN[i].loot ? ` и ${LOOT[ORB_CHAIN[i].loot].icon} ${LOOT[ORB_CHAIN[i].loot].name}` : ''}.`).filter(Boolean),
+    'Эссенции тратятся на улучшение сферы, как монеты. Все твои эссенции видно в профиле ⭐.']],
+  ['💰', 'Монеты', ['Монеты нужны для удобства и красоты: ремонт, зелья, корм, пугало, украшения. Силу за них не купить.',
+    `Руку и загон улучшают за монеты, но каждый новый уровень руки или загона открывается на своём уровне ловца: рука 10 — на ${ARM_NEED[10]}-м, загон 10 — на ${PEN_NEED[10]}-м.`,
+    'Награды монетами за задания, бонус дня, боссов, мини-игры, подарки и прогнанного пастуха растут с уровнем ловца, а не с доходом фермы. Цены корма и пугала тоже.',
+    'Всё, что ты уже купил, остаётся у тебя, даже если для этого сейчас нужен уровень выше.',
+    'Если перевести часы на телефоне назад, ферма, новые задания, реванш и мёд подождут, пока время догонит. Ничего не пропадёт.']],
   ['🧪', 'Зелья', [`Их варят в «Магазине» из трофеев боссов: трофей и монеты дают ${POT_BREW} зелья. Выпить зелье можно на охоте: кнопка сферы → «Зелья».`,
     `Выпитое зелье действует ${POT_THROWS} бросков любой сферой. Разные зелья можно пить вместе, одинаковые складываются до ${POT_STACK} бросков.`,
     ...POTIONS.map(P => `${LOOT[P.loot].icon} ${P.title}: ${P.desc.charAt(0).toLowerCase() + P.desc.slice(1)}`)]],
@@ -12055,11 +12134,12 @@ const HELP = {
     `Пугало из «Магазина» не пускает пастуха ${GUARD_MIN} минут.`,
     'Декор из «Ухода» навсегда прибавляет доход.']],
   shop:['Магазин', () => ['Медная сфера всегда с тобой: бесплатная, не ломается и не изнашивается.',
-    'Улучши её за монеты, и у тебя будет сильная сфера: она ловит лучше, но каждый бросок тратит прочность.',
+    'Улучши её, и у тебя будет сильная сфера: она ловит лучше, но каждый бросок тратит прочность.',
+    'Серебряная и Золотая — только за монеты. С Жемчужной нужны ещё уровень ловца и эссенции стихий: их дают поимки.',
     'Если зверёк вырвался, сильная сфера может сломаться. Чинят её за монеты, сломанную — вдвое дороже. Медная остаётся запасной.',
     `Звёздной сфере нужен ещё ${LOOT.frost.icon} ${LOOT.frost.name}: его даёт ${lootWhere('frost')}.`,
-    'Рука: чем она сильнее, тем дальше летит сфера и тем более редких зверьков ты достаёшь.',
-    'Загон: каждое расширение даёт ещё одно место для зверька.',
+    'Рука: чем она сильнее, тем дальше летит сфера и тем более редких зверьков ты достаёшь. Каждый новый уровень руки открывается на своём уровне ловца.',
+    'Загон: каждое расширение даёт ещё одно место для зверька. Новые расширения тоже открываются с уровнем ловца.',
     `Пугало: каждая покупка добавляет ${GUARD_MIN} минут, но не больше ${GUARD_MAX_MIN} минут вперёд. Если пастух уже идёт, пугало его спугнёт.`,
     `Зелья варят из трофеев боссов: трофей и монеты дают ${POT_BREW} зелья. Пей их на охоте: кнопка сферы → «Зелья». Каждое действует ${POT_THROWS} бросков.`,
     `Осколки глитча дают за прогнанного пастуха, мифических и более редких зверьков, слияние в ★★★, арену, сюжет и бонус дня. Из ${SHARDS_FOR_ORB} осколков собирается глитч-сфера.`]],
@@ -12442,7 +12522,7 @@ function redeemPromo() {
     toast(`🎁 Промокод принят! К тебе пришёл любимчик ${sp.name}${put ? ', он уже в загоне' : ''}`, 'good', 4200);
     setTimeout(() => openPetSheet(sp.id), 350);
   } else {
-    const gift = Math.max(5000, Math.round(curIncome * 600));
+    const gift = lvlCoins(COIN_BASE.promo);
     save.coins += gift;
     persist(); refreshWallet(true); sfx('evo');
     toast(`🎁 Промокод принят! Подарок: ${fmt(gift)} монет`, 'good', 4200);
@@ -12467,11 +12547,11 @@ const QUEST_POOL = [
   { id:'loc',        icon:'📍', n:[3, 5],     text:(n, q) => `Поймай ${n} ${plural(n, 'зверька', 'зверьков', 'зверьков')} на локации «${LOC_BY_ID[q.loc].name}»` },
 ];
 // Бонус дня за все три задания: монеты (примерно как за три задания) и осколок глитча
-const dayBonus = () => Math.max(1500, Math.round(curIncome * 300 + 500));
+const dayBonus = () => lvlCoins(COIN_BASE.dayBonus);
 const dayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 const questDef = q => QUEST_POOL.find(p => p.id === q.id);
 function ensureQuests() {
-  const day = dayKey();
+  const day = playDay(save.quests && save.quests.day);
   const open = LOCATIONS.filter(l => locOpen(l) && l.id !== 'meadow');
   const pool = QUEST_POOL.filter(q => (q.id !== 'loc' || open.length > 0) && (q.id !== 'space' || spaceOpen()));
   const make = q => {
@@ -12515,7 +12595,7 @@ function claimQuest(i) {
   const q = save.quests.list[i];
   if (!q || q.claimed || q.prog < q.n) return;
   q.claimed = true;
-  const coins = Math.max(400, Math.round(curIncome * 110 + 250));
+  const coins = lvlCoins(COIN_BASE.quest);
   save.coins += coins;
   let msg = `+${fmt(coins)} монет и ${XP_GAIN.quest} опыта ⭐`, xp = XP_GAIN.quest;
   if (!save.quests.bonus && save.quests.list.every(x => x.claimed)) {
@@ -12531,8 +12611,8 @@ function claimQuest(i) {
 function fmtHM(ms) { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 3600)} ч ${Math.floor(s % 3600 / 60)} мин`; }
 function tickQuests() {
   const d = new Date(), mid = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
-  $('questTimer').textContent = `новые через ${fmtHM(mid - d)}`;
-  if (save.quests && save.quests.day !== dayKey()) renderQuests();
+  $('questTimer').textContent = clockBack() ? '⏰ новые появятся, когда часы на телефоне догонят' : `новые через ${fmtHM(mid - d)}`;
+  if (save.quests && save.quests.day !== playDay(save.quests.day)) renderQuests();
 }
 // Плашка награды: монеты, сферы, осколки
 function rwChip(kind, text) {
@@ -12564,7 +12644,7 @@ function questCard(o) {
 function renderQuests() {
   ensureQuests();
   const list = $('questList'); list.innerHTML = '';
-  const coins = Math.max(400, Math.round(curIncome * 110 + 250));
+  const coins = lvlCoins(COIN_BASE.quest);
   let claimed = 0;
   save.quests.list.forEach((q, i) => {
     const def = questDef(q), ready = q.prog >= q.n;
@@ -12648,7 +12728,7 @@ function renderAch() {
 }
 
 function updateQuestDot() {
-  const q = save.quests && save.quests.day === dayKey() && save.quests.list.some(x => x.prog >= x.n && !x.claimed);
+  const q = save.quests && save.quests.day === playDay(save.quests.day) && save.quests.list.some(x => x.prog >= x.n && !x.claimed);
   const a = ACH.some(achClaimable);
   const st = storyAttention() || hiveAttention();
   dotWant.quests = !!(q || a || st); applyDots();
@@ -12670,7 +12750,7 @@ function updateMood() {
 }
 function addMood(v) { updateMood(); save.mood = clamp(save.mood + v, 0, 1); refreshIncome(); persist(); if (tab === 'farm') tickCare(); }
 function heartsAt(px, py, n = 1) { for (let i = 0; i < n; i++) penFloats.push({ x:px + (Math.random() - 0.5) * 30, y:py - Math.random() * 10, txt:'💕', life:1, noCoin:true }); }
-function feedPrice() { return Math.max(50, Math.round(curIncome * 30)); }
+function feedPrice() { return lvlCoins(COIN_BASE.feed); }
 function feedPets() {
   if (!penAnimals.length) { toast('Загон пуст, кормить некого', 'bad'); return; }
   if (save.mood >= 0.99) { toast('Зверьки сыты и довольны'); return; }
@@ -12804,7 +12884,7 @@ function drawDecorBack(c, x0, x1, y0, y1, r) {
 }
 
 /* ======================= АРЕНА ======================= */
-const andList = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' и ' + a[a.length - 1] : a.join('');
+function andList(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' и ' + a[a.length - 1] : a.join(''); }
 function elemMult(a, d) { if (ELEMENTS[a].strong.includes(d)) return 1.6; if (ELEMENTS[d].strong.includes(a)) return 0.65; return 1; }
 // У каждого вида свой характер (lean): забияки бьют сильнее, крепыши дольше держат удар. Сила 💪 при этом почти та же
 function fighterOf(sp, stage, boost = 1) {
@@ -12942,7 +13022,8 @@ function renderArena() {
   c3.append(list);
   pg.append(c1, c2, c3);
 }
-const arenaReward = L => Math.round(Math.max(300 * L * Math.pow(1.18, L), curIncome * (8 + 2 * L)));
+// награда арены растёт с уровнем арены (раньше могла расти и от дохода фермы — это убрано в версии 45)
+const arenaReward = L => Math.round(300 * L * Math.pow(1.18, L));
 function simulate(teamA, teamB) {
   const A = teamA.map(f => ({ ...f, hp:f.maxHp })), B = teamB.map(f => ({ ...f, hp:f.maxHp })), log = [];
   let ia = 0, ib = 0, turn = 0;
@@ -13293,11 +13374,11 @@ function storyEvent(type, amount = 1, ctx = {}) {
 function storyReward(ch, first) {
   const rw = ch.reward, parts = [];
   if (first) {
-    const coins = Math.round(Math.max(rw.coins, curIncome * rw.k));
+    const coins = Math.round(rw.coins * lvlMult());
     save.coins += coins; parts.push(`+${fmt(coins)} монет`);
     if (rw.shards) { save.shards = (save.shards || 0) + rw.shards; parts.push(`${rw.shards} ${plural(rw.shards, 'осколок', 'осколка', 'осколков')} глитча 🧩`); }
   } else {
-    const coins = Math.round(Math.max(rw.coins * 0.25, curIncome * rw.k * 0.3));
+    const coins = Math.round(rw.coins * 0.25 * lvlMult());
     save.coins += coins;
     parts.push(`+${fmt(coins)} монет`);
   }
@@ -13630,7 +13711,7 @@ function rematchCard() {
     const mid = document.createElement('div'); mid.innerHTML = `<div class="q-title">${B.name}</div><div class="q-meta">Трофей: ${LOOT[B.loot].icon} ${LOOT[B.loot].name}</div>`;
     const until = save.story.rematch[ch.n] || 0;
     const b = makeBtn('⚔ В бой', 'primary', () => openBossPrep(ch.n, true));
-    b.disabled = Date.now() < until;
+    b.disabled = !timeReady(until);
     if (b.disabled) storyTimers.push({ b, until });
     row.append(portraitCanvas(B.face, 40), mid, b); list.append(row);
   }
@@ -13641,7 +13722,7 @@ function rematchCard() {
 function tickStory() {
   const now = Date.now();
   for (const x of storyTimers) {
-    const left = x.until - now;
+    const left = Math.max(x.until - now, clockWaitMs());
     x.b.disabled = left > 0; x.b.textContent = left > 0 ? `⏳ ${left > 3600000 ? fmtHM(left) : fmtTime(left)}` : '⚔ В бой';
   }
 }
@@ -13675,7 +13756,7 @@ function openChapterSheet(n) {
   if (S.intro[n] || beaten) acts.append(makeBtn('📜 Начало главы', '', () => { closeSheet(); playDialog(ch.intro); }));
   if (beaten) {
     acts.append(makeBtn('📜 Концовка', '', () => { closeSheet(); playDialog(ch.outro); }));
-    const until = S.rematch[n] || 0, b = makeBtn(Date.now() < until ? `⚔ Реванш через ${fmtHM(until - Date.now())}` : '⚔ Реванш', 'primary', () => { closeSheet(); openBossPrep(n, true); });
+    const until = S.rematch[n] || 0, wait = Math.max(until - Date.now(), clockWaitMs()), b = makeBtn(wait > 0 ? `⚔ Реванш через ${fmtHM(wait)}` : '⚔ Реванш', 'primary', () => { closeSheet(); openBossPrep(n, true); });
     b.disabled = Date.now() < until; acts.append(b);
   } else if (n === S.ch && storyLocOpen(ch) && !S.intro[n]) acts.append(makeBtn('▶ Начать главу', 'primary', () => { closeSheet(); startChapter(n); }));
   if (acts.children.length) body.append(acts);
@@ -13703,6 +13784,7 @@ function autoBossTeam(B) {
 }
 function openBossPrep(n, rematch) {
   const ch = STORY[n - 1], B = BOSSES[ch.boss];
+  if (rematch && !timeReady(save.story.rematch[n] || 0)) { sfx('bad'); toast(`Реванш пока ждёт: ${fmtHM(Math.max((save.story.rematch[n] || 0) - Date.now(), clockWaitMs()))}`, 'bad'); return; }
   bossPrep = { n, rematch, team:autoBossTeam(B) };
   renderBossPrep();
 }
@@ -14133,7 +14215,7 @@ const fmtClock = ms => {
 };
 function hiveActive() { const h = save.hive; return h.ans === 'yes' && h.start > 0 && h.stage >= 1 && h.stage <= 5; }
 function hiveDeadline() { return save.hive.start + HIVE_TIME - save.hive.pen; }
-function hiveLeft() { return hiveActive() ? Math.max(0, hiveDeadline() - Date.now()) : 0; }
+function hiveLeft() { return hiveActive() ? clamp(hiveDeadline() - Date.now(), 0, HIVE_TIME) : 0; }   // часы назад не добавляют времени
 function hiveTimeUp() { return hiveActive() && Date.now() >= hiveDeadline(); }
 function hiveClosedLeft() { return Math.max(0, save.hive.closed - Date.now()); }
 function hiveCanAsk() { return !save.hive.queen && !hiveActive() && save.caught >= HIVE_NEED && hiveClosedLeft() <= 0; }
@@ -14281,9 +14363,9 @@ function updateHivePill() {
 }
 
 /* ---------- мёд ---------- */
-const honeyPrice = () => Math.max(200, Math.round(curIncome * 30));
+const honeyPrice = () => lvlCoins(COIN_BASE.honey);
 function hiveHoneyTick() {
-  const h = save.hive; if (!h.queen) return;
+  const h = save.hive; if (!h.queen || clockBack()) return;   // часы ушли назад: мёд ждёт, пока они догонят
   const now = Date.now();
   if (!h.honeyT || h.honeyT > now) h.honeyT = now;
   if (h.honey >= HONEY_MAX) { h.honeyT = now; return; }   // кладовая улья полна: новый мёд не копится
@@ -14973,7 +15055,7 @@ function hiveComplete() {
   h.stage = 6; h.queen = true; h.title = true; h.song = true; h.start = 0; h.pen = 0; h.honey = 1; h.honeyT = Date.now();
   save.pets[QUEEN_ID] = 1; save.seen[QUEEN_ID] = true;
   const placed = penCount(save) < penSlots(save.pen); if (placed) save.inPen[QUEEN_ID] = 1;
-  const coins = Math.round(Math.max(3000, curIncome * 120)); save.coins += coins;
+  const coins = lvlCoins(COIN_BASE.hiveDone); save.coins += coins;
   gainXp(XP_GAIN.chapter);
   persist(); refreshIncome(); refreshPenAnimals(); refreshWallet(true); renderStartBadge(); renderSongRow(); updateQuestDot();
   return [`👑 Королева пчёл${placed ? ' (уже в загоне)' : ''}`, 'титул «Друг пчёл» 🏅', `+${fmt(coins)} монет`, `${XP_GAIN.chapter} опыта ⭐`, 'мёд 🍯', '«Песня пчёл» 🎵'];
@@ -14981,7 +15063,7 @@ function hiveComplete() {
 function hiveFightWon() {
   bf.won = true;
   if (bf.swarm) {
-    const coins = Math.round(Math.max(500, curIncome * 40)); save.coins += coins; save.hive.swarmWins++;
+    const coins = lvlCoins(COIN_BASE.swarm); save.coins += coins; save.hive.swarmWins++;
     gainXp(XP_GAIN.swarm);
     persist(); refreshWallet(true);
     hiveResult('🏆 Рой отступил!', `+${fmt(coins)} монет и ${XP_GAIN.swarm} опыта. Но пчёлки обиделись: улей закрыт на 24 часа, а Королева за этот бой не даётся.`, 'Готово');
@@ -15156,7 +15238,7 @@ function renderStartBadge() { const b = $('startBadge'); if (b) b.hidden = !save
 renderStartBadge();
 
 /* ======================= МИНИ-ИГРЫ ======================= */
-const miniBase = () => Math.max(100, Math.round(curIncome * 8 + 60));
+const miniBase = () => lvlCoins(COIN_BASE.mini);
 let mini = null;
 function fitCanvas(cv) {
   const rc = cv.getBoundingClientRect(); if (rc.width < 10) return null;
@@ -15176,7 +15258,7 @@ function renderMiniInfo() {
 const MINI_DAILY = 5;
 function miniLeft(kind) {
   const m = save.mini;
-  if (m.day !== dayKey()) { m.day = dayKey(); m.plays = {}; }
+  const today = playDay(m.day); if (m.day !== today) { m.day = today; m.plays = {}; }
   m.plays = m.plays || {};
   return Math.max(0, MINI_DAILY - (m.plays[kind] || 0));
 }
@@ -16042,26 +16124,31 @@ function lvlReward(L) {
   if (big) r.pots[LVL_POT_ORDER[(L / R.bigEvery - 1) % LVL_POT_ORDER.length]] = R.bigPots;
   else if (L % R.bigEvery === R.potAt) r.pots[LVL_POT_ORDER[Math.floor(L / R.bigEvery) % LVL_POT_ORDER.length]] = 1;
   const T = LVL_TITLES.find(t => t.lvl === L); if (T) r.titles.push(T);
+  // эссенция (версия 45): стихии по кругу в порядке сфер — на 2-м уровне Вода, на 3-м Природа…; на каждом 5-м вдвое больше
+  r.ess = { [ESS_ORDER[(L + 6) % ESS_ORDER.length]]:(R.essBase + Math.floor(L / R.essPer)) * (big ? 2 : 1) };
   return r;
 }
 function lvlRewardsSum(from, to) {
-  const s = { coins:0, shards:0, pots:{}, titles:[] };
+  const s = { coins:0, shards:0, pots:{}, titles:[], ess:{} };
   for (let L = from; L <= to; L++) {
     const r = lvlReward(L);
     s.coins += r.coins; s.shards += r.shards; s.titles.push(...r.titles);
     for (const [k, n] of Object.entries(r.pots)) s.pots[k] = (s.pots[k] || 0) + n;
+    for (const [k, n] of Object.entries(r.ess || {})) s.ess[k] = (s.ess[k] || 0) + n;
   }
   return s;
 }
 function grantRewards(s) {
   save.coins += s.coins || 0; save.shards = (save.shards || 0) + (s.shards || 0);
   for (const [k, n] of Object.entries(s.pots || {})) if (POT_BY_ID[k]) save.pot[k] = (save.pot[k] || 0) + n;
+  for (const [k, n] of Object.entries(s.ess || {})) addEss(k, n);
 }
 function rewardChips(s) {
   const out = [];
   if (s.coins) out.push(rwChip('coin', '+' + fmt(s.coins)));
   if (s.shards) out.push(rwChip('orb', `🧩 ×${s.shards}`));
   for (const [k, n] of Object.entries(s.pots || {})) out.push(rwChip('orb', `🧪 ${potTitle(k)}${n > 1 ? ' ×' + n : ''}`));
+  for (const k of ESS_ORDER) if (s.ess && s.ess[k]) out.push(rwChip('orb', `${ELEMENTS[k].icon} +${s.ess[k]}`));
   for (const T of s.titles || []) out.push(rwChip('orb', `🏅 «${T.name}»`));
   return out;
 }
@@ -16204,7 +16291,7 @@ function goalNow() {
   const P = save.path;
   if (lvlPending()) return { id:'lvl', ico:'🎁', txt:`Забери награду за ${pathLevel()}-й уровень`, hot:true, go:openLvl };
   if (P.gift) return { id:'gift', ico:'🎁', txt:'Подарок «За опыт» ждёт тебя', hot:true, go:openGift };
-  const qs = save.quests && save.quests.day === dayKey() ? save.quests.list : [];
+  const qs = save.quests && save.quests.day === playDay(save.quests.day) ? save.quests.list : [];
   if (qs.some(q => q.prog >= q.n && !q.claimed)) return { id:'quest', ico:'📋', txt:'Задание выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
   const a = ACH.find(achClaimable);
   if (a) return { id:'ach', ico:'🏆', txt:`Достижение «${a.name}»: забери награду`, hot:true, go:() => showTab('quests', 2) };
@@ -16331,6 +16418,21 @@ function renderProfile() {
     statTile('👹', fmt(save.stats.bossWins || 0), 'боссов'),
     statTile('🏹', fmt(save.stats.perfect || 0), 'бросков в центр'));
   sc.append(grid); body.append(sc);
+  // эссенции стихий (версия 45)
+  const ec = document.createElement('div'); ec.className = 'card';
+  ec.innerHTML = '<div class="card-head"><b>Эссенции стихий</b></div>';
+  const eg = document.createElement('div'); eg.className = 'ess-grid';
+  for (const k of ESS_ORDER) {
+    const E = ELEMENTS[k], t = document.createElement('div'); t.className = 'ess-tile'; t.style.setProperty('--ec', E.color);
+    t.setAttribute('aria-label', `${E.name}: ${essHave(k)}. Водится: ${essWhere(k)}`);
+    const i = document.createElement('span'); i.setAttribute('aria-hidden', 'true'); i.textContent = E.icon;
+    const b = document.createElement('b'); b.textContent = fmt(essHave(k));
+    const s = document.createElement('small'); s.textContent = E.name;
+    t.append(i, b, s); eg.append(t);
+  }
+  const en = document.createElement('p'); en.className = 'ess-note';
+  en.textContent = 'Эссенции дают поимки: чем реже зверёк, тем больше, сияющий — втрое. Ещё они приходят за уровни. Нужны, чтобы улучшать сферу с Жемчужной.';
+  ec.append(eg, en); body.append(ec);
   // награды впереди
   if (!max) {
     const nc = document.createElement('div'); nc.className = 'card';
@@ -16357,7 +16459,7 @@ function oldSaveXp(d) {
   for (const v of Object.values(d.evoMax || {})) xp += Math.max(0, (v | 0) - 1) * XP_GAIN.evo;
   xp += Math.max(d.stats.arenaWins | 0, ((d.arena && d.arena.level) | 0) - 1) * XP_GAIN.arena;
   xp += (d.stats.bossWins | 0) * XP_GAIN.boss + Object.keys(d.story.beaten || {}).length * XP_GAIN.chapter + (d.hive.queen ? XP_GAIN.chapter : 0);
-  for (const a of ACH) xp += clamp(d.ach[a.id] | 0, 0, a.tiers.length) * OLD_XP.ach;
+  for (const a of ACH) if (!OLD_XP.skipAch.includes(a.id)) xp += clamp(d.ach[a.id] | 0, 0, a.tiers.length) * OLD_XP.ach;
   return Math.min(XP_CAP, Math.max(0, Math.round(xp)));
 }
 function xpGiftFor(L) {
@@ -16383,12 +16485,79 @@ $('adminLvl10').addEventListener('click', () => {
   const L = Math.min(LVL_MAX, pathLevel() + 10); save.path.xp = Math.max(save.path.xp, LVL_CUM[L]); pathAdminDone(`Уровень ${L}! Награды за все уровни — в одном окне`);
 });
 $('adminLvlOld').addEventListener('click', () => { save.path = null; initPath(); pathAdminDone(`Уровень посчитан по заслугам: ${pathLevel()}. Подарок «За опыт» ждёт в «Следующей цели»`); });
+$('adminEss').addEventListener('click', () => { for (const k of ESS_ORDER) addEss(k, 100); pathAdminDone('+100 каждой эссенции'); });
+$('adminClockBack').addEventListener('click', () => { save.maxT = Date.now() + 2 * 3600000; save.clockPlay = 0; pathAdminDone('Игра думает, что часы ушли назад на 2 часа: ферма, задания, реванш и мёд ждут'); });
+$('adminClockOk').addEventListener('click', () => { save.maxT = Date.now(); save.clockPlay = 0; pathAdminDone('Часы снова верные'); });
 $('adminLvlZero').addEventListener('click', () => { save.path = { xp:0, paid:1, shown:1, gift:null, v:1 }; pathAdminDone('Путь ловца сброшен: уровень 1'); });
+
+/* ======================= ЧЕСТНАЯ ЭКОНОМИКА (этап 3, версия 45) =======================
+   Монеты больше не покупают силу. Сферы с Жемчужной, рука и загон просят уровень ловца, а сферы ещё и эссенции стихий.
+   Эссенции дают только поимки и награды уровней. Награды монетами считаются от уровня ловца, а не от дохода фермы.
+   Числа — в начале файла (ESS_…, ORB_NEED, ARM_NEED, PEN_NEED, LVL_COIN, COIN_BASE, CLOCK_…). */
+function lvlMult(L) { if (L == null) L = save.path ? pathLevel() : 1; return 1 + LVL_COIN.a * Math.pow(Math.max(0, L - 1), LVL_COIN.p); }
+function lvlCoins(base) { return Math.round(base * lvlMult()); }
+// ---- эссенции ----
+function essOf(sp) { return ELEM_OF[sp.id] || 'nature'; }
+function essFor(sp) { return (ESS_BY_RARITY[sp.rarity] || 0) * (sp.shiny ? ESS_SHINY : 1); }
+function essHave(el) { return save.ess[el] || 0; }
+function addEss(el, n) { if (n > 0 && ESS_ORDER.includes(el)) save.ess[el] = Math.min(ESS_MAX, essHave(el) + Math.round(n)); }
+function essWhere(el) { return andList((ESS_WHERE[el] || []).map(id => LOC_BY_ID[id] ? LOC_BY_ID[id].name : id)); }
+// ---- что нужно для следующей сферы, руки и загона ----
+function orbNeedLeft(t) {   // чего не хватает для сферы номер t: [{ kind:'lvl'|ess, have, need }]
+  const N = ORB_NEED[t]; if (!N) return [];
+  const out = [];
+  if (pathLevel() < N.lvl) out.push({ kind:'lvl', have:pathLevel(), need:N.lvl });
+  for (const k of ESS_ORDER) if (N.ess[k] && essHave(k) < N.ess[k]) out.push({ kind:k, have:essHave(k), need:N.ess[k] });
+  return out;
+}
+function orbNeedOk(t) { return orbNeedLeft(t).length === 0; }
+function armLvlOk() { return save.arm >= ARM_MAX || pathLevel() >= (ARM_NEED[save.arm + 1] || 0); }
+function penLvlOk() { return save.pen >= PEN_MAX || pathLevel() >= (PEN_NEED[save.pen + 1] || 0); }
+function needText(x) { return x.kind === 'lvl' ? `${x.need}-й уровень ловца` : `${ELEMENTS[x.kind].icon} эссенция ${ELEMENTS[x.kind].gen}: ${fmt(x.have)} из ${fmt(x.need)}`; }
+// строки «что нужно» для карточки в Магазине: уровень и эссенции, у каждой ✓ или сколько есть
+function needRows(lvl, ess) {
+  const box = document.createElement('div'); box.className = 'need-list';
+  const row = (ok, ico, text, sub) => {
+    const r = document.createElement('div'); r.className = 'need-row' + (ok ? ' ok' : '');
+    const i = document.createElement('span'); i.className = 'nr-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = ok ? '✓' : ico;
+    const t = document.createElement('span'); t.className = 'nr-text'; t.textContent = text;
+    if (sub) { const s = document.createElement('small'); s.textContent = sub; t.append(s); }
+    r.append(i, t); box.append(r);
+  };
+  if (lvl) row(pathLevel() >= lvl, '⭐', `Уровень ловца ${lvl}`, pathLevel() >= lvl ? '' : `у тебя ${pathLevel()}-й`);
+  for (const k of ESS_ORDER) if (ess && ess[k]) {
+    const E = ELEMENTS[k], ok = essHave(k) >= ess[k];
+    row(ok, E.icon, `Эссенция ${E.gen}: ${fmt(Math.min(essHave(k), ess[k]))} из ${fmt(ess[k])}`, ok ? '' : `водится: ${essWhere(k)}`);
+  }
+  return box;
+}
+// ---- защита от перевода часов ----
+// save.maxT — самое позднее время, которое видела игра. Если часы ушли назад больше чем на CLOCK_SLACK,
+// ферма, задания, реванш, мёд и наградные мини-игры ждут, пока часы догонят. Без штрафов и упрёков
+function clockBack() { return Date.now() < save.maxT - CLOCK_SLACK; }
+function clockWaitMs() { return Math.max(0, save.maxT - CLOCK_SLACK - Date.now()); }
+function timeReady(t) { return !clockBack() && Date.now() >= t; }
+function dayNum(k) { const [y, m, d] = String(k).split('-').map(Number); return (y || 0) * 10000 + (m || 0) * 100 + (d || 0); }
+// день, на который действуют задания и наградные игры: при часах «назад» день не меняется
+function playDay(stored) {
+  const d = dayKey();
+  return stored && stored !== d && (clockBack() || dayNum(d) < dayNum(stored)) ? stored : d;
+}
+function clockTick(dt, playing) {
+  const now = Date.now();
+  if (now >= save.maxT) { save.maxT = now; save.clockPlay = 0; return; }
+  if (playing && now < save.maxT - CLOCK_SLACK) {
+    save.clockPlay += dt;
+    if (save.clockPlay >= CLOCK_FORGIVE) { save.maxT = now; save.clockPlay = 0; }   // час игры с такими часами — значит, их поправили
+  }
+}
 
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
-  const wall = Date.now(), away = (wall - lastWall) / 1000; lastWall = wall;
+  // ферма платит только за новое время: если часы ушли назад, уже прожитое время второй раз не оплачивается (версия 45)
+  const wall = Date.now(), away = Math.max(0, wall - Math.max(lastWall, save.maxT)) / 1000; lastWall = wall;
   const playing = isPlaying();
+  clockTick(dt, playing);
   if (away > 0) {
     const earned = farmEarn(away, playing);
     if (away > 30 && earned > 0) toast(`Пока тебя не было, ферма принесла ${fmt(earned)} монет`, 'good', 3200);
@@ -16467,7 +16636,9 @@ let guardRefund = 0;
     save.guardUntil = cap; save.coins += guardRefund;
   }
 }
-const offline = Math.min(Math.max(0, (Date.now() - save.last) / 1000), OFFLINE_CAP);
+// пока тебя не было: считаем только время после самого позднего, которое видела игра (часы назад — ничего)
+const offline = clockBack() ? 0 : Math.min(Math.max(0, (Date.now() - Math.max(lastAtLoad, maxTAtLoad)) / 1000), OFFLINE_CAP);
+if (Date.now() > save.maxT) save.maxT = Date.now();
 const offlineEarned = offline > 30 ? Math.floor(farmEarn(offline, false)) : 0;
 // Глава «Улей»: если пчёлы несли тебя за пропажей, а игру закрыли, ты снова дома; закрытое место открытым не остаётся
 if (save.hive.trip) { if (LOC_BY_ID[save.hive.trip.from]) save.loc = save.hive.trip.from; save.hive.trip = null; }
