@@ -1282,6 +1282,23 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
 .cl-special{color:#9be7ff}
 .trait.special{background:linear-gradient(90deg,#ffe082,#ffb74d);color:#3e2600;border-color:transparent}
 
+/* ===== Этап 5 (версия 49): коллекция глубже ===== */
+.alb-medal{position:absolute;top:4px;right:5px;font-size:1rem;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.alb-search{flex:none;display:flex;align-items:center;gap:8px;min-height:46px;padding:0 12px;border-radius:14px;border:2px solid var(--border);background:var(--surface)}
+.alb-search:focus-within{border-color:var(--accent)}
+.alb-search input{flex:1;min-width:0;border:0;background:none;color:var(--text);font:inherit;font-weight:800;font-size:1rem;outline:none}
+.dex-card{display:flex;flex-direction:column;gap:10px}
+.medal-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.medal-cell{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px;border-radius:14px;background:var(--surface-2);opacity:.5;text-align:center}
+.medal-cell.got{opacity:1;background:color-mix(in srgb,#ffd54f 22%,var(--surface-2))}
+.medal-cell span{font-size:1.4rem;line-height:1.2}
+.medal-cell b{font-weight:900;font-size:.8rem}
+.medal-cell small{font-weight:800;font-size:.68rem;color:var(--muted)}
+.dex-prog{display:flex;flex-direction:column;gap:6px}
+.dex-prog small{font-weight:800;color:var(--muted);font-size:.84rem}
+.first-meet{font-weight:800}
+.cl-size{color:#c5e1a5}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1517,6 +1534,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="prog big"><i id="albumFill"></i></div>
             <small id="albumSub"></small>
           </div>
+          <label class="alb-search"><span aria-hidden="true">🔍</span><input type="search" id="albumSearch" placeholder="Имя или номер" autocomplete="off" spellcheck="false" aria-label="Поиск зверька по имени или номеру"></label>
           <div class="alb-cats" id="albumCats" role="group" aria-label="Коллекции"></div>
           <div class="alb-tools">
             <label class="alb-sel"><span>Редкость</span><select id="albumRar"></select></label>
@@ -1622,6 +1640,8 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <button class="btn" id="adminBeauty" type="button">💎 Выдать всё из лавки красоты</button>
             <button class="btn" id="adminMagnate" type="button">👑 Проверить «Магнат» заново</button>
             <button class="btn" id="adminChest" type="button">🧰 Сундук на поле</button>
+            <button class="btn" id="adminDexOld" type="button">🏅 Пересчитать медали, как у старого сохранения</button>
+            <button class="btn" id="adminDex50" type="button">🏅 +50 поимок зверьку на поле</button>
             <button class="btn" id="adminGiant" type="button">🦣 Великан</button>
             <button class="btn" id="adminBaby" type="button">🐣 Малыш</button>
             <button class="btn" id="adminRunner" type="button">💨 Беглец</button>
@@ -1784,7 +1804,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 48</p>
+          <p class="version">Версия игры 49</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1798,7 +1818,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 48</p>
+    <p class="start-ver">Версия игры 49</p>
   </div>
 </div>
 
@@ -2385,6 +2405,17 @@ const SPECIAL = {
   runner: { icon:'💨', name:'Беглец', time:12, reward:2, tip:'💨 Беглец! Бежит по полю и через 12 секунд уйдёт. Награды ×2' },
   pack:   { icon:'🐾', name:'Стая', count:3, tip:'🐾 Стая! Поймай — и сразу придёт ещё такой же, до трёх подряд' },
 };
+/* ======================= КОЛЛЕКЦИЯ: ЧИСЛА (этап 5, версия 49) ======================= */
+// Медаль вида — за число поимок; у редких и ещё более редких видов пороги ниже, чтобы их было реально собрать
+const MEDALS = [{ id:'bronze', icon:'🥉', name:'бронза' }, { id:'silver', icon:'🥈', name:'серебро' }, { id:'gold', icon:'🥇', name:'золото' }, { id:'diamond', icon:'💎', name:'алмаз' }];
+const MEDAL_STEPS = { common:[1, 10, 50, 200], rare:[1, 3, 10, 25] }, MEDAL_RARE_FROM = 'rare';
+const MEDAL_REWARD = [{ xp:20, ess:3 }, { xp:60, ess:8 }, { xp:150, ess:20 }, { xp:400, ess:50 }];   // опыт и эссенция стихии вида
+// Средний рост вида в сантиметрах; у каждого пойманного свой: от трёх четвертей до полутора раз больше среднего
+const SIZE_CM = { puff:18, mush:12, leaf:16, bee:7, chameleon:20, deer:55, lotus:30, bubble:14, crab:15, shell:13, fin:24, manta:45, whale:80, angler:35,
+  pepper:11, flame:16, volcano:30, salamander:28, samovar:34, dragon:50, phoenix:45, snowy:22, icicle:18, yeti:60, fox:38, aurora:40, mammoth:90,
+  rock:14, mole:17, spiky:19, armadillo:26, crystal:21, nugget:12, pinwheel:15, spark:22, storm:36, star:48, galaxy:42, divine:52, owl:21, firefly:6,
+  bat:15, moth:14, mist:40, moon:32, shadow:38, dezya:30, makarsha:28, graf:32, vr:25, hare:27, piggy:24, cloudy:33, hedge:16, cricket:8, jelly:20,
+  crater:18, rover:22, dusty:9, sputnik:17, rocket:26, alien:23, saturn:30, meteor:20, comet:34, pulsar:28, astro:35, queen:25 };
 // Тряска и вспышка при поимке по редкости (сила тряски в пикселях, цвет вспышки)
 const CATCH_FEEL = { rare:[2, null], epic:[3, '186,104,255'], legendary:[5, '255,213,79'], mythic:[6, '255,90,79'], secret:[7, '143,124,255'],
                      divine:[8, '255,245,157'], pet:[7, '255,126,182'], glitch:[5, '0,229,255'] };
@@ -2435,8 +2466,9 @@ function throwBonusFor(ratio) {
 }
 const ringGrade = k => RING_GRADE.find(g => k <= g.maxK) || RING_NORMAL;
 // «шанс 35–90%»: от небрежного броска с краю до «Идеально» в самый центр
-function chanceRange(sp, def) {
-  const tm = traitMult() * specMult(), lo = catchChance(sp.rarity, def, THROW_EDGE.mult * RING_NORMAL.mult * tm, undefined, chanceCap(sp.rarity, RING_NORMAL));
+// tm — множитель характера и особой встречи зверька на поле; в альбоме (без зверька) — 1
+function chanceRange(sp, def, tm = traitMult() * specMult()) {
+  const lo = catchChance(sp.rarity, def, THROW_EDGE.mult * RING_NORMAL.mult * tm, undefined, chanceCap(sp.rarity, RING_NORMAL));
   const g = RING_GRADE[0], hi = catchChance(sp.rarity, def, THROW_BONUS[0].mult * g.mult * tm, undefined, chanceCap(sp.rarity, g));
   const a = pct(lo), b = pct(hi);
   return a === b ? a : `${a.replace('%', '')}–${b}`;
@@ -2715,7 +2747,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, dex:{}, dexGift:null, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2821,6 +2853,23 @@ function sanitize(d) {
   d.beauty = { own, on };
   const sk = d.streak && typeof d.streak === 'object' ? d.streak : {};
   d.streak = { n:clamp(Math.floor(Number(sk.n)) || 0, 0, 9999), t:Number.isFinite(+sk.t) && +sk.t > 0 ? +sk.t : 0 };
+  if (d.dex) {
+    const dx = {}, num = (v, a, b) => { const x = Number(v); return Number.isFinite(x) ? clamp(x, a, b) : null; };
+    for (const [id, e] of Object.entries(d.dex)) {
+      if (!SPECIES_BY_ID[id] || !e || typeof e !== 'object') continue;
+      const n = Math.floor(num(e.n, 0, 1e9) || 0), r = { n, m:Math.floor(num(e.m, 0, MEDALS.length) || 0) };
+      if (e.first && typeof e.first === 'object') r.first = { loc:LOC_BY_ID[e.first.loc] ? e.first.loc : null, t:num(e.first.t, 0, 1e14) || 0, wx:String(e.first.wx || '').slice(0, 12) };
+      const mx = num(e.max, 0.1, 1000), mn = num(e.min, 0.1, 1000); if (mx) r.max = mx; if (mn) r.min = mn;
+      if (Array.isArray(e.wx)) r.wx = e.wx.filter(w => typeof w === 'string').slice(0, 16).map(w => w.slice(0, 12));
+      if (e.old) r.old = true;
+      dx[id] = r;
+    }
+    d.dex = dx;
+  }
+  const dg = d.dexGift && typeof d.dexGift === 'object' ? d.dexGift : null;
+  d.dexGift = null;
+  if (dg) { const ess = {}; for (const k of ESS_ORDER) { const n = Math.floor(Number(dg.ess && dg.ess[k]) || 0); if (n > 0) ess[k] = Math.min(n, 1e6); }
+    const xp = clamp(Math.floor(Number(dg.xp) || 0), 0, 1e7), n = clamp(Math.floor(Number(dg.n) || 0), 0, 1000); if (xp || n) d.dexGift = { xp, ess, n }; }
   if (d.title && d.title.startsWith('ti_') && !own[d.title]) d.title = '';
   if (d.title === 'magnate' && !(d.flags && d.flags.magnate)) d.title = '';
   if (!(d.coins >= 0)) d.coins = 0;
@@ -2881,6 +2930,8 @@ function loadSave() {
         d.ess = s.ess; d.maxT = Number(s.maxT) || d.last; d.clockPlay = s.clockPlay;
         d.beauty = s.beauty;   // «Лавка красоты» (версия 46)
         d.streak = s.streak;   // серия поимок (версия 47)
+        // записи о видах (версия 49): у старых сохранений их нет — посчитаем медали по зверькам в initDex
+        d.dex = s.dex && typeof s.dex === 'object' ? s.dex : null; d.dexGift = s.dexGift;
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -10010,6 +10061,7 @@ function onCaught(sp, lucky) {
   const SPk = cr && cr.sp === sp && cr.special ? SPECIAL[cr.special] : null, rk = (SPk && SPk.reward) || 1;   // Великан ×3, Малыш и Беглец ×2
   if (SPk && cr.special === 'pack' && cr.packLeft > 0) packNext = { sp:SPECIES_BY_ID[sp.id] || sp, left:cr.packLeft - 1 };
   const xpGot = Math.round(catchXp(sp, first) * G.xp * sm * rk); gainXp(xpGot);
+  const dx = sp.solo ? null : dexCatch(sp, cr && cr.sp === sp ? cr.special : null);   // этап 5: счёт вида, размер, рекорд, медали
   const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess * rk); addEss(essEl, essN);
   if (essN && typeof orb !== 'undefined') addPop(orb.x, orb.y - ORB_R * 1.6, `+${essN} ${ELEMENTS[essEl].icon}`, ELEMENTS[essEl].color);
   if (essN && !save.flags.essIntro) { save.flags.essIntro = true; const E = ELEMENTS[essEl]; setTimeout(() => toast(`${E.icon} Это эссенция ${E.gen}. Эссенции дают поимки, а нужны они, чтобы улучшать сферу с Жемчужной. Все эссенции — в профиле ⭐`, 'good', 5200), 3800); }
@@ -10031,9 +10083,12 @@ function onCaught(sp, lucky) {
   } else full = true;
   persist(); refreshWallet(true);
   // итог поимки — короткая строка (сама исчезает через 1,5 с); сообщение — только если есть что-то особенное
-  showCatchLine([rk > 1 ? ['special', `${SPk.icon} ×${rk}`] : null, ['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
+  showCatchLine([rk > 1 ? ['special', `${SPk.icon} ×${rk}`] : null, dx ? ['size', `📏 ${fmtSize(dx.size)}${dx.rec ? ' 🏆' : ''}`] : null,
+    ...(dx ? dx.medals.map(x => ['medal', x.M.icon]) : []), ['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
   const notes = [sp.shiny ? `✨ Сияющий ${sp.name}! Доход ×${SHINY_MULT}` : '', first ? `Новый в альбоме: ${dexNo(sp.no)} ${sp.name}!` : '',
-    full ? `${sp.name} ждёт на ферме: загон полон, замени кого-нибудь` : '', spaceMsg.trim(), shardMsg.trim(), sp.shiny ? '' : noteMerge(sp).trim()].filter(Boolean);
+    full ? `${sp.name} ждёт на ферме: загон полон, замени кого-нибудь` : '',
+    ...(dx ? dx.medals.map(x => `${x.M.icon} Медаль «${sp.name}»: ${x.M.name}! +${x.R.xp} ⭐ +${x.R.ess} ${ELEMENTS[essOf(sp)].icon}`) : []),
+    dx && dx.rec ? `📏 Новый рекорд: самый ${dx.rec === 'big' ? 'крупный' : 'маленький'} ${sp.name} — ${fmtSize(dx.size)}!` : '', spaceMsg.trim(), shardMsg.trim(), sp.shiny ? '' : noteMerge(sp).trim()].filter(Boolean);
   if (notes.length) setTimeout(() => toast(notes.join(' '), 'good', 3400), 1500);   // после строки итога, чтобы не закрывать её
   const K = COLL_BY_ID[sp.coll];
   if (first && K && collDone(K)) setTimeout(() => { sfx('rare'); toast(`🗂 Коллекция ${K.icon} «${K.name}» собрана целиком! Награда ждёт в «Заданиях» → «Достижения»`, 'good', 4600); updateQuestDot(); }, 3600);
@@ -12216,6 +12271,13 @@ const RULES = [
     `Место попадания: в самый центр ×${fx2(THROW_BONUS[0].mult)}, рядом с центром ×${fx2(THROW_BONUS[1].mult)}, с краю ×${fx2(THROW_EDGE.mult)}. Всё складывается с кольцом и закруткой.`,
     'Шанс 100% бывает только за «Идеально» по обычному зверьку. На карточке зверька шанс показан от небрежного броска до «Идеально» в центр.',
     'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине или выпей зелье Кометы.']],
+  ['🏅', 'Медали видов', [`У каждого вида своя медаль за число поимок: 🥉 бронза — ${MEDAL_STEPS.common[0]}, 🥈 серебро — ${MEDAL_STEPS.common[1]}, 🥇 золото — ${MEDAL_STEPS.common[2]}, 💎 алмаз — ${MEDAL_STEPS.common[3]}.`,
+    `У редких и ещё более редких видов пороги ниже: ${MEDAL_STEPS.rare.join(' / ')}.`,
+    `За медаль — опыт и эссенция стихии этого вида: ${MEDAL_REWARD.map((R, i) => `${MEDALS[i].icon} +${R.xp} ⭐ +${R.ess}`).join(', ')}.`,
+    'У каждого пойманного свой рост. Самый крупный и самый маленький — рекорды вида, новый рекорд отмечается 🏆. Рост не влияет на доход и бой.',
+    'В карточке вида в альбоме: сколько поймано, где впервые встретил, рекорды, в какую погоду ловил и сколько осталось до следующей медали.',
+    'В альбоме есть поиск по имени и номеру. У ненайденного вида написано, куда идти за первой встречей и какая у него стихия.',
+    'Если ты играл до версии 49, медали посчитаны по твоим зверькам (на ферме, в запасе и слитым), а награды за них собраны в подарок «Первые медали».']],
   ['🧰', 'Сундуки и особые встречи', ['Иногда вместо зверька на поле стоит сундук: деревянный, серебряный или золотой. Попади в него сферой — он откроется.',
     'В сундуке монеты и эссенции, бывает зелье, в космосе — звёздная пыль, а изредка — осколок глитча или украшение из «Лавки красоты». Чем лучше сундук, тем больше внутри.',
     `${SPECIAL.giant.icon} Великан: в полтора раза больше и ловится труднее, зато награды ×${SPECIAL.giant.reward}.`,
@@ -12377,6 +12439,7 @@ const HELP = {
   album:['Альбом', () => ['В альбоме все зверьки. Ненайденные видно силуэтом.',
     'Фильтры показывают коллекцию, редкость, найденных или ещё не найденных.',
     'В карточке зверька написано, где его искать. Кнопка «Ловить здесь» сразу отправит на охоту в нужное место.',
+    'Медали вида: 🥉 🥈 🥇 💎 за число поимок. За каждую — опыт и эссенция. Есть поиск по имени.',
     'За собранные коллекции дают награды в «Заданиях» → «Достижения».']],
 };
 function openHelp(id) {
@@ -12389,7 +12452,7 @@ function openHelp(id) {
   body.append(ul, makeBtn('📜 Все правила', 'wide', () => { closeSheet(); openMenu('rulesPanel'); }));
 }
 // ---- Альбом: коллекции, номера и фильтры ----
-const albumView = { coll:'all', rar:'all', show:'all' };
+const albumView = { coll:'all', rar:'all', show:'all', q:'' };
 const seenIn = list => list.filter(s => save.seen[s.id]).length;
 const collDone = k => collMembers(k.id).every(s => save.seen[s.id]);
 // Номер на карточке: в общем списке №001…, в коллекции значок и номер в ней («❄ №001» значит «Зима №001»)
@@ -12402,6 +12465,7 @@ function albumCard(sp, inColl, shiny = false) {
   const nm = document.createElement('b'); nm.textContent = seen ? sp.name : '???'; if (seen && sp.name.length >= 10) nm.className = 'long';
   const stars = document.createElement('small'); stars.textContent = shiny ? '✨' : seen && st > 1 ? EVO_STARS[st - 1] : '';
   b.append(no, creatureIcon(shiny ? shinyOf(sp) : sp, 64, !seen, st), nm, stars);
+  const md = !shiny && seen && medalMark(sp); if (md) b.append(md);
   b.addEventListener('click', () => openMonSheet(sp));
   return b;
 }
@@ -12434,7 +12498,10 @@ function renderAlbum() {
   $('albumSub').textContent = `Коллекций собрано: ${COLLECTIONS.filter(collDone).length} из ${COLLECTIONS.length}. Форм ★★★ открыто: ${top}. Нажми на зверька, чтобы узнать о нём больше.`;
   renderAlbumFilters();
   const grid = $('albumGrid'); grid.innerHTML = '';
-  const V = albumView, pass = sp => (V.rar === 'all' || sp.rarity === V.rar) && (V.show === 'all' || (V.show === 'have') === !!save.seen[sp.id]);
+  const V = albumView, q = normName(V.q), qn = q.replace(/[^0-9]/g, '');
+  // поиск: по имени — только среди найденных (чтобы не подсказывать), по номеру — среди всех
+  const hit = sp => !q || (save.seen[sp.id] && normName(sp.name).includes(q)) || (qn && qn === q.replace(/^№/, '') && sp.no === Number(qn));
+  const pass = sp => hit(sp) && (V.rar === 'all' || sp.rarity === V.rar) && (V.show === 'all' || (V.show === 'have') === !!save.seen[sp.id]);
   let shown = 0;
   for (const k of V.coll === 'all' ? COLLECTIONS : [COLL_BY_ID[V.coll]]) {
     const all = collMembers(k.id), list = all.filter(pass); if (!list.length) continue;
@@ -12449,10 +12516,10 @@ function renderAlbum() {
     const e = document.createElement('div'); e.className = 'empty-card';
     const why = V.show === 'miss' ? 'Здесь все уже найдены. Отличная работа!' : V.show === 'have' ? 'Здесь ты пока никого не поймал.' : 'Зверьков такой редкости здесь нет.';
     e.innerHTML = `<span class="ec-ico">🔍</span><b>Никого не нашлось</b><span>${why}</span>`;
-    e.append(makeBtn('Показать всех', '', () => { albumView.coll = 'all'; albumView.rar = 'all'; albumView.show = 'all'; sfx('tap'); renderAlbum(); }));
+    e.append(makeBtn('Показать всех', '', () => { albumView.coll = 'all'; albumView.rar = 'all'; albumView.show = 'all'; albumView.q = ''; $('albumSearch').value = ''; sfx('tap'); renderAlbum(); }));
     grid.append(e);
   }
-  if (V.coll === 'all' && V.rar === 'all' && V.show === 'all') {
+  if (V.coll === 'all' && V.rar === 'all' && V.show === 'all' && !q) {
     const shList = SPECIES.filter(canShiny), found = DEX.filter(sp => canShiny(sp) && save.shinySeen[sp.id]);
     const sh = document.createElement('div'); sh.className = 'rar-head';
     sh.innerHTML = `<span class="badge" style="--badge:#ffd54f;--badge-text:#5b4300">✨ Сияющие</span><span>${found.length} из ${shList.length}</span>`;
@@ -12470,6 +12537,8 @@ function renderAlbum() {
   renderRules();
 }
 for (const b of $('albumShow').querySelectorAll('button')) b.addEventListener('click', () => { albumView.show = b.dataset.v; sfx('tap'); renderAlbum(); });
+let albumSearchT = 0;
+$('albumSearch').addEventListener('input', e => { clearTimeout(albumSearchT); albumSearchT = setTimeout(() => { albumView.q = e.target.value.slice(0, 30); renderAlbum(); }, 150); });
 // Боевой характер и где искать
 const battleStyle = sp => { const L = sp.lean || 0; return L <= -0.07 ? '🛡 Крепыш' : L >= 0.07 ? '⚔ Забияка' : '⚖ Ровный'; };
 function habitatText(sp) {
@@ -12513,12 +12582,14 @@ function openMonSheet(sp) {
   const facts = document.createElement('div'); facts.className = 'ps-facts';
   const f1 = fighterOf(sp, 1);
   const rows = sp.solo ? [['Как получить', 'глава «Улей»'], ['Поймать', 'нельзя'], ['Сколько бывает', 'одна'], ['Доход в загоне', seen ? `${fmt(sp.income)}/с` : '???']]
-    : [['Стоит на расстоянии', `${rr.dist[0]}–${rr.dist[1]} м`], [`Шанс ${ofName(ORB_CHAIN[chainT()].name).toLowerCase()} сферой`, rr.base ? pct(Math.min(1, rr.base * ORB_CHAIN[chainT()].power)) : 'только глитч'], ['Убегает, если вырвался', pct(rr.flee)], ['Доход в загоне', seen ? `${fmt(sp.income)}/с` : '???']];
+    : [['Стоит на расстоянии', `${rr.dist[0]}–${rr.dist[1]} м`], [`Шанс ${ofName(ORB_CHAIN[chainT()].name).toLowerCase()} сферой`, rr.base ? chanceRange(sp, ORBS[chainT() ? MAIN : COPPER], 1) : 'только глитч'], ['Убегает, если вырвался', pct(rr.flee)], ['Доход в загоне', seen ? `${fmt(sp.income)}/с` : '???']];
   if (seen) rows.push(['Здоровье и атака', `❤ ${fmt(f1.maxHp)} · ⚔ ${fmt(f1.atk)}`], ['Боевой характер', battleStyle(sp)]);
   for (const [k, v] of rows) { const d = document.createElement('div'); d.innerHTML = `<small>${k}</small><b>${v}</b>`; facts.append(d); }
   body.append(facts);
   const where = document.createElement('p'); where.className = 'hint-line';
   if (!seen) {
+    const fm = firstMeetText(sp);
+    if (fm) { const p = document.createElement('p'); p.className = 'hint-line first-meet'; p.textContent = '🧭 ' + fm; body.append(p); }
     const reach = armReach(save.arm), home = sp.home && LOC_BY_ID[sp.home];
     where.textContent = habitatText(sp) + (!home && sp.rarity !== 'glitch' && !sp.solo && reach < rr.dist[0] ? ` Пока не достать: рука бросает на ${reach} м, а он стоит от ${rr.dist[0]} м. Прокачай руку в Магазине.` : '');
     body.append(where);
@@ -12541,7 +12612,7 @@ function openMonSheet(sp) {
     const s2 = document.createElement('small'); s2.textContent = !open ? 'ещё не открыта' : k === 1 ? `доход ×1` : `«${evoFormName(sp, k)}», доход ×${EVO_MULT[k - 1]}`;
     cell.append(creatureIcon(sp, 76, !open, k), t, s2); row.append(cell);
   }
-  body.append(where); if (go) body.append(go); body.append(h, row);
+  body.append(where); if (go) body.append(go); body.append(dexSection(sp), h, row);
   if (save.shinySeen[sp.id]) {
     const p = document.createElement('div'); p.className = 'shiny-note';
     p.append(creatureIcon(shinyOf(sp), 64));
@@ -16364,9 +16435,11 @@ function grantRewards(s) {
   save.coins += s.coins || 0; save.shards = (save.shards || 0) + (s.shards || 0);
   for (const [k, n] of Object.entries(s.pots || {})) if (POT_BY_ID[k]) save.pot[k] = (save.pot[k] || 0) + n;
   for (const [k, n] of Object.entries(s.ess || {})) addEss(k, n);
+  if (s.xp) gainXp(s.xp);
 }
 function rewardChips(s) {
   const out = [];
+  if (s.xp) out.push(rwChip('orb', `+${fmt(s.xp)} ⭐`));
   if (s.coins) out.push(rwChip('coin', '+' + fmt(s.coins)));
   if (s.shards) out.push(rwChip('orb', `🧩 ×${s.shards}`));
   for (const [k, n] of Object.entries(s.pots || {})) out.push(rwChip('orb', `🧪 ${potTitle(k)}${n > 1 ? ' ×' + n : ''}`));
@@ -16418,7 +16491,7 @@ function refreshLvl(bump) {
   if (L !== lvlShown) { lvlShown = L; $('lvlNum').textContent = L; }
   if (Math.abs(frac - lvlFracShown) > 0.001) { lvlFracShown = frac; $('lvlFill').style.width = `${(frac * 100).toFixed(1)}%`; }
   b.setAttribute('aria-label', max ? `Уровень ловца ${L}, максимальный. Открыть профиль` : `Уровень ловца ${L}: ${fmt(xp - LVL_CUM[L])} из ${fmt(LVL_CUM[L + 1] - LVL_CUM[L])} опыта. Открыть профиль`);
-  const want = lvlPending() || !!save.path.gift;
+  const want = lvlPending() || !!save.path.gift || !!save.dexGift;
   b.classList.toggle('ready', want);
   if (dotWant.lvl !== want) { dotWant.lvl = want; applyDots(); }
   if (bump) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
@@ -16447,7 +16520,7 @@ function lvlFill(o) {
   setTimeout(() => $('lvlTake').focus({ preventScroll:true }), 60);
 }
 function openLvl() {
-  if (!lvlPending()) { if (save.path.gift) openGift(); return; }
+  if (!lvlPending()) { if (save.path.gift) openGift(); else if (save.dexGift) openMedalGift(); return; }
   const L = pathLevel(), from = save.path.paid + 1, s = lvlRewardsSum(from, L);
   lvlMode = 'lvl'; sfx('level');
   lvlFill({ lvl:L, title:'Новый уровень!', text:from < L ? `Уровни ${from}–${L}: награды за все сразу` : `Ты теперь ловец ${L}-го уровня`, rewards:s, next:lvlNextText(L) });
@@ -16465,13 +16538,14 @@ function takeLvl() {
     const L = pathLevel(); got = lvlRewardsSum(save.path.paid + 1, L);
     save.path.paid = L; save.path.shown = Math.max(save.path.shown, L);
   } else if (lvlMode === 'gift' && save.path.gift) { got = save.path.gift; save.path.gift = null; }
+  else if (lvlMode === 'medals' && save.dexGift) { got = save.dexGift; save.dexGift = null; }
   closeLvl();
   if (got) {
     grantRewards(got); persist(); refreshWallet(true); renderOrbs(); refreshLvl(); lvlDot(); updateQuestDot(); updateShopDot();
     sfx('coin');
     if (tab === 'profile') renderProfile();
     // если и подарок, и уровень ждали вместе — следующее окно сразу, без сообщения поверх него
-    if (lvlPending() || save.path.gift) { setTimeout(() => { if (lvlCanShow()) openLvl(); }, 350); return; }
+    if (lvlPending() || save.path.gift || save.dexGift) { setTimeout(() => { if (lvlCanShow()) openLvl(); }, 350); return; }
     const ttl = got.titles && got.titles.length ? ` Новый титул: «${got.titles[got.titles.length - 1].name}» — выбери его в профиле` : '';
     toast(`🎁 Награда получена!${ttl}`, 'good', ttl ? 3600 : 2200);
   }
@@ -16515,6 +16589,7 @@ function goalNow() {
   const P = save.path;
   if (lvlPending()) return { id:'lvl', ico:'🎁', txt:`Забери награду за ${pathLevel()}-й уровень`, hot:true, go:openLvl };
   if (P.gift) return { id:'gift', ico:'🎁', txt:'Подарок «За опыт» ждёт тебя', hot:true, go:openGift };
+  if (save.dexGift) return { id:'medals', ico:'🎁', txt:'Подарок «Первые медали» ждёт тебя', hot:true, go:openMedalGift };
   const qs = save.quests && save.quests.day === playDay(save.quests.day) ? save.quests.list : [];
   if (qs.some(q => q.prog >= q.n && !q.claimed)) return { id:'quest', ico:'📋', txt:'Задание выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
   const a = ACH.find(achClaimable);
@@ -16711,6 +16786,8 @@ $('adminLvl10').addEventListener('click', () => {
 $('adminLvlOld').addEventListener('click', () => { save.path = null; initPath(); pathAdminDone(`Уровень посчитан по заслугам: ${pathLevel()}. Подарок «За опыт» ждёт в «Следующей цели»`); });
 $('adminEss').addEventListener('click', () => { for (const k of ESS_ORDER) addEss(k, 100); pathAdminDone('+100 каждой эссенции'); });
 $('adminClockBack').addEventListener('click', () => { save.maxT = Date.now() + 2 * 3600000; save.clockPlay = 0; pathAdminDone('Игра думает, что часы ушли назад на 2 часа: ферма, задания, реванш и мёд ждут'); });
+$('adminDexOld').addEventListener('click', () => { save.dex = null; initDex(); pathAdminDone(save.dexGift ? `Медали посчитаны по зверькам: ${save.dexGift.n}. Подарок «Первые медали» ждёт в цели` : 'Медалей пока нет'); });
+$('adminDex50').addEventListener('click', () => { closeAdmin(); showTab('hunt'); if (!cr || cr.sp.chest || cr.sp.hiveItem) { toast('На поле нет зверька'); return; } for (let i = 0; i < 50; i++) { cr.grade = RING_NORMAL; onCaught(cr.sp, false); } toast(`+50 поимок: ${cr.sp.name}`, 'good'); });
 $('adminChest').addEventListener('click', () => { closeAdmin(); showTab('hunt'); spawn(chestSp(Math.random() < 0.5 ? 'gold' : 'silver')); });
 for (const k of ['giant', 'baby', 'runner', 'pack']) $('admin' + k[0].toUpperCase() + k.slice(1)).addEventListener('click', () => {
   closeAdmin(); showTab('hunt'); spawn(pickSpecies()); if (specialOk(cr.sp)) { applySpecial(k); placeCreature(); cr.x = creatureX(); updateInfo(); toast(SPECIAL[k].tip, 'good'); } else toast('Этот зверёк особым не бывает, нажми ещё раз');
@@ -17173,6 +17250,115 @@ function drawChest(c, x, y, r, tier, open, alpha) {
   }
   c.restore();
 }
+
+/* ======================= КОЛЛЕКЦИЯ ГЛУБЖЕ (этап 5, версия 49) =======================
+   У каждого вида своя запись: сколько поймано, где впервые, рекорды размера, погода, медаль.
+   Числа — MEDAL…, SIZE_CM в начале файла. Размер — только для интереса: на доход и бой не влияет. */
+function dexOf(id) { return save.dex[id] || (save.dex[id] = { n:0, m:0 }); }
+function medalSteps(sp) { return RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf(MEDAL_RARE_FROM) ? MEDAL_STEPS.rare : MEDAL_STEPS.common; }
+function medalLevel(sp, n) { return medalSteps(sp).filter(t => n >= t).length; }   // 0 — нет, 1 — бронза … 4 — алмаз
+function sizeBase(sp) { return SIZE_CM[sp.id] || 20; }
+function fmtSize(cm) { return `${cm < 10 ? cm.toFixed(1).replace('.', ',') : (Math.round(cm * 10) / 10).toFixed(1).replace('.', ',')} см`; }
+function rollSize(sp, special) {
+  const k = 0.75 + 0.25 * (Math.random() + Math.random());   // чаще средние, реже крохи и великаны
+  return Math.round(sizeBase(sp) * k * (special && SPECIAL[special] && SPECIAL[special].size || 1) * 10) / 10;
+}
+function wxNow() { return inSpace() ? 'space' : noWx() ? 'indoor' : weather.id; }
+function wxLabel(id) { if (id === 'space') return '🚀 Невесомость'; if (id === 'indoor') return '🕯 Под землёй'; const w = WEATHERS.find(x => x.id === id); return w ? `${w.icon} ${w.name}` : id; }
+// поимка: счёт, первая встреча, размер и рекорды, погода, медали. Возвращает то, что стоит показать игроку
+function dexCatch(sp, special) {
+  const d = dexOf(sp.id), out = { size:rollSize(sp, special), rec:'', medals:[] };
+  d.n = (d.n || 0) + 1;
+  if (!d.first) d.first = { loc:save.loc, t:Date.now(), wx:wxNow() };
+  if (d.n > 1 && d.max != null && out.size > d.max) out.rec = 'big';
+  else if (d.n > 1 && d.min != null && out.size < d.min) out.rec = 'small';
+  d.max = Math.max(d.max || 0, out.size); d.min = d.min == null ? out.size : Math.min(d.min, out.size);
+  d.wx = d.wx || []; const w = wxNow(); if (!d.wx.includes(w)) d.wx.push(w);
+  const lv = medalLevel(sp, d.n);
+  while ((d.m || 0) < lv) {   // медаль: опыт и эссенция стихии вида
+    const R = MEDAL_REWARD[d.m]; d.m = (d.m || 0) + 1;
+    gainXp(R.xp); addEss(essOf(sp), R.ess);
+    out.medals.push({ M:MEDALS[d.m - 1], R });
+  }
+  return out;
+}
+// ---- старые сохранения: сколько было зверьков вида (на ферме, в запасе, слитые), медали — одним подарком ----
+function oldDexCount(d, id) {
+  let n = 0;
+  for (const [k, c] of Object.entries(d.pets || {})) { const v = parseKey(k); if (v.ok && v.id === id) n += (c | 0) * (v.shiny ? 1 : [1, 1, 3, 9][v.stage] || 1); }
+  for (const x of d.stolen || []) { const v = parseKey(x.key); if (v.ok && v.id === id) n += [1, 1, 3, 9][v.stage] || 1; }
+  return Math.max(n, d.seen && d.seen[id] ? 1 : 0);
+}
+function initDex() {
+  if (save.dex) return;
+  save.dex = {};
+  const gift = { xp:0, ess:{}, n:0 };
+  for (const sp of SPECIES) {
+    if (sp.solo || !save.seen[sp.id]) continue;
+    const n = oldDexCount(save, sp.id), lv = medalLevel(sp, n);
+    save.dex[sp.id] = { n, m:lv, old:true };
+    for (let i = 0; i < lv; i++) { gift.xp += MEDAL_REWARD[i].xp; gift.ess[essOf(sp)] = (gift.ess[essOf(sp)] || 0) + MEDAL_REWARD[i].ess; gift.n++; }
+  }
+  save.dexGift = gift.n ? gift : null;
+  persist();
+}
+initDex();
+function openMedalGift() {
+  const g = save.dexGift; if (!g) return;
+  lvlMode = 'medals'; sfx('level');
+  lvlFill({ lvl:pathLevel(), title:'Подарок «Первые медали»', text:`За зверьков, которых ты ловил раньше: ${g.n} ${plural(g.n, 'медаль', 'медали', 'медалей')} разом. Дальше медали дают сразу при поимке.`,
+    rewards:{ xp:g.xp, ess:g.ess }, next:'' });
+}
+// медаль на карточке альбома и ряд медалей в карточке вида
+function medalMark(sp) {
+  const d = save.dex[sp.id], m = d ? d.m || 0 : 0;
+  if (!m) return null;
+  const s = document.createElement('span'); s.className = 'alb-medal m' + m; s.textContent = MEDALS[m - 1].icon; s.setAttribute('aria-label', `Медаль: ${MEDALS[m - 1].name}`);
+  return s;
+}
+function dexSection(sp) {
+  const d = save.dex[sp.id] || { n:0, m:0 }, steps = medalSteps(sp), m = d.m || 0;
+  const box = document.createElement('div'); box.className = 'dex-card';
+  const h = document.createElement('h3'); h.className = 'sec-title'; h.textContent = 'Твоя коллекция'; box.append(h);
+  const row = document.createElement('div'); row.className = 'medal-row';
+  MEDALS.forEach((M, i) => {
+    const c = document.createElement('div'); c.className = 'medal-cell' + (i < m ? ' got' : '');
+    c.innerHTML = `<span aria-hidden="true">${M.icon}</span><b>${M.name}</b><small>${steps[i]} ${plural(steps[i], 'поимка', 'поимки', 'поимок')}</small>`;
+    row.append(c);
+  });
+  box.append(row);
+  const next = steps[m];
+  const pr = document.createElement('div'); pr.className = 'dex-prog';
+  const bar = document.createElement('div'); bar.className = 'prog big'; const fi = document.createElement('i');
+  fi.style.width = `${next ? Math.min(100, (d.n || 0) / next * 100) : 100}%`; bar.append(fi);
+  const t = document.createElement('small');
+  t.textContent = next ? `Поймано ${fmt(d.n || 0)} · до медали «${MEDALS[m].name}» ещё ${fmt(next - (d.n || 0))}` : `Поймано ${fmt(d.n || 0)} · все медали собраны!`;
+  pr.append(bar, t); box.append(pr);
+  if (next) { const R = MEDAL_REWARD[m], rw = document.createElement('div'); rw.className = 'rewards'; rw.append(rwChip('orb', `+${R.xp} ⭐`), rwChip('orb', `+${R.ess} ${ELEMENTS[essOf(sp)].icon}`)); box.append(rw); }
+  const facts = document.createElement('div'); facts.className = 'ps-facts';
+  const L = d.first && LOC_BY_ID[d.first.loc];
+  const rows = [
+    ['Впервые встретил', d.first ? `${L ? `${L.icon} ${L.name}` : '—'}, ${new Date(d.first.t).toLocaleDateString('ru-RU', { day:'numeric', month:'long' })}` : d.old ? 'до версии 49' : '—'],
+    ['Самый крупный', d.max ? fmtSize(d.max) : '—'], ['Самый маленький', d.min ? fmtSize(d.min) : '—'],
+    ['Ловил в погоду', d.wx && d.wx.length ? d.wx.map(wxLabel).join(', ') : '—'],
+  ];
+  for (const [k, v] of rows) { const c = document.createElement('div'); const s = document.createElement('small'); s.textContent = k; const b = document.createElement('b'); b.textContent = v; c.append(s, b); facts.append(c); }
+  box.append(facts);
+  return box;
+}
+// у ненайденного: куда идти за первой встречей и какая у него стихия
+function firstMeetText(sp) {
+  if (sp.solo || sp.rarity === 'glitch') return '';
+  const E = ELEMENTS[essOf(sp)], els = `Стихия: ${E.icon} ${E.name}.`;
+  const locs = sp.home ? [LOC_BY_ID[sp.home]] : sp.rarity === 'pet' ? [LOC_BY_ID.meadow] : LOCATIONS.filter(l => l.native.includes(sp.id) && (l.map || 'earth') === (sp.map || 'earth'));
+  const open = locs.filter(l => l && locOpen(l));
+  if (open.length) return `Для первой встречи иди в локацию ${open[0].icon} «${open[0].name}». ${els}`;
+  const L = locs.filter(Boolean).sort((a, b) => a.need - b.need)[0];
+  if (!L) return els;
+  const need = L.map === 'space' ? (spaceOpen() ? `поймаешь в космосе ${L.need}` : `откроешь космос (${SPACE_NEED} поимок)`) : `поймаешь ${L.need} ${plural(L.need, 'зверька', 'зверьков', 'зверьков')}`;
+  return `Для первой встречи нужно дойти до локации ${L.icon} «${L.name}»: она откроется, когда ${need}. ${els}`;
+}
+const normName = s => String(s || '').toLowerCase().replace(/ё/g, 'е').trim();
 
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
