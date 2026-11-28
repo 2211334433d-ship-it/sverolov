@@ -1029,7 +1029,8 @@ body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inse
 .top .weather-pill{justify-content:center;align-items:flex-start;text-align:left}
 .top .stat{flex:none;align-items:center;padding:4px 11px 4px 7px;border-radius:16px;cursor:default}
 .wn-ico{font-style:normal}
-@media (max-width:420px){ .top .menu-btn{padding:4px 7px;gap:0} .top .menu-btn > span:not(.logo){display:none}
+@media (max-width:520px){ .top .menu-btn{padding:4px 7px;gap:0} .top .menu-btn > span:not(.logo){display:none} }
+@media (max-width:420px){
   .top .weather-pill{padding:4px 8px} .top .weather-pill .wn{display:none} .top .weather-pill .wn-ico{font-size:1.05rem} }
 @media (max-width:360px){
   .top{gap:5px}
@@ -1118,6 +1119,117 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
   animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
 #adminSheet{z-index:46}
 
+/* ===== Этап 2 (версия 44): путь ловца — уровень, цель, профиль ===== */
+.top .lvl-btn{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:52px;min-height:48px;
+  padding:4px 8px;border-radius:16px;border:1px solid var(--border);background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 2px 10px rgba(0,0,0,.1);color:var(--text);font:inherit;cursor:pointer;touch-action:manipulation}
+.lvl-btn:active{transform:scale(.95)}
+.lv-top{display:flex;align-items:center;gap:2px;line-height:1}
+.lv-star{font-size:.8rem}
+.lv-top b{font-weight:900;font-size:1rem}
+.lv-bar{display:block;width:100%;min-width:32px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
+.lv-bar i{display:block;width:0;height:100%;border-radius:3px;background:linear-gradient(90deg,#ffca28,#ff8f00);transition:width .45s ease}
+.lvl-btn.bump{animation:lvBump .45s ease}
+@keyframes lvBump{40%{transform:scale(1.12)}}
+.lvl-btn.ready{border-color:#ffb300;box-shadow:0 0 0 2px rgba(255,179,0,.5),0 2px 10px rgba(0,0,0,.1)}
+.lvl-btn.dot::after{content:'';position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#ff4d6d;box-shadow:0 0 0 2px #fff}
+.xp-pop{position:absolute;left:50%;top:100%;z-index:2;transform:translate(-50%,4px);padding:2px 8px;border-radius:999px;background:#ffb300;color:#2a1a00;
+  font-weight:900;font-size:.78rem;white-space:nowrap;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.2);animation:xpUp 1.25s ease forwards}
+@keyframes xpUp{0%{opacity:0;transform:translate(-50%,12px)}15%{opacity:1;transform:translate(-50%,4px)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-4px)}}
+html[data-motion="low"] .xp-pop{animation:none!important}
+.loc-btn .li{flex:none}
+.weather-pill .ws{display:none}
+/* крупный шрифт на узком экране: монеты в шапке чуть плотнее, чтобы всё поместилось */
+@media (max-width:360px){
+  html[data-font="l"] .top{gap:4px} html[data-font="l"] .top-mid{gap:4px}
+  html[data-font="l"] .top .stat{padding:4px 6px 4px 4px;gap:4px} html[data-font="l"] .top .stat .coins{font-size:.9rem}
+  html[data-font="l"] .top .lvl-btn{min-width:44px;padding:4px 5px}
+}
+@media (max-width:420px){
+  .top .weather-pill{align-items:center;min-width:44px;padding:4px 7px} .top .weather-pill .wl{display:none} .top .weather-pill .ws{display:inline}
+  .top .loc-btn > b{display:none}
+  .top .stat small{display:none} .top .stat{padding:4px 9px 4px 6px}
+}
+@media (max-width:350px){ .top .loc-btn{justify-content:center;min-width:44px} .top .loc-btn .ln{display:none} .top .loc-btn .li{font-size:1.15rem} }
+@media (max-width:360px){
+  .top .lvl-btn{min-width:46px;padding:4px 6px} .top .menu-btn{padding:4px 5px}
+  .top .lvl-btn .lv-star{position:absolute;top:-5px;left:-5px;font-size:.78rem;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+  .pt-x{display:none}
+}
+/* «Следующая цель»: одна подсказка, что делать дальше. Её можно свернуть в кружок */
+.goal{flex:1 1 100%;min-width:0;max-width:100%;display:flex;align-items:stretch;height:48px;border-radius:16px;border:1px solid var(--border);background:var(--glass);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 2px 10px rgba(0,0,0,.1);overflow:hidden}
+.goal[hidden]{display:none}
+.goal-btn{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:0 4px 0 7px;border:0;background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;touch-action:manipulation}
+.goal-btn:active{background:rgba(0,0,0,.05)}
+.goal-ico{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--surface-2);font-size:1.1rem;line-height:1}
+.goal-txt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;line-height:1.2}
+.goal-txt small{font-weight:800;font-size:.66rem;color:var(--muted)}
+.goal-txt b{font-weight:900;font-size:.82rem;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden}
+.goal-min{flex:none;width:44px;border:0;border-left:1px solid var(--border);background:none;color:var(--muted);font:inherit;font-weight:900;font-size:1.3rem;cursor:pointer}
+.goal.hot{border-color:#ffb300}
+.goal.hot .goal-ico{background:#ffe08a;animation:goalPulse 1.6s ease-in-out infinite}
+@keyframes goalPulse{50%{transform:scale(1.12)}}
+.goal.min{flex:none;width:48px}
+.goal.min .goal-txt,.goal.min .goal-min{display:none}
+.goal.min .goal-btn{justify-content:center;padding:0}
+@media (max-width:420px){ .goal-txt small{display:none} .goal-txt b{-webkit-line-clamp:2;font-size:.8rem} }
+/* профиль ловца */
+.panel-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;display:flex;flex-direction:column;gap:12px;padding:2px 12px calc(16px + env(safe-area-inset-bottom,0px))}
+.prof-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;padding:16px;border-radius:22px;border:1px solid var(--border);
+  background:linear-gradient(135deg,color-mix(in srgb,#ffb300 20%,var(--surface)),var(--surface))}
+.prof-ring{--p:0%;position:relative;display:grid;place-items:center;align-content:center;width:86px;height:86px;border-radius:50%;background:conic-gradient(#ffa000 var(--p),var(--border) 0)}
+.prof-ring::before{content:'';position:absolute;inset:7px;border-radius:50%;background:var(--surface)}
+.prof-ring b{position:relative;font-size:1.9rem;font-weight:900;line-height:1}
+.prof-ring small{position:relative;font-weight:800;font-size:.66rem;color:var(--muted)}
+.prof-info{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.prof-name{display:flex;align-items:center;gap:8px;max-width:100%;min-height:44px;padding:0 12px;border-radius:14px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text);font:inherit;cursor:pointer}
+.prof-name b{font-size:1.15rem;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prof-name span{flex:none;color:var(--muted)}
+.prof-title{font-weight:800;color:var(--muted);font-size:.9rem}
+.prof-xp{grid-column:1 / -1;display:flex;flex-direction:column;gap:6px}
+.prof-xp small{font-weight:800;color:var(--muted);font-size:.84rem}
+.prog.xp i{background:linear-gradient(90deg,#ffca28,#ff8f00)}
+.name-edit{display:flex;gap:6px;width:100%}
+.name-edit input{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:2px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-weight:800;font-size:1rem}
+.name-edit input:focus{outline:none;border-color:var(--accent)}
+.name-edit input.over{border-color:var(--danger)}
+.name-edit .btn{flex:none;min-height:44px;padding:0 14px}
+.name-hint{font-weight:700;font-size:.74rem;color:var(--muted);line-height:1.3}
+.title-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip.locked{opacity:.65;border-style:dashed;cursor:default}
+.st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.st-tile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:14px;background:var(--surface-2);text-align:center;min-width:0}
+.st-ico{font-size:1.2rem;line-height:1.2}
+.st-tile b{font-weight:900;font-size:1rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-tile small{font-weight:800;font-size:.72rem;color:var(--muted);line-height:1.2}
+.lv-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.lv-row{display:flex;align-items:center;gap:10px}
+.lv-n{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--surface-2);font-weight:900}
+.lv-row.big .lv-n{background:#ffb300;color:#2a1a00}
+/* окно «Новый уровень!» */
+.lvl-card{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 18px 18px}
+.lvl-card h2{margin:0;font-size:1.5rem}
+.lvl-card .sub{margin:0}
+.lvl-burst{position:relative;display:grid;place-items:center;align-content:center;width:124px;height:124px}
+.lvl-rays{position:absolute;inset:-34px;border-radius:50%;background:repeating-conic-gradient(rgba(255,193,7,.55) 0 10deg,transparent 10deg 22deg);
+  -webkit-mask:radial-gradient(circle,#000 35%,transparent 70%);mask:radial-gradient(circle,#000 35%,transparent 70%);animation:lvSpin 10s linear infinite}
+.lvl-burst::before{content:'';position:absolute;inset:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d0,#ffb300 58%,#e67e00);
+  box-shadow:0 6px 18px rgba(255,143,0,.45),inset 0 -4px 0 rgba(0,0,0,.12)}
+.lvl-burst b{position:relative;font-size:2.7rem;font-weight:900;line-height:1;color:#3e2600}
+.lvl-burst small{position:relative;font-weight:900;font-size:.74rem;color:#5d3b00}
+.lvl-rw{justify-content:center}
+.lvl-next{margin:0;font-weight:800;font-size:.86rem;color:var(--muted);line-height:1.35}
+.lvl-modal .lvl-card{animation:lvIn .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes lvIn{from{transform:scale(.7);opacity:0}}
+@keyframes lvSpin{to{transform:rotate(360deg)}}
+@media (orientation:landscape) and (max-height:540px){
+  .top .lvl-btn{min-height:44px}
+  .goal{height:44px} .goal-txt small{display:none} .goal-txt b{-webkit-line-clamp:2;font-size:.78rem}
+  .lvl-card{gap:6px;padding:12px 16px 14px} .lvl-burst{width:84px;height:84px} .lvl-burst b{font-size:2rem} .lvl-rays{inset:-22px}
+}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1188,10 +1300,11 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
             <button class="loc-btn" id="locBtn" type="button" aria-haspopup="true"><span id="locBtnTxt">🌳 Поляна</span><b aria-hidden="true">▾</b></button>
             <button class="weather-pill" id="weatherPill" type="button" aria-label="Погода: что она меняет в охоте"><b id="weatherName">☀ Ясно</b><small id="weatherWind">без ветра</small></button>
           </div>
+          <button class="lvl-btn" id="lvlBtn" type="button" aria-label="Уровень ловца. Открыть профиль"><span class="lv-top"><span class="lv-star" aria-hidden="true">⭐</span><b id="lvlNum">1</b></span><span class="lv-bar" aria-hidden="true"><i id="lvlFill"></i></span></button>
           <div class="stat" id="wallet" role="status" aria-label="Монеты"><span class="coin" aria-hidden="true"></span><span class="stat-txt"><b class="coins" id="coins">0</b><small id="income">+0/с</small></span></div>
         </header>
-        <!-- полоса событий под шапкой: улей, позже «Следующая цель» и событие недели. Пустая не показывается -->
-        <div class="hunt-strip" id="huntStrip" hidden><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
+        <!-- полоса под шапкой: «Следующая цель» и улей (на этапе 6 — событие недели). Пустая не показывается -->
+        <div class="hunt-strip" id="huntStrip" hidden><div class="goal" id="goal" hidden><button class="goal-btn" id="goalBtn" type="button"><span class="goal-ico" id="goalIco" aria-hidden="true">⭐</span><span class="goal-txt"><small>Следующая цель</small><b id="goalTxt"></b></span></button><button class="goal-min" id="goalMin" type="button" aria-label="Свернуть подсказку">–</button></div><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
       <div class="info" id="info">
         <div class="info-main">
           <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span><span class="trait" id="cTrait" role="button" hidden></span></div>
@@ -1387,6 +1500,11 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
       </div>
     </div>
   </section>
+  <!-- профиль ловца (версия 44): открывается значком уровня в шапке -->
+  <section class="screen panel from-right" id="scr-profile" role="dialog" aria-modal="true" aria-label="Профиль ловца">
+    <div class="panel-bar"><span class="pb-ico" aria-hidden="true">⭐</span><h2 class="pb-title">Профиль<span class="pt-x">ловца</span></h2><button class="pb-btn pb-help" type="button" data-help="profile" aria-label="Подсказка: как растёт уровень">?</button><button class="pb-btn pb-close" type="button" aria-label="Закрыть и вернуться на охоту">✕</button></div>
+    <div class="panel-scroll" id="profBody"></div>
+  </section>
 </main>
 
 
@@ -1431,6 +1549,15 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
             <button class="btn" id="adminDust" type="button">+100 звёздной пыли ✨</button>
             <button class="btn" id="adminIdle" type="button">⏱ Показать фоновый таймер</button>
             <button class="btn" id="adminIdleOff" type="button">⏱ Обнулить: ферма стоит</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Путь ловца</h2>
+          <div class="btn-grid">
+            <button class="btn" id="adminLvl1" type="button">⭐ +1 уровень</button>
+            <button class="btn" id="adminLvl10" type="button">⭐ +10 уровней</button>
+            <button class="btn" id="adminLvlOld" type="button">🔁 Пересчитать уровень, как у старого сохранения</button>
+            <button class="btn" id="adminLvlZero" type="button">0️⃣ Уровень 1, опыт 0</button>
           </div>
         </div>
         <div class="card">
@@ -1588,7 +1715,7 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 43</p>
+          <p class="version">Версия игры 44</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1602,7 +1729,7 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 43</p>
+    <p class="start-ver">Версия игры 44</p>
   </div>
 </div>
 
@@ -1633,6 +1760,16 @@ html[data-motion="low"] *:not(.coach-hand),html[data-motion="low"] *:not(.coach-
     <h2 id="evoTitle"></h2>
     <p class="sub" id="evoText"></p>
     <button class="btn primary wide" id="evoOk" type="button">Ура!</button>
+  </div>
+</div>
+<div class="modal lvl-modal" id="lvlModal" hidden>
+  <div class="evo-card lvl-card" role="dialog" aria-modal="true" aria-labelledby="lvlTitle" aria-describedby="lvlText">
+    <div class="lvl-burst" aria-hidden="true"><span class="lvl-rays"></span><b id="lvlBig">2</b><small>уровень</small></div>
+    <h2 id="lvlTitle">Новый уровень!</h2>
+    <p class="sub" id="lvlText"></p>
+    <div class="rewards lvl-rw" id="lvlRewards"></div>
+    <p class="lvl-next" id="lvlNext"></p>
+    <button class="btn primary wide" id="lvlTake" type="button">Забрать</button>
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2319,13 +2456,83 @@ function sanitizeHive(d) {
   d.stolen = d.stolen.filter(x => parseKey(x.key).id !== QUEEN_ID);
 }
 
+/* ======================= ПУТЬ ЛОВЦА: ВСЕ ЧИСЛА (этап 2, версия 44) ======================= */
+// Уровень ловца растёт только от игры: за монеты, покупки и промокоды опыта нет.
+const LVL_MAX = 100;
+// опыт за поимку по редкости (Виарик — цифровой)
+const XP_CATCH = { common:10, uncommon:15, rare:25, epic:40, legendary:70, mythic:100, secret:150, divine:200, pet:250, glitch:100 };
+const XP_GAIN = {
+  firstMult:3,          // первая поимка нового вида: опыт за поимку ×3
+  shiny:200,            // сияющий окрас — сверху к поимке
+  perfect:5, curve:5,   // бросок в самый центр, закрученный бросок
+  quest:100, questAll:150,
+  arena:30,             // первая победа на уровне арены; повтор без опыта, как и без монет
+  boss:200, chapter:300, swarm:30,
+  merge:20, evo:50,     // эволюция — слияние, которое впервые открывает виду новую форму
+  mini:20,              // наградная игра в мини-игре (их 5 в день)
+};
+// Сколько опыта нужно, чтобы с уровня L перейти на L+1: между точками растёт ровно.
+// Подобрано симуляцией: 2-й уровень за 2–3 минуты, 5-й за 15, 10-й за час, 20-й за неделю, 40-й за 2 месяца
+const LVL_NEED_PTS = [[1, 100], [4, 1150], [9, 1930], [19, 4690], [39, 27660], [99, 91930]];
+function xpNeed(L) {
+  const P = LVL_NEED_PTS;
+  for (let i = 1; i < P.length; i++) if (L <= P[i][0]) {
+    const [a, x] = P[i - 1], [b, y] = P[i];
+    return Math.round((x + (y - x) * (L - a) / (b - a)) / 10) * 10;
+  }
+  return P[P.length - 1][1];
+}
+// LVL_CUM[L] — сколько всего опыта нужно для уровня L
+const LVL_CUM = [0, 0];
+for (let L = 1; L < LVL_MAX; L++) LVL_CUM[L + 1] = LVL_CUM[L] + xpNeed(L);
+const XP_CAP = LVL_CUM[LVL_MAX] * 4;
+function levelOfXp(xp) { let lo = 1, hi = LVL_MAX; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (xp >= LVL_CUM[m]) lo = m; else hi = m - 1; } return lo; }
+// Награда за уровень: монеты фиксированные (не от дохода фермы). Каждый 5-й — большая, каждый 10-й — ещё и титул
+const LVL_REWARD = { coin:100, bigEvery:5, bigMult:5, bigShards:2, bigPots:2, potAt:3 };
+const LVL_POT_ORDER = ['comet', 'net', 'lull', 'moon'];
+const LVL_TITLES = [
+  { lvl:10, id:'t10', name:'Следопыт' }, { lvl:20, id:'t20', name:'Ловкач' }, { lvl:30, id:'t30', name:'Меткий глаз' },
+  { lvl:40, id:'t40', name:'Мастер сфер' }, { lvl:50, id:'t50', name:'Знаток зверьков' }, { lvl:60, id:'t60', name:'Укротитель' },
+  { lvl:70, id:'t70', name:'Хранитель альбома' }, { lvl:80, id:'t80', name:'Звёздный ловец' }, { lvl:90, id:'t90', name:'Легенда поляны' },
+  { lvl:100, id:'t100', name:'Великий Сферолов' },
+];
+const TITLE_IDS = new Set(['novice', 'shep', 'bee', ...LVL_TITLES.map(t => t.id)]);
+// Старые сохранения: стартовый уровень по прошлым заслугам. perCatch — средний опыт за поимку без бонуса нового вида
+// (столько вышло в симуляции за 60 дней), ach — за ступень достижения (вместо заданий дня, которых игра не помнит)
+const OLD_XP = { perCatch:24, ach:100 };
+// Подарок «За опыт» вместо наград за пройденные уровни: монеты за каждый уровень, осколок за каждые 5, зелья за каждые 10
+const XP_GIFT = { coin:500, shardEvery:5, shardMax:20, potEvery:10 };
+// «Следующая цель»: локация «близко», если осталось поймать не больше max(min, part × сколько нужно)
+const GOAL_LOC_NEAR = { min:15, part:0.25 };
+const NAME_MAX = 16, NAME_DEFAULT = 'Ловец';
+function cleanName(s) {
+  const t = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff<>]/g, '').replace(/\s+/g, ' ').trim();
+  return Array.from(t).slice(0, NAME_MAX).join('').trim();
+}
+function sanitizePath(d) {
+  d.name = cleanName(d.name);
+  d.title = typeof d.title === 'string' && TITLE_IDS.has(d.title) ? d.title : '';
+  if (d.path === null) return;                       // сохранение до версии 44: уровень посчитаем при запуске (initPath)
+  const p = d.path && typeof d.path === 'object' ? d.path : {}, x = Math.floor(Number(p.xp));
+  const xp = Number.isFinite(x) && x > 0 ? Math.min(x, XP_CAP) : 0, L = levelOfXp(xp);
+  const paid = clamp((p.paid | 0) || 1, 1, L);
+  d.path = { xp, paid, shown:clamp((p.shown | 0) || paid, paid, L), gift:null, v:1 };
+  const g = p.gift;
+  if (g && typeof g === 'object') {
+    const pots = {};
+    if (g.pots && typeof g.pots === 'object') for (const id of LVL_POT_ORDER) { const n = clamp(g.pots[id] | 0, 0, 99); if (n) pots[id] = n; }
+    d.path.gift = { lvl:clamp(g.lvl | 0, 1, LVL_MAX), coins:clamp(Math.floor(Number(g.coins) || 0), 0, XP_GIFT.coin * LVL_MAX), shards:clamp(g.shards | 0, 0, XP_GIFT.shardMax), pots };
+  }
+}
+
 /* ======================= СОХРАНЕНИЕ ======================= */
 const KEY = 'sferolov-v2', OLD_KEY = 'sferolov-v1';
 function freshSave() {
   return { coins:100, orbs:{ glitch:0 }, chain:{ t:0, dur:0, broken:false }, pot:{}, potOn:{}, orbV:4,
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
-           arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(), last:Date.now() };
+           arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2420,6 +2627,7 @@ function sanitize(d) {
   for (const P of POTIONS) { const n = Math.max(0, pp[P.id] | 0), a = clamp(po[P.id] | 0, 0, POT_STACK); if (n) d.pot[P.id] = n; if (a) d.potOn[P.id] = a; }
   delete d.orbLv; delete d.circle;
   sanitizeHive(d);
+  sanitizePath(d);
   if (!(d.coins >= 0)) d.coins = 0;
   return d;
 }
@@ -2472,6 +2680,8 @@ function loadSave() {
         d.orbV = s.orbV | 0; d.orbLv = s.orbLv; d.chain = s.chain; d.pot = s.pot; d.potOn = s.potOn;
         if (s.story && typeof s.story === 'object') d.story = Object.assign(d.story, s.story);
         if (s.hive && typeof s.hive === 'object') d.hive = s.hive;   // глава «Улей» (версия 42), проверяется в sanitizeHive
+        // путь ловца (версия 44): у старых сохранений его нет, уровень посчитаем по прошлым заслугам в initPath
+        d.path = s.path && typeof s.path === 'object' ? s.path : null; d.name = s.name; d.title = s.title;
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -2596,6 +2806,9 @@ const SFX = {
   merge:  () => { tone({ f:220, d:1.4, v:0.055, slide:880, attack:0.35, vib:0.01 }); noise({ d:1.4, v:0.025, type:'bandpass', f:400, f2:3000, q:1.5, attack:0.45 }); },
   evo:    () => { [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => bell(f, 1.3, 0.055, i * 0.09)); noise({ d:1.5, v:0.02, type:'highpass', f:4000, attack:0.3 }); },
   win:    () => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f, d:0.35, v:0.055, when:i * 0.08, type:'triangle', attack:0.012 })),
+  // фанфары нового уровня: быстрый подъём и звонкий аккорд
+  level:  () => { [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f, d:0.32, v:0.05, when:i * 0.075, type:'triangle', attack:0.01 }));
+                  [1046.5, 1318.5, 1568].forEach(f => bell(f, 1.5, 0.045, 0.42)); noise({ d:1.2, v:0.016, type:'highpass', f:5000, when:0.4, attack:0.2 }); },
   thunder:() => { noise({ d:1.8, v:0.12, f:320, f2:70, attack:0.06 }); tone({ f:58, d:1.4, v:0.07, slide:32, attack:0.04 }); },
   steal:  () => [392, 349.23, 311.13, 261.63].forEach((f, i) => tone({ f, d:0.25, v:0.06, when:i * 0.12, type:'triangle', attack:0.006, lp:1500 })),
 };
@@ -9210,7 +9423,8 @@ function renderWeather() {
   if (inSpace()) { renderSpacePill(); return; }
   const indoor = LOC_BY_ID[save.loc].indoor, w = windNow();
   setWxName(indoor ? '🕯' : weatherLabel().icon, indoor ? 'Под землёй' : weatherLabel().name);
-  $('weatherWind').textContent = Math.abs(w) < 0.3 ? 'без ветра' : `💨 ${w < 0 ? '←' : '→'} ${Math.abs(w).toFixed(1).replace('.', ',')} м/с`;
+  const ws = Math.abs(w).toFixed(1).replace('.', ',');
+  setWxSub(Math.abs(w) < 0.3 ? 'без ветра' : `💨 ${w < 0 ? '←' : '→'} ${ws} м/с`, Math.abs(w) < 0.3 ? 'тихо' : `${w < 0 ? '←' : '→'} ${ws}`);
 }
 // Выбор места. Сверху две карты: 🌍 Земля и 🚀 Космос. Список показывает выбранную карту
 // (по умолчанию ту, где ты сейчас). Перелёт на другую карту — с эффектом гиперпрыжка и своей музыкой.
@@ -9219,7 +9433,9 @@ const LOC_NOTE = { peaks:'❄ ледяные зверьки', belt:'стоят �
 function renderLocChips() {
   const box = $('locChips'); box.innerHTML = '';
   const cur = LOC_BY_ID[save.loc] || LOCATIONS[0], view = locView || mapOf(cur);
-  $('locBtnTxt').textContent = `${cur.icon} ${cur.name}`;
+  const lt = $('locBtnTxt'), li = document.createElement('span'), ln = document.createElement('span');
+  li.className = 'li'; li.textContent = cur.icon; ln.className = 'ln'; ln.textContent = cur.name;
+  lt.innerHTML = ''; lt.append(li, ' ', ln); $('locBtn').setAttribute('aria-label', `Локация: ${cur.name}. Выбрать другую`);
   for (const b of $('mapTabs').querySelectorAll('.map-tab')) {
     const id = b.dataset.map, on = id === view, all = LOCATIONS.filter(l => mapOf(l) === id);
     b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -9290,9 +9506,14 @@ function setWxName(ico, name) {
   const el = $('weatherName'), h = `<span class="wn-ico">${ico}</span> <span class="wn">${name}</span>`;
   if (el.innerHTML !== h) el.innerHTML = h;
 }
+// подпись под погодой: полная и короткая (на телефоне в шапке рядом уровень и монеты, места мало)
+function setWxSub(long, short) {
+  const el = $('weatherWind'), h = `<span class="wl">${long}</span><span class="ws">${short}</span>`;
+  if (el.innerHTML !== h) el.innerHTML = h;
+}
 function renderSpacePill() {
   setWxName(meteor.on ? '🌠' : '🛰', meteor.on ? 'Метеоры!' : 'Невесомость');
-  $('weatherWind').textContent = meteor.on ? `ещё ${Math.ceil(meteor.left)} с` : `☄ через ${fmtMS(meteor.next)}`;
+  setWxSub(meteor.on ? `ещё ${Math.ceil(meteor.left)} с` : `☄ через ${fmtMS(meteor.next)}`, meteor.on ? `${Math.ceil(meteor.left)} с` : `☄${fmtMS(meteor.next)}`);
 }
 function spacePillTip() {
   return meteor.on
@@ -9527,6 +9748,7 @@ function resolveThrow() {
     attempt = { ...res, shakes, def };
     if (bonus.mult >= 1.5) { save.stats.perfect = (save.stats.perfect || 0) + 1; questProgress('perfect'); }
     if (ti.curve) { save.stats.curve = (save.stats.curve || 0) + 1; questProgress('curve'); }
+    gainXp((bonus.mult >= 1.5 ? XP_GAIN.perfect : 0) + (ti.curve ? XP_GAIN.curve : 0));
     toast(`${stun ? stunLook()[3] : ''}${ti.curve ? '🌀 Закрученный! ' : ''}${bonus.label || 'Попадание!'} Шанс ${pct(res.chance)}`);
     capFrom = { x:cr.x, y:cr.y }; capOrb = { x:orb.x, y:orb.y };
     burst(orb.x, orb.y, ['#ffffff', orbLook(def).glow], 14, 150);
@@ -9558,6 +9780,7 @@ function onCaught(sp, lucky) {
   save.luck[sp.rarity] = 0;
   const first = !save.seen[sp.id];
   save.seen[sp.id] = true; save.caught++;
+  gainXp(catchXp(sp, first));
   const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1);
   questProgress('catch');
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('rare')) questProgress('rare');
@@ -10117,15 +10340,15 @@ function orbActionable() {
 }
 const potActionable = () => POTIONS.some(P => (save.story.loot[P.loot] || 0) > 0 && save.coins >= P.cost);
 /* Красные точки (этап 1). Точка значит: прямо сейчас можно забрать награду или сделать важное дело.
-   На главном экране их не больше трёх, по важности: сломанная сфера → Задания (награда, глава, улей) → Ферма (новое слияние) →
+   На главном экране их не больше трёх, по важности: значок уровня (награда за уровень или подарок ждут, версия 44) → сломанная сфера → Задания (награда, глава, улей) → Ферма (новое слияние) →
    Магазин (новая сфера по карману, а ты её ещё не видел, или можно собрать глитч-сферу). Внутри разделов точки на подвкладках как раньше. */
-const DOT_MAX = 3, DOT_ORDER = ['orb', 'quests', 'farm', 'shop'];
-const dotWant = { orb:false, quests:false, farm:false, shop:false };
+const DOT_MAX = 3, DOT_ORDER = ['lvl', 'orb', 'quests', 'farm', 'shop'];
+const dotWant = { lvl:false, orb:false, quests:false, farm:false, shop:false };
 function applyDots() {
   let n = 0;
   for (const k of DOT_ORDER) {
     const on = !!dotWant[k] && n < DOT_MAX; if (on) n++;
-    const el = k === 'orb' ? $('hudOrb') : secBtn(k);
+    const el = k === 'orb' ? $('hudOrb') : k === 'lvl' ? $('lvlBtn') : secBtn(k);
     if (el && el.classList.contains('dot') !== on) el.classList.toggle('dot', on);
   }
 }
@@ -10693,8 +10916,10 @@ function mergePets(sp, stage) {
   if (n === MERGE_NEED) delete save.pets[fromKey]; else save.pets[fromKey] = n - MERGE_NEED;
   if (fromPen) { if (inp - fromPen <= 0) delete save.inPen[fromKey]; else save.inPen[fromKey] = inp - fromPen; }
   save.pets[key] = (save.pets[key] || 0) + 1;
+  const evoNew = stage > (save.evoMax[id] || 1);
   save.evoMax[id] = Math.max(save.evoMax[id] || 1, stage);
   save.stats.merges = (save.stats.merges || 0) + 1; questProgress('merge');
+  gainXp(XP_GAIN.merge + (evoNew ? XP_GAIN.evo : 0));
   if (stage === EVO_MAX) save.shards = (save.shards || 0) + 2;
   const placed = penCount(save) < penSlots(save.pen);
   if (placed) save.inPen[key] = (save.inPen[key] || 0) + 1;
@@ -11728,6 +11953,20 @@ const RULES = [
     'Кнопка «?» в разделе коротко объясняет, как он устроен. Настройки, Правила и Обучение — в «Меню».',
     'В Настройках можно включить крупный шрифт и сделать анимации спокойнее.',
     'Пока сфера летит, сообщения ждут и показываются после броска.']],
+  ['⭐', 'Уровень ловца', ['Уровень ловца растёт от опыта, от 1 до 100. Опыт дают только за игру: за монеты и покупки его не получить.',
+    `Опыт за поимку: обычный ${XP_CATCH.common}, необычный ${XP_CATCH.uncommon}, редкий ${XP_CATCH.rare}, эпический ${XP_CATCH.epic}, легендарный ${XP_CATCH.legendary}, ` +
+      `мифический ${XP_CATCH.mythic}, секретный ${XP_CATCH.secret}, божественный ${XP_CATCH.divine}, любимчик ${XP_CATCH.pet}, Виарик ${XP_CATCH.glitch}.`,
+    `Новый вид в альбоме — опыт ×${XP_GAIN.firstMult}. Сияющий окрас — ещё +${XP_GAIN.shiny}. Бросок в самый центр и закрученный бросок — по +${XP_GAIN.perfect}.`,
+    `Задание дня — ${XP_GAIN.quest}, бонус дня за все три — ещё ${XP_GAIN.questAll}. Первая победа на уровне арены — ${XP_GAIN.arena}, повтор — без опыта.`,
+    `Победа над боссом — ${XP_GAIN.boss}, пройденная глава сюжета или «Улья» — ещё ${XP_GAIN.chapter}. Победа над роем пчёл — ${XP_GAIN.swarm}.`,
+    `Слияние — ${XP_GAIN.merge}, а если у зверька появилась новая форма — ещё ${XP_GAIN.evo}. Наградная игра в звездопаде — ${XP_GAIN.mini}.`,
+    `За каждый уровень — награда: монеты, иногда зелье. Каждый ${LVL_REWARD.bigEvery}-й уровень — большая награда с осколками глитча, каждый 10-й — ещё и титул.`,
+    'Награду забирают в окне «Новый уровень!». Оно не открывается посреди броска или боя. Закрыл окно — награда подождёт в «Следующей цели» и в профиле.',
+    `Нажми на значок уровня ⭐ в шапке — откроется профиль: имя, титул и статистика. Имя — до ${NAME_MAX} знаков, оно хранится только на этом телефоне.`,
+    'Если ты играл до версии 44, уровень посчитан по прошлым заслугам: поимкам, видам в альбоме, достижениям, главам сюжета и арене. Награды за пройденные уровни собраны в один подарок «За опыт».']],
+  ['🎯', 'Следующая цель', ['Плашка под шапкой подсказывает одно самое важное дело. Нажми на неё — игра отведёт туда, где его сделать.',
+    'Порядок такой: награда, которую можно забрать → сломанная сфера → новая локация, до которой осталось немного → задание дня → сколько опыта до нового уровня.',
+    'Кнопка «–» сворачивает плашку в кружок. Нажми на кружок, чтобы развернуть её снова.']],
   ['🔮', 'Сферы', ['Медная сфера всегда с тобой: бесплатная, не изнашивается и не ломается.',
     `Улучши её в «Магазине» за монеты, и у тебя будет сильная сфера. Каждое улучшение меняет её на следующую: ${ORB_CHAIN.slice(1).map(C => C.name.toLowerCase()).join(', ')}. Шанс поимки растёт от ×1 до ×${fx2(ORB_CHAIN[CHAIN_MAX].power)}, а вырвавшиеся зверьки убегают реже.`,
     `Звёздная — последняя сфера цепочки. Для неё кроме монет нужен ${LOOT.frost.icon} ${LOOT.frost.name}: его дают за победу над Пастухом в Ледяной крепости (глава 6) и на реванше.`,
@@ -11833,6 +12072,10 @@ const HELP = {
     'Глава «Улей» тоже здесь, в «Сюжете».',
     'Сегодня: 3 задания дня. За все три — бонус дня.',
     'Достижения: у каждого несколько ступеней, и награда растёт.']],
+  profile:['Профиль ловца', () => ['Уровень растёт от опыта за игру: поимки, броски в центр, задания, арену, боссов, слияния и мини-игры. За монеты опыт не купить.',
+    `Чем реже зверёк, тем больше опыта. Новый вид в альбоме — опыт ×${XP_GAIN.firstMult}.`,
+    `За каждый уровень — награда, за каждый ${LVL_REWARD.bigEvery}-й — большая, за каждый 10-й — ещё и титул.`,
+    `Титул выбирают здесь. Имя тоже меняют здесь: до ${NAME_MAX} знаков, оно хранится только на этом телефоне.`]],
   album:['Альбом', () => ['В альбоме все зверьки. Ненайденные видно силуэтом.',
     'Фильтры показывают коллекцию, редкость, найденных или ещё не найденных.',
     'В карточке зверька написано, где его искать. Кнопка «Ловить здесь» сразу отправит на охоту в нужное место.',
@@ -12274,12 +12517,13 @@ function claimQuest(i) {
   q.claimed = true;
   const coins = Math.max(400, Math.round(curIncome * 110 + 250));
   save.coins += coins;
-  let msg = `+${fmt(coins)} монет`;
+  let msg = `+${fmt(coins)} монет и ${XP_GAIN.quest} опыта ⭐`, xp = XP_GAIN.quest;
   if (!save.quests.bonus && save.quests.list.every(x => x.claimed)) {
     const extra = dayBonus();
-    save.quests.bonus = true; save.coins += extra; save.shards = (save.shards || 0) + 1;
-    msg += `. Бонус дня: +${fmt(extra)} монет и осколок глитча 🧩`;
+    save.quests.bonus = true; save.coins += extra; save.shards = (save.shards || 0) + 1; xp += XP_GAIN.questAll;
+    msg += `. Бонус дня: +${fmt(extra)} монет, осколок глитча 🧩 и ${XP_GAIN.questAll} опыта`;
   }
+  gainXp(xp);
   sfx('coin'); persist(); refreshWallet(true); renderOrbs();
   toast(msg, 'good', 3400);
   renderQuests(); updateQuestDot();
@@ -12364,6 +12608,7 @@ const ACH = [
   { id:'shiny',     icon:'✨', name:'Блестяшка',        what:'найдено сияющих окрасов',   val:() => Object.keys(save.shinySeen || {}).length, tiers:[1, 5, 15] },
   { id:'story',     icon:'🗺', name:'Охотник на банду', what:'пройдено глав сюжета',      val:() => Object.keys(save.story.beaten).length, tiers:[1, 3, 6] },
   { id:'cosmo',     icon:'🚀', name:'Космонавт',        what:'поймано в космосе',         val:() => save.spaceCaught || 0, tiers:[10, 50, 200] },
+  { id:'path',      icon:'⭐', name:'Путь ловца',       what:'уровень ловца',             val:() => save.path ? pathLevel() : 1, tiers:[10, 25, 50] },
   { id:'frost',     icon:'❄', name:'Покоритель льда',  what:'ледяных зверьков открыто',  val:() => SPECIES.filter(s => s.home === 'peaks' && save.seen[s.id]).length, tiers:[1, 3, 6] },
 ];
 const ACH_REWARD = [
@@ -12827,6 +13072,7 @@ function finishBattle() {
     text = `+${fmt(coins)} монет`;
     if (L % 5 === 0) { save.shards = (save.shards || 0) + 1; text += ' (5-й уровень: вдвое больше) и осколок глитча 🧩'; }
     save.arena.level = L + 1; arenaSel = 0; save.stats.arenaWins = (save.stats.arenaWins || 0) + 1;
+    gainXp(XP_GAIN.arena); text += ` и ${XP_GAIN.arena} опыта ⭐`;
     persist(); refreshWallet(true); renderOrbs(); questProgress('arena'); sfx('evo');
     $('battleResTitle').textContent = `🏆 Победа! Уровень ${L} пройден`;
     $('battleResText').textContent = text + `. Дальше уровень ${L + 1}: соперники сильнее.`;
@@ -13702,6 +13948,7 @@ function bossWin() {
   if (first) { save.story.beaten[n] = true; save.story.ch = n + 1; save.story.prog = []; }
   save.story.rematch[n] = Date.now() + REMATCH_MS;
   save.stats.bossWins = (save.stats.bossWins || 0) + 1;
+  gainXp(XP_GAIN.boss + (first ? XP_GAIN.chapter : 0)); parts.push(`${XP_GAIN.boss + (first ? XP_GAIN.chapter : 0)} опыта ⭐`);
   persist(); updateQuestDot();
   $('bossResTitle').textContent = first ? `🏆 Победа! Глава ${n} пройдена` : '🏆 Реванш выигран!';
   $('bossResText').textContent = `Награда: ${parts.join(', ')}.`;
@@ -14727,15 +14974,17 @@ function hiveComplete() {
   save.pets[QUEEN_ID] = 1; save.seen[QUEEN_ID] = true;
   const placed = penCount(save) < penSlots(save.pen); if (placed) save.inPen[QUEEN_ID] = 1;
   const coins = Math.round(Math.max(3000, curIncome * 120)); save.coins += coins;
+  gainXp(XP_GAIN.chapter);
   persist(); refreshIncome(); refreshPenAnimals(); refreshWallet(true); renderStartBadge(); renderSongRow(); updateQuestDot();
-  return [`👑 Королева пчёл${placed ? ' (уже в загоне)' : ''}`, 'титул «Друг пчёл» 🏅', `+${fmt(coins)} монет`, 'мёд 🍯', '«Песня пчёл» 🎵'];
+  return [`👑 Королева пчёл${placed ? ' (уже в загоне)' : ''}`, 'титул «Друг пчёл» 🏅', `+${fmt(coins)} монет`, `${XP_GAIN.chapter} опыта ⭐`, 'мёд 🍯', '«Песня пчёл» 🎵'];
 }
 function hiveFightWon() {
   bf.won = true;
   if (bf.swarm) {
     const coins = Math.round(Math.max(500, curIncome * 40)); save.coins += coins; save.hive.swarmWins++;
+    gainXp(XP_GAIN.swarm);
     persist(); refreshWallet(true);
-    hiveResult('🏆 Рой отступил!', `+${fmt(coins)} монет. Но пчёлки обиделись: улей закрыт на 24 часа, а Королева за этот бой не даётся.`, 'Готово');
+    hiveResult('🏆 Рой отступил!', `+${fmt(coins)} монет и ${XP_GAIN.swarm} опыта. Но пчёлки обиделись: улей закрыт на 24 часа, а Королева за этот бой не даётся.`, 'Готово');
     return;
   }
   const parts = hiveComplete();
@@ -14873,7 +15122,7 @@ $('adminNewbie').addEventListener('click', () => { save.flags.tutOffered = false
 $('adminDots').addEventListener('click', () => {
   const keep = { ...dotWant }; for (const k of DOT_ORDER) dotWant[k] = true; applyDots(); closeAdmin();
   toast(`Все точки хотят гореть, видно не больше ${DOT_MAX}`, 'good');
-  setTimeout(() => { Object.assign(dotWant, keep); updateShopDot(); updateEvoDot(); updateQuestDot(); }, 5000);
+  setTimeout(() => { Object.assign(dotWant, keep); updateShopDot(); updateEvoDot(); updateQuestDot(); lvlDot(); }, 5000);
 });
 $('adminHiveTime').addEventListener('click', () => {
   if (!hiveActive()) { toast('Задание улья сейчас не идёт', 'bad'); return; }
@@ -14942,7 +15191,7 @@ function finishMini(kind, coins, extra, paid = true) {
     toast(`Игра на рекорд${extra || ''}. Наградные игры снова будут завтра`, '', 3400);
     renderMiniInfo(); return;
   }
-  save.coins += coins; persist(); refreshWallet(true); renderOrbs(); questProgress('minigame'); sfx('coin');
+  save.coins += coins; gainXp(XP_GAIN.mini); persist(); refreshWallet(true); renderOrbs(); questProgress('minigame'); sfx('coin');
   toast(`+${fmt(coins)} монет${extra || ''}`, 'good', 3400);
   renderMiniInfo();
 }
@@ -15435,6 +15684,9 @@ function showTab(t, page) {
   if (t === 'album') { renderAlbum(); renderSongRow(); }
   if (t === 'quests') { renderStory(); renderQuests(); renderAch(); }
   if (t === 'games') { renderArena(); layoutStars(); renderMiniInfo(); }
+  if (t === 'profile') { nameEditing = false; renderProfile(); }
+  $('lvlBtn').setAttribute('aria-expanded', String(t === 'profile'));
+  if (t === 'hunt') refreshGoal();
   if (t === 'farm') renderCare();
   if (page != null && PAGERS[t]) PAGERS[t].go(page, false);
   if (t === 'shop') markShopSeen();
@@ -15484,6 +15736,7 @@ function sferolovBack() {
     if (welcomed) { closeMenu(); return true; }
     return false;
   }
+  if (!$('lvlModal').hidden) { closeLvl(); return true; }
   if (!$('evoModal').hidden) { $('evoOk').click(); return true; }
   if (!$('bossSheet').hidden) { if (bf && bf.over) closeBossFight(); return true; }   // посреди боя «Назад» не сбегает
   if (!$('battleSheet').hidden) { if (battle && battle.done) $('battleDone').click(); else $('battleSkip').click(); return true; }
@@ -15495,7 +15748,7 @@ function sferolovBack() {
   return false;
 }
 window.sferolovBack = sferolovBack;
-const layerOpen = () => tab !== 'hunt' || !$('bs').hidden || !$('hiveSheet').hidden || !$('adminSheet').hidden || (startOpen && welcomed);
+const layerOpen = () => tab !== 'hunt' || !$('lvlModal').hidden || !$('bs').hidden || !$('hiveSheet').hidden || !$('adminSheet').hidden || (startOpen && welcomed);
 let backGuard = false, backIgnore = false;
 function syncBackGuard() {
   try {
@@ -15691,7 +15944,9 @@ const TUT_STEPS = {
   flying:    { g:1, tab:'hunt', hide:true, on:{ miss:() => tutGo('missed'), caught:() => tutGo('caught'), breakout:() => tutGo('broke'), throw:() => {} } },
   missed:    { g:1, tab:'hunt', target:tutOrbRect, text:'Мимо! Сфера вернулась к тебе. Брось ещё раз, прямо в зверька.', on:{ throw:() => tutGo('flying') } },
   broke:     { g:1, tab:'hunt', target:tutOrbRect, text:'Попал, но зверёк вырвался. Брось ещё! Если зверёк вырвался, он может и убежать.', on:{ throw:() => tutGo('flying') } },
-  caught:    { g:2, enter:() => { tut.easy = false; }, target:() => rectOf($('hudOrb')), text:'Поймал! Это медная сфера: она всегда с тобой и никогда не ломается. Кнопка сферы открывает выбор сфер и зелий.', next:'Понятно', onNext:() => tutGo('toFarm') },
+  caught:    { g:2, enter:() => { tut.easy = false; }, target:() => rectOf($('hudOrb')), text:'Поймал! Это медная сфера: она всегда с тобой и никогда не ломается. Кнопка сферы открывает выбор сфер и зелий.', next:'Понятно', onNext:() => tutGo('level') },
+  level:     { g:2, target:() => rectOf($('lvlBtn')), text:'Это твой уровень ловца ⭐. Опыт дают за поимки, задания и бои, а за новый уровень — награда. Плашка под шапкой — «Следующая цель»: она подскажет, что делать дальше.',
+               next:'Понятно', onNext:() => tutGo('toFarm') },
   toFarm:    { g:2, target:() => rectOf(secBtn('farm')), text:'Пойманный зверёк отправился на ферму. Нажми «Ферма» слева на поле.', on:{ tab:t => { if (t === 'farm') tutGo('pen'); } } },
   pen:       { g:2, tab:'farm', enter:() => { if (farmPager.index !== 0) farmPager.go(0); }, target:() => rectOf(penCanvas),
                text:'Это загон: зверьки здесь приносят монеты. Если места нет, новые ждут в разделе «Мои зверьки».', next:'Дальше', onNext:() => tutGo('shop') },
@@ -15772,6 +16027,364 @@ renderMenuTut();
 
 /* ======================= ГЛАВНЫЙ ЦИКЛ ======================= */
 let last = performance.now(), lastWall = Date.now(), saveTimer = 0;
+/* ======================= ПУТЬ ЛОВЦА (этап 2, версия 44) =======================
+   Уровень ловца от 1 до 100. Опыт даётся только за игру (числа — в начале файла: XP_CATCH, XP_GAIN, LVL_NEED_PTS).
+   За каждый уровень — награда, её забирают в окне «Новый уровень!». Окно открывается само один раз,
+   но только когда ничто не идёт: не во время броска, боя, диалога или обучения. Закрыл без награды —
+   она ждёт в «Следующей цели» и на значке уровня. */
+// (функции и var, а не const/let: их можно звать с любого места файла, даже до этого блока)
+function pathLevel() { return levelOfXp(save.path.xp); }
+function lvlPending() { return pathLevel() > save.path.paid; }
+function potTitle(id) { return POT_BY_ID[id] ? POT_BY_ID[id].title : id; }
+function lvlReward(L) {
+  const R = LVL_REWARD, big = L % R.bigEvery === 0;
+  const r = { coins:R.coin * L * (big ? R.bigMult : 1), shards:big ? R.bigShards : 0, pots:{}, titles:[], big };
+  if (big) r.pots[LVL_POT_ORDER[(L / R.bigEvery - 1) % LVL_POT_ORDER.length]] = R.bigPots;
+  else if (L % R.bigEvery === R.potAt) r.pots[LVL_POT_ORDER[Math.floor(L / R.bigEvery) % LVL_POT_ORDER.length]] = 1;
+  const T = LVL_TITLES.find(t => t.lvl === L); if (T) r.titles.push(T);
+  return r;
+}
+function lvlRewardsSum(from, to) {
+  const s = { coins:0, shards:0, pots:{}, titles:[] };
+  for (let L = from; L <= to; L++) {
+    const r = lvlReward(L);
+    s.coins += r.coins; s.shards += r.shards; s.titles.push(...r.titles);
+    for (const [k, n] of Object.entries(r.pots)) s.pots[k] = (s.pots[k] || 0) + n;
+  }
+  return s;
+}
+function grantRewards(s) {
+  save.coins += s.coins || 0; save.shards = (save.shards || 0) + (s.shards || 0);
+  for (const [k, n] of Object.entries(s.pots || {})) if (POT_BY_ID[k]) save.pot[k] = (save.pot[k] || 0) + n;
+}
+function rewardChips(s) {
+  const out = [];
+  if (s.coins) out.push(rwChip('coin', '+' + fmt(s.coins)));
+  if (s.shards) out.push(rwChip('orb', `🧩 ×${s.shards}`));
+  for (const [k, n] of Object.entries(s.pots || {})) out.push(rwChip('orb', `🧪 ${potTitle(k)}${n > 1 ? ' ×' + n : ''}`));
+  for (const T of s.titles || []) out.push(rwChip('orb', `🏅 «${T.name}»`));
+  return out;
+}
+// что откроется дальше: ближайшая большая награда и ближайший титул
+function lvlNextText(L) {
+  if (L >= LVL_MAX) return 'Это максимальный уровень. Ты настоящий мастер!';
+  const parts = [], R = LVL_REWARD;
+  const big = Math.min(LVL_MAX, (Math.floor(L / R.bigEvery) + 1) * R.bigEvery);
+  const T = LVL_TITLES.find(t => t.lvl > L);
+  if (T && T.lvl === big) parts.push(`на ${big}-м уровне — большая награда и титул «${T.name}»`);
+  else {
+    parts.push(`на ${big}-м уровне — большая награда`);
+    if (T) parts.push(`на ${T.lvl}-м — титул «${T.name}»`);
+  }
+  return 'Дальше: ' + parts.join(', ') + '.';
+}
+
+// ---- опыт ----
+var xpPopN = 0, xpPopTimer = 0;
+function gainXp(n) {
+  if (!save.path || !(n > 0)) return;
+  const before = pathLevel();
+  save.path.xp = Math.min(XP_CAP, save.path.xp + Math.round(n));
+  const now = pathLevel();
+  refreshLvl(true);
+  xpPopN += Math.round(n); clearTimeout(xpPopTimer); xpPopTimer = setTimeout(xpPopShow, 350);
+  if (now > before) { updateQuestDot(); lvlDot(); setTimeout(pathTick, 1200); }
+  goalSoon();
+}
+function xpPopShow() {
+  const n = xpPopN; xpPopN = 0;
+  if (!n || tab !== 'hunt') return;
+  const el = document.createElement('span'); el.className = 'xp-pop'; el.setAttribute('aria-hidden', 'true'); el.textContent = `+${fmt(n)} ⭐`;
+  $('lvlBtn').append(el); setTimeout(() => el.remove(), 1300);
+}
+function catchXp(sp, first) { return (XP_CATCH[sp.rarity] || 0) * (first ? XP_GAIN.firstMult : 1) + (sp.shiny ? XP_GAIN.shiny : 0); }
+
+// ---- значок уровня в шапке ----
+var lvlShown = -1, lvlFracShown = -1;
+function refreshLvl(bump) {
+  if (!save.path) return;
+  const L = pathLevel(), xp = save.path.xp, max = L >= LVL_MAX;
+  const frac = max ? 1 : clamp((xp - LVL_CUM[L]) / (LVL_CUM[L + 1] - LVL_CUM[L]), 0, 1);
+  const b = $('lvlBtn');
+  if (L !== lvlShown) { lvlShown = L; $('lvlNum').textContent = L; }
+  if (Math.abs(frac - lvlFracShown) > 0.001) { lvlFracShown = frac; $('lvlFill').style.width = `${(frac * 100).toFixed(1)}%`; }
+  b.setAttribute('aria-label', max ? `Уровень ловца ${L}, максимальный. Открыть профиль` : `Уровень ловца ${L}: ${fmt(xp - LVL_CUM[L])} из ${fmt(LVL_CUM[L + 1] - LVL_CUM[L])} опыта. Открыть профиль`);
+  const want = lvlPending() || !!save.path.gift;
+  b.classList.toggle('ready', want);
+  if (dotWant.lvl !== want) { dotWant.lvl = want; applyDots(); }
+  if (bump) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+}
+function lvlDot() { dotWant.lvl = lvlPending() || !!(save.path && save.path.gift); applyDots(); }
+
+// ---- окно «Новый уровень!» и подарок «За опыт» ----
+var lvlMode = null;   // 'lvl' — награда за уровень, 'gift' — подарок «За опыт»
+function lvlCanShow() { return !startOpen && !dlg && !hiveAskOpen && !tut.on && !throwBusy() && $('lvlModal').hidden && $('evoModal').hidden &&
+  $('bossSheet').hidden && $('battleSheet').hidden && $('hiveSheet').hidden && $('adminSheet').hidden && $('bs').hidden &&
+  !(sf && sf.phase !== 'over') && !(tab === 'hunt' && ['capturing', 'caught', 'breakout', 'dropping', 'wobble'].includes(state)); }
+// раз в полсекунды: если уровень вырос, а окно ещё не показывали, показываем, как только ничто не идёт
+function pathTick() {
+  if (!save.path) return;
+  const L = pathLevel();
+  if (L > save.path.shown && lvlPending() && lvlCanShow()) { save.path.shown = L; openLvl(); }
+}
+function lvlFill(o) {
+  $('lvlBig').textContent = o.lvl;
+  $('lvlTitle').textContent = o.title; $('lvlText').textContent = o.text;
+  const rw = $('lvlRewards'); rw.innerHTML = ''; rw.append(...rewardChips(o.rewards));
+  $('lvlNext').textContent = o.next || ''; $('lvlNext').hidden = !o.next;
+  clearTimeout(toastTimer); toastEl.className = 'toast';   // сообщение игры не налезает на окно
+  $('lvlModal').hidden = false; document.documentElement.classList.add('lvl-open');
+  syncBackGuard();
+  setTimeout(() => $('lvlTake').focus({ preventScroll:true }), 60);
+}
+function openLvl() {
+  if (!lvlPending()) { if (save.path.gift) openGift(); return; }
+  const L = pathLevel(), from = save.path.paid + 1, s = lvlRewardsSum(from, L);
+  lvlMode = 'lvl'; sfx('level');
+  lvlFill({ lvl:L, title:'Новый уровень!', text:from < L ? `Уровни ${from}–${L}: награды за все сразу` : `Ты теперь ловец ${L}-го уровня`, rewards:s, next:lvlNextText(L) });
+}
+function openGift() {
+  const g = save.path.gift; if (!g) return;
+  lvlMode = 'gift'; sfx('level');
+  lvlFill({ lvl:pathLevel(), title:'Подарок «За опыт»', text:`Ты уже много играл, поэтому сразу начинаешь с ${g.lvl}-го уровня. Награды за пройденные уровни собраны в этот подарок.`,
+    rewards:{ coins:g.coins, shards:g.shards, pots:g.pots }, next:lvlNextText(pathLevel()) });
+}
+function closeLvl() { $('lvlModal').hidden = true; document.documentElement.classList.remove('lvl-open'); lvlMode = null; syncBackGuard(); goalSoon(); }
+function takeLvl() {
+  let got = null;
+  if (lvlMode === 'lvl' && lvlPending()) {
+    const L = pathLevel(); got = lvlRewardsSum(save.path.paid + 1, L);
+    save.path.paid = L; save.path.shown = Math.max(save.path.shown, L);
+  } else if (lvlMode === 'gift' && save.path.gift) { got = save.path.gift; save.path.gift = null; }
+  closeLvl();
+  if (got) {
+    grantRewards(got); persist(); refreshWallet(true); renderOrbs(); refreshLvl(); lvlDot(); updateQuestDot(); updateShopDot();
+    sfx('coin');
+    if (tab === 'profile') renderProfile();
+    // если и подарок, и уровень ждали вместе — следующее окно сразу, без сообщения поверх него
+    if (lvlPending() || save.path.gift) { setTimeout(() => { if (lvlCanShow()) openLvl(); }, 350); return; }
+    const ttl = got.titles && got.titles.length ? ` Новый титул: «${got.titles[got.titles.length - 1].name}» — выбери его в профиле` : '';
+    toast(`🎁 Награда получена!${ttl}`, 'good', ttl ? 3600 : 2200);
+  }
+}
+$('lvlTake').addEventListener('click', takeLvl);
+$('lvlBtn').addEventListener('click', () => { sfx('tap'); if (tab === 'profile') showTab('hunt'); else showTab('profile'); });
+
+// ---- титулы и имя ----
+function titlesEarned() {
+  const L = save.path ? save.path.paid : 1;
+  const list = [{ id:'novice', name:'Новичок' }];
+  for (const T of LVL_TITLES) if (L >= T.lvl) list.push(T);
+  if (save.story.title) list.push({ id:'shep', name:'Гроза пастухов' });
+  if (save.hive.title) list.push({ id:'bee', name:'Друг пчёл' });
+  return list;
+}
+// выбранный титул, а если не выбран или пропал — самый высокий за уровень
+function titleNow() {
+  const E = titlesEarned(), pick = E.find(t => t.id === save.title);
+  return pick || [...E].reverse().find(t => t.lvl) || E[0];
+}
+function playerName() { return save.name || NAME_DEFAULT; }
+
+// ---- «Следующая цель» на охоте ----
+function nearLoc() {
+  let best = null;
+  for (const L of LOCATIONS) {
+    if (!(L.need > 0) || locOpen(L)) continue;
+    const space = L.map === 'space';
+    if (space && !spaceOpen()) continue;
+    const left = L.need - (space ? (save.spaceCaught || 0) : save.caught);
+    if (left <= 0 || left > Math.max(GOAL_LOC_NEAR.min, Math.ceil(L.need * GOAL_LOC_NEAR.part))) continue;
+    if (!best || left < best.left) best = { L, left, space };
+  }
+  return best;
+}
+// одна самая важная цель: незабранная награда → сломанная сфера → близкая локация → задание дня → опыт до уровня
+function goalNow() {
+  const P = save.path;
+  if (lvlPending()) return { id:'lvl', ico:'🎁', txt:`Забери награду за ${pathLevel()}-й уровень`, hot:true, go:openLvl };
+  if (P.gift) return { id:'gift', ico:'🎁', txt:'Подарок «За опыт» ждёт тебя', hot:true, go:openGift };
+  const qs = save.quests && save.quests.day === dayKey() ? save.quests.list : [];
+  if (qs.some(q => q.prog >= q.n && !q.claimed)) return { id:'quest', ico:'📋', txt:'Задание выполнено: забери награду', hot:true, go:() => showTab('quests', 1) };
+  const a = ACH.find(achClaimable);
+  if (a) return { id:'ach', ico:'🏆', txt:`Достижение «${a.name}»: забери награду`, hot:true, go:() => showTab('quests', 2) };
+  if (mainNeedsFix()) return { id:'fix', ico:'🔧', txt:'Сфера сломалась: почини её в Магазине', go:() => showTab('shop', 0) };
+  const n = nearLoc();
+  if (n) return { id:'loc', ico:n.L.icon, txt:`Поймай${n.space ? ' в космосе' : ''} ещё ${n.left} — откроется ${n.L.name}`, go:() => openLocPop(n.space ? 'space' : 'earth'), here:true };
+  const q = qs.find(x => x.prog < x.n && !x.claimed);
+  if (q) {
+    const D = questDef(q), g = taskGo(q.id, q);
+    return { id:'q:' + q.id, ico:D.icon, txt:`${D.text(q.n, q)} · ${q.prog} из ${q.n}`, go:g ? g[1] : () => showTab('quests', 1), here:!!g && g[0] === '🎯 На охоту' };
+  }
+  const L = pathLevel();
+  if (L >= LVL_MAX) return { id:'max', ico:'⭐', txt:'Максимальный уровень! Лови сияющих', go:() => showTab('profile') };
+  return { id:'xp', ico:'⭐', txt:`До ${L + 1}-го уровня: ещё ${fmt(LVL_CUM[L + 1] - P.xp)} опыта`, go:() => showTab('profile') };
+}
+var goalCur = null, goalKey = '', goalTimer = 0;
+function goalSoon() { clearTimeout(goalTimer); goalTimer = setTimeout(refreshGoal, 120); }
+function refreshGoal() {
+  if (!save.path) return;
+  const g = goalNow(), min = !!save.flags.goalMin, key = [g.ico, g.txt, !!g.hot, min].join('|');
+  goalCur = g;
+  if (key === goalKey) return;
+  goalKey = key;
+  const el = $('goal');
+  $('goalIco').textContent = g.ico; $('goalTxt').textContent = g.txt;
+  el.classList.toggle('hot', !!g.hot); el.classList.toggle('min', min);
+  $('goalBtn').setAttribute('aria-label', min ? `Следующая цель: ${g.txt}. Развернуть` : `Следующая цель: ${g.txt}`);
+  if (el.hidden) { el.hidden = false; syncStrip(); }
+}
+$('goalBtn').addEventListener('click', () => {
+  sfx('tap');
+  if (save.flags.goalMin) { save.flags.goalMin = false; persist(); refreshGoal(); return; }
+  const g = goalCur || goalNow();
+  if (g.here && tab === 'hunt' && g.id !== 'loc') { toast('🎯 Это делается прямо здесь, на охоте: лови зверьков!', '', 2600); return; }
+  g.go();
+});
+$('goalMin').addEventListener('click', () => { sfx('tap'); save.flags.goalMin = true; persist(); refreshGoal(); });
+
+// ---- профиль ловца ----
+function statTile(ico, num, label) {
+  const d = document.createElement('div'); d.className = 'st-tile';
+  const i = document.createElement('span'); i.className = 'st-ico'; i.setAttribute('aria-hidden', 'true'); i.textContent = ico;
+  const b = document.createElement('b'); b.textContent = num;
+  const s = document.createElement('small'); s.textContent = label;
+  d.append(i, b, s); return d;
+}
+var nameEditing = false;
+function renderProfile() {
+  const body = $('profBody'); if (!body || !save.path) return;
+  const keepY = body.scrollTop;
+  body.innerHTML = '';
+  const L = pathLevel(), xp = save.path.xp, max = L >= LVL_MAX;
+  const have = max ? 0 : xp - LVL_CUM[L], need = max ? 1 : LVL_CUM[L + 1] - LVL_CUM[L];
+  // герой: уровень, имя, титул, полоска опыта
+  const hero = document.createElement('div'); hero.className = 'prof-hero';
+  const ring = document.createElement('div'); ring.className = 'prof-ring'; ring.style.setProperty('--p', `${max ? 100 : (have / need * 100).toFixed(1)}%`);
+  ring.innerHTML = '<small>уровень</small>'; const rb = document.createElement('b'); rb.textContent = L; ring.prepend(rb);
+  const info = document.createElement('div'); info.className = 'prof-info';
+  if (nameEditing) {
+    const row = document.createElement('form'); row.className = 'name-edit';
+    const inp = document.createElement('input'); inp.id = 'nameInput'; inp.type = 'text'; inp.maxLength = 40; inp.value = save.name; inp.placeholder = NAME_DEFAULT;
+    inp.setAttribute('aria-label', `Имя ловца, до ${NAME_MAX} знаков`); inp.autocomplete = 'off'; inp.spellcheck = false; inp.enterKeyHint = 'done';
+    const ok = makeBtn('Готово', 'primary', () => {}); ok.type = 'submit';
+    row.append(inp, ok);
+    row.addEventListener('submit', e => { e.preventDefault(); save.name = cleanName(inp.value); nameEditing = false; persist(); sfx('ok'); renderProfile(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); nameEditing = false; renderProfile(); } });
+    inp.addEventListener('input', () => { const c = Array.from(inp.value).length; inp.classList.toggle('over', c > NAME_MAX); });
+    const hint = document.createElement('small'); hint.className = 'name-hint'; hint.textContent = `До ${NAME_MAX} знаков. Имя хранится только на этом телефоне.`;
+    info.append(row, hint);
+    setTimeout(() => { inp.focus(); inp.select(); }, 50);
+  } else {
+    const nm = document.createElement('button'); nm.type = 'button'; nm.className = 'prof-name'; nm.id = 'nameBtn';
+    nm.setAttribute('aria-label', `Имя: ${playerName()}. Изменить`);
+    const nt = document.createElement('b'); nt.textContent = playerName();
+    const pen = document.createElement('span'); pen.setAttribute('aria-hidden', 'true'); pen.textContent = '✏';
+    nm.append(nt, pen);
+    nm.addEventListener('click', () => { sfx('tap'); nameEditing = true; renderProfile(); });
+    info.append(nm);
+  }
+  const ti = document.createElement('span'); ti.className = 'prof-title'; ti.textContent = `🏅 ${titleNow().name}`;
+  info.append(ti);
+  hero.append(ring, info);
+  const xpRow = document.createElement('div'); xpRow.className = 'prof-xp';
+  const bar = document.createElement('div'); bar.className = 'prog big xp'; const fi = document.createElement('i'); fi.style.width = `${max ? 100 : have / need * 100}%`; bar.append(fi);
+  const xt = document.createElement('small');
+  xt.textContent = max ? `Максимальный уровень! Всего опыта: ${fmt(xp)}` : `${fmt(have)} из ${fmt(need)} опыта · до ${L + 1}-го ещё ${fmt(need - have)}`;
+  xpRow.append(bar, xt); hero.append(xpRow);
+  body.append(hero);
+  // подарок или награда уровня ждут
+  if (lvlPending() || save.path.gift) {
+    const c = document.createElement('div'); c.className = 'bonus-card';
+    c.innerHTML = '<span class="bc-ico" aria-hidden="true">🎁</span>';
+    const cb = document.createElement('div'); cb.className = 'bc-body';
+    const t1 = document.createElement('b'); t1.textContent = lvlPending() ? `Награда за ${pathLevel()}-й уровень` : 'Подарок «За опыт»';
+    const t2 = document.createElement('small'); t2.textContent = 'Ждёт тебя';
+    cb.append(t1, t2); c.append(cb, makeBtn('Открыть', 'primary', () => { if (lvlPending()) openLvl(); else openGift(); }));
+    c.lastChild.style.gridColumn = '1 / -1';
+    body.append(c);
+  }
+  // титулы
+  const tc = document.createElement('div'); tc.className = 'card';
+  tc.innerHTML = '<div class="card-head"><b>Титул</b></div>';
+  const chips = document.createElement('div'); chips.className = 'title-chips';
+  const cur = titleNow();
+  for (const T of titlesEarned()) {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'chip' + (T.id === cur.id ? ' active' : '');
+    c.textContent = T.name; c.setAttribute('aria-pressed', String(T.id === cur.id));
+    c.addEventListener('click', () => { save.title = T.id; persist(); sfx('tap'); renderProfile(); });
+    chips.append(c);
+  }
+  const nextT = LVL_TITLES.find(t => t.lvl > save.path.paid);
+  if (nextT) { const c = document.createElement('span'); c.className = 'chip locked'; c.textContent = `🔒 ${nextT.name} · ${nextT.lvl}-й уровень`; chips.append(c); }
+  tc.append(chips); body.append(tc);
+  // статистика
+  const sc = document.createElement('div'); sc.className = 'card';
+  sc.innerHTML = '<div class="card-head"><b>Статистика</b></div>';
+  const grid = document.createElement('div'); grid.className = 'st-grid';
+  const dex = SPECIES.filter(s => !s.solo);
+  grid.append(
+    statTile('🎯', fmt(save.caught), 'поймано'),
+    statTile('📖', `${dex.filter(s => save.seen[s.id]).length} из ${dex.length}`, 'видов'),
+    statTile('✨', fmt(Object.keys(save.shinySeen || {}).length), 'сияющих'),
+    statTile('⚔', fmt(save.stats.arenaWins || 0), 'побед на арене'),
+    statTile('👹', fmt(save.stats.bossWins || 0), 'боссов'),
+    statTile('🏹', fmt(save.stats.perfect || 0), 'бросков в центр'));
+  sc.append(grid); body.append(sc);
+  // награды впереди
+  if (!max) {
+    const nc = document.createElement('div'); nc.className = 'card';
+    nc.innerHTML = '<div class="card-head"><b>Награды впереди</b></div>';
+    const list = document.createElement('div'); list.className = 'lv-list';
+    const from = Math.max(save.path.paid, L) + 1;
+    for (let k = from; k <= Math.min(LVL_MAX, from + 4); k++) {
+      const r = lvlReward(k), row = document.createElement('div'); row.className = 'lv-row' + (r.big ? ' big' : '');
+      const n = document.createElement('span'); n.className = 'lv-n'; n.textContent = k;
+      const rw = document.createElement('div'); rw.className = 'rewards'; rw.append(...rewardChips(r));
+      row.append(n, rw); list.append(row);
+    }
+    nc.append(list); body.append(nc);
+  }
+  body.scrollTop = keepY;
+}
+
+// ---- старые сохранения: стартовый уровень по прошлым заслугам ----
+function oldSaveXp(d) {
+  let xp = (d.caught | 0) * OLD_XP.perCatch;
+  for (const s of SPECIES) if (!s.solo && d.seen[s.id]) xp += (XP_CATCH[s.rarity] || 0) * (XP_GAIN.firstMult - 1);
+  xp += Object.keys(d.shinySeen || {}).length * XP_GAIN.shiny;
+  xp += ((d.stats.perfect | 0) * XP_GAIN.perfect) + ((d.stats.curve | 0) * XP_GAIN.curve) + ((d.stats.merges | 0) * XP_GAIN.merge);
+  for (const v of Object.values(d.evoMax || {})) xp += Math.max(0, (v | 0) - 1) * XP_GAIN.evo;
+  xp += Math.max(d.stats.arenaWins | 0, ((d.arena && d.arena.level) | 0) - 1) * XP_GAIN.arena;
+  xp += (d.stats.bossWins | 0) * XP_GAIN.boss + Object.keys(d.story.beaten || {}).length * XP_GAIN.chapter + (d.hive.queen ? XP_GAIN.chapter : 0);
+  for (const a of ACH) xp += clamp(d.ach[a.id] | 0, 0, a.tiers.length) * OLD_XP.ach;
+  return Math.min(XP_CAP, Math.max(0, Math.round(xp)));
+}
+function xpGiftFor(L) {
+  const pots = { comet:1 + Math.floor(L / XP_GIFT.potEvery) };
+  if (L >= XP_GIFT.potEvery) pots.net = Math.floor(L / XP_GIFT.potEvery);
+  return { lvl:L, coins:XP_GIFT.coin * L, shards:Math.min(XP_GIFT.shardMax, Math.floor(L / XP_GIFT.shardEvery)), pots };
+}
+function initPath() {
+  if (save.path) return;
+  const xp = oldSaveXp(save), L = levelOfXp(xp);
+  save.path = { xp, paid:L, shown:L, gift:L >= 2 ? xpGiftFor(L) : null, v:1 };
+  persist();
+}
+initPath();
+refreshLvl(); lvlDot();
+// панель разработчика: путь ловца
+function pathAdminDone(msg) { persist(); refreshLvl(true); lvlDot(); updateQuestDot(); goalSoon(); if (tab === 'profile') renderProfile(); closeAdmin(); toast(msg, 'good', 3600); }
+$('adminLvl1').addEventListener('click', () => {
+  const L = pathLevel(); if (L >= LVL_MAX) { toast('Уже максимальный уровень'); return; }
+  save.path.xp = LVL_CUM[L + 1]; pathAdminDone(`Уровень ${L + 1}! Окно с наградой откроется само`);
+});
+$('adminLvl10').addEventListener('click', () => {
+  const L = Math.min(LVL_MAX, pathLevel() + 10); save.path.xp = Math.max(save.path.xp, LVL_CUM[L]); pathAdminDone(`Уровень ${L}! Награды за все уровни — в одном окне`);
+});
+$('adminLvlOld').addEventListener('click', () => { save.path = null; initPath(); pathAdminDone(`Уровень посчитан по заслугам: ${pathLevel()}. Подарок «За опыт» ждёт в «Следующей цели»`); });
+$('adminLvlZero').addEventListener('click', () => { save.path = { xp:0, paid:1, shown:1, gift:null, v:1 }; pathAdminDone('Путь ловца сброшен: уровень 1'); });
+
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
   const wall = Date.now(), away = (wall - lastWall) / 1000; lastWall = wall;
@@ -15789,7 +16402,7 @@ function frame(now) {
   }
   refreshWallet();
   // Игра на паузе, пока идёт диалог, вопрос пчёлок или открыт улей: зверёк замирает, погода и метеоры ждут
-  const hold = !!dlg || hiveAskOpen || !$('hiveSheet').hidden || tab !== 'hunt';
+  const hold = !!dlg || hiveAskOpen || !$('hiveSheet').hidden || tab !== 'hunt' || !$('lvlModal').hidden;
   if (W > 0 && cr) { if (!hold) update(dt); if (tab === 'hunt' || !panelCovers()) draw(); }
   if (toastQ.length && !throwBusy() && performance.now() >= toastNextAt) { const [m, k, ms] = toastQ.shift(); toastNextAt = performance.now() + Math.min(ms, 1800); toast(m, k, ms); }
   if (tab === 'farm' && farmPager.index === 0) { updatePen(dt); drawPen(dt); }
@@ -15821,7 +16434,8 @@ function frame(now) {
     if (tab === 'hunt' && inSpace()) renderSpacePill();
     if (tab === 'farm') tickFarmExtras(); if (tab === 'shop') tickShop();
     if (tab === 'quests') { tickQuests(); tickStory(); }
-    updateMood(); refreshIncome(); hiveTick(); syncBackGuard();
+    updateMood(); refreshIncome(); hiveTick(); syncBackGuard(); pathTick();
+    if (tab === 'hunt') refreshGoal();
     if (tab === 'farm') tickCare();
     updateQuestDot(); updateShopDot();
   }
