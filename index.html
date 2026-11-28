@@ -1273,9 +1273,14 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
   border-radius:999px;background:rgba(18,24,20,.8);color:#fff;font-weight:900;font-size:.9rem;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 .catch-line[hidden]{display:none}
 .catch-line.show{animation:clIn .22s ease}
+/* длинный итог (золотой сундук) переносится на вторую строку, а не обрезается */
+.catch-line{width:max-content;flex-wrap:wrap;justify-content:center;row-gap:2px;white-space:normal;border-radius:18px;text-align:center}
+.catch-line span{white-space:nowrap}
 @keyframes clIn{from{opacity:0;transform:translate(-50%,-8px)}}
 .cl-xp{color:#ffe082}
 .cl-streak{color:#ffab70}
+.cl-special{color:#9be7ff}
+.trait.special{background:linear-gradient(90deg,#ffe082,#ffb74d);color:#3e2600;border-color:transparent}
 
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
@@ -1354,7 +1359,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
         <div class="hunt-strip" id="huntStrip" hidden><div class="goal" id="goal" hidden><button class="goal-btn" id="goalBtn" type="button"><span class="goal-ico" id="goalIco" aria-hidden="true">⭐</span><span class="goal-txt"><small>Следующая цель</small><b id="goalTxt"></b></span></button><button class="goal-min" id="goalMin" type="button" aria-label="Свернуть подсказку">–</button></div><button class="hive-pill" id="hivePill" type="button" aria-label="Улей" hidden><span aria-hidden="true">🐝</span><b id="hivePillTxt"></b></button></div>
       <div class="info" id="info">
         <div class="info-main">
-          <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span><span class="trait" id="cTrait" role="button" hidden></span></div>
+          <div class="name-row"><span class="cname" id="cName">…</span><span class="badge" id="cRarity"></span><span class="trait" id="cTrait" role="button" hidden></span><span class="trait special" id="cSpecial" hidden></span></div>
           <div class="line" id="cChance"></div>
           <div class="line" id="cDist"></div>
         </div>
@@ -1616,6 +1621,11 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <button class="btn" id="adminClockOk" type="button">⏰ Часы снова верные</button>
             <button class="btn" id="adminBeauty" type="button">💎 Выдать всё из лавки красоты</button>
             <button class="btn" id="adminMagnate" type="button">👑 Проверить «Магнат» заново</button>
+            <button class="btn" id="adminChest" type="button">🧰 Сундук на поле</button>
+            <button class="btn" id="adminGiant" type="button">🦣 Великан</button>
+            <button class="btn" id="adminBaby" type="button">🐣 Малыш</button>
+            <button class="btn" id="adminRunner" type="button">💨 Беглец</button>
+            <button class="btn" id="adminPack" type="button">🐾 Стая</button>
           </div>
         </div>
         <div class="card">
@@ -1774,7 +1784,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 47</p>
+          <p class="version">Версия игры 48</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1788,7 +1798,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 47</p>
+    <p class="start-ver">Версия игры 48</p>
   </div>
 </div>
 
@@ -2357,6 +2367,24 @@ const CHANCE_CAP = { normal:0.93, great:0.99, perfect:0.99, common:{ normal:0.97
 const RING_COLORS = [[0.75, '#3ddc6b'], [0.45, '#ffd23f'], [0.2, '#ff9a2e'], [0, '#ff4d4d']];
 // Серия поимок подряд: +10% к опыту и монетам за каждую, до ×2. Сгорает, если зверёк убежал или 2 минуты без поимки
 const STREAK = { step:0.1, max:2, burnMs:120000 };
+// Сундуки и особые встречи (этап 4б, версия 48). Особая встреча — 1 из 20, но только после 10 появлений без неё:
+// в среднем выходит примерно 1 из 30 и никогда не чаще раза в 10 появлений
+const ENC = { chest:1 / 25, special:1 / 20, gap:10,
+  chestTier:[['wood', 0.7], ['silver', 0.25], ['gold', 0.05]],
+  specialKinds:[['giant', 0.3], ['baby', 0.3], ['runner', 0.2], ['pack', 0.2]] };
+// ess — [сколько разных эссенций, по сколько каждой]; монеты растут с уровнем ловца
+const CHEST = {
+  wood:   { name:'Деревянный сундук', coins:300,  ess:[1, 4],  pot:0.25, dust:[5, 10],  shard:0,    deco:0 },
+  silver: { name:'Серебряный сундук', coins:1200, ess:[2, 9],  pot:0.5,  dust:[15, 30], shard:0.05, deco:0.02 },
+  gold:   { name:'Золотой сундук',    coins:5000, ess:[3, 18], pot:1,    dust:[40, 60], shard:0.25, deco:0.1 },
+};
+const CHEST_DECO_MAX = 5e7;   // в сундуке бывают только недорогие вещи из «Лавки красоты»
+const SPECIAL = {
+  giant:  { icon:'🦣', name:'Великан', size:1.5, chance:0.7, reward:3, tip:'🦣 Великан! Ловится труднее, зато награды ×3' },
+  baby:   { icon:'🐣', name:'Малыш', size:0.62, move:2.2, freq:1.6, reward:2, tip:'🐣 Малыш! Маленький и юркий: попасть труднее, награды ×2' },
+  runner: { icon:'💨', name:'Беглец', time:12, reward:2, tip:'💨 Беглец! Бежит по полю и через 12 секунд уйдёт. Награды ×2' },
+  pack:   { icon:'🐾', name:'Стая', count:3, tip:'🐾 Стая! Поймай — и сразу придёт ещё такой же, до трёх подряд' },
+};
 // Тряска и вспышка при поимке по редкости (сила тряски в пикселях, цвет вспышки)
 const CATCH_FEEL = { rare:[2, null], epic:[3, '186,104,255'], legendary:[5, '255,213,79'], mythic:[6, '255,90,79'], secret:[7, '143,124,255'],
                      divine:[8, '255,245,157'], pet:[7, '255,126,182'], glitch:[5, '0,229,255'] };
@@ -2408,7 +2436,7 @@ function throwBonusFor(ratio) {
 const ringGrade = k => RING_GRADE.find(g => k <= g.maxK) || RING_NORMAL;
 // «шанс 35–90%»: от небрежного броска с краю до «Идеально» в самый центр
 function chanceRange(sp, def) {
-  const tm = traitMult(), lo = catchChance(sp.rarity, def, THROW_EDGE.mult * RING_NORMAL.mult * tm, undefined, chanceCap(sp.rarity, RING_NORMAL));
+  const tm = traitMult() * specMult(), lo = catchChance(sp.rarity, def, THROW_EDGE.mult * RING_NORMAL.mult * tm, undefined, chanceCap(sp.rarity, RING_NORMAL));
   const g = RING_GRADE[0], hi = catchChance(sp.rarity, def, THROW_BONUS[0].mult * g.mult * tm, undefined, chanceCap(sp.rarity, g));
   const a = pct(lo), b = pct(hi);
   return a === b ? a : `${a.replace('%', '')}–${b}`;
@@ -7983,7 +8011,7 @@ const scaleFor = d => lerp(1.12, 0.42, depthT(d));
 
 function placeCreature() {
   if (!cr) return;
-  cr.r = R * scaleFor(cr.dist);
+  cr.r = R * scaleFor(cr.dist) * (cr.sizeK || 1);   // Великан больше, Малыш меньше (этап 4б)
   cr.baseY = footYFor(cr.dist) - cr.r * 0.95;
 }
 // Кнопки разделов и охоты стоят по краям поля. Зверёк, который стоит на их высоте, держится между ними
@@ -8011,7 +8039,8 @@ function sideSafe(y, r) {
 }
 function creatureX() {
   const [lo, hi] = sideSafe(cr.baseY, cr.r), mid = (lo + hi) / 2;
-  const mv = cr.sp.ab === 'drive' ? 0.16 : RARITY[cr.sp.rarity].move, amp = cr.trait === 'sleepy' ? 0 : Math.max(0, Math.min(W * mv, (hi - lo) / 2, W / 2 - cr.r * 1.8));
+  if (cr.special === 'runner') return clamp(mid + Math.sin((cr.runT || 0) * 0.9 + cr.ph) * (hi - lo) / 2, lo, hi);   // Беглец носится по всему полю
+  const mv = (cr.sp.ab === 'drive' ? 0.16 : RARITY[cr.sp.rarity].move) * (cr.special === 'baby' ? SPECIAL.baby.move : 1), amp = cr.trait === 'sleepy' ? 0 : Math.max(0, Math.min(W * mv, (hi - lo) / 2, W / 2 - cr.r * 1.8));
   return clamp(mid + (cr.offX || 0) + Math.sin(cr.mt * cr.freq + cr.ph) * amp, lo, hi);
 }
 
@@ -9843,14 +9872,21 @@ function spawn(forced) {
   if (cr && cr.scoped) scopeRefund();
   if (cr && cr.sp.hiveItem) hiveItemLeft();   // банка или яйцо ушли с поля: пойманы или ускакали
   const easy = tut.on && tut.easy;
-  let sp = forced || (easy ? SPECIES_BY_ID.puff : pickSpecies());
-  if (!forced && !easy && canShiny(sp) && Math.random() < SHINY_CHANCE) sp = shinyOf(sp);
+  let sp = forced || (easy ? SPECIES_BY_ID.puff : pickSpecies()), enc = {}, packLeft = null;
+  // этап 4б: вместо зверька сундук, особая встреча или следующий из стаи (не в обучении и не по приказу телескопа или улья)
+  if (!forced && !tut.on) {
+    if (packNext) { sp = packNext.sp; enc = { special:'pack' }; packLeft = packNext.left; packNext = null; }
+    else { enc = encounterRoll(); if (enc.chest) sp = chestSp(enc.chest); else if (enc.special && !specialOk(sp)) enc = {}; }
+  }
+  if (!forced && !easy && !sp.chest && canShiny(sp) && Math.random() < SHINY_CHANCE) sp = shinyOf(sp);
   cr = { sp, dist:rollDistance(sp), x:W / 2, y:0, r:R, baseY:0, mt:0, freq:0.5 + Math.random() * 0.4,
          ph:Math.random() * TAU, scale:0, alpha:1, tp:2.4, glitch:0, offX:0, dodgeTo:null, runAway:false,
          trait:rollTrait(sp), fogT:0, stun:0 };
   // невесомость: своя скорость парения; подставка-астероид у каждого своя
   cr.flT = 0; cr.flW = 1.0 + Math.random() * 0.5; cr.padSeed = 1 + Math.floor(Math.random() * 9999);
   cr.ringOff = Math.random() * 3;   // кольцо меткости у каждого начинается по-своему
+  if (sp.chest) cr.trait = null;
+  if (enc.special) applySpecial(enc.special, packLeft);
   if (sp.ab === 'drive') cr.freq *= 1.6;
   if (easy) { cr.trait = null; cr.dist = 7; }
   // пропажа улья: без характера, прыгает и через какое-то время ускачет сама
@@ -9864,7 +9900,10 @@ function spawn(forced) {
   updateInfo();
   const rr = RARITY[sp.rarity];
   burst(cr.x, cr.y, ['#ffffff', rr.aura || '#9be38f'], 16, 130);
-  const msg = sp.hiveItem ? `🐝 Пчёлы нашли: ${sp.name}! Она прыгает и убегает. Ловит только точный бросок в самый центр`.replace('Она', sp.hiveItem === 'egg' ? 'Оно' : 'Она')
+  const msg = sp.chest ? `🎁 ${sp.name}! Попади в него сферой — он откроется`
+    : cr.special && !(cr.special === 'pack' && cr.packNo > 1) ? SPECIAL[cr.special].tip
+    : cr.special === 'pack' ? `🐾 Из стаи пришёл ещё ${sp.name}: ${cr.packNo} из ${SPECIAL.pack.count}`
+    : sp.hiveItem ? `🐝 Пчёлы нашли: ${sp.name}! Она прыгает и убегает. Ловит только точный бросок в самый центр`.replace('Она', sp.hiveItem === 'egg' ? 'Оно' : 'Она')
     : sp.shiny ? '✨ Сияющий зверёк! Такой окрас попадается очень редко'
     : sp.rarity === 'pet' ? `Это же ${sp.name}! Любимчик рядом`
     : sp.rarity === 'glitch' ? 'Сбой реальности! Это Виарик, его ловит только глитч-сфера'
@@ -9913,6 +9952,7 @@ function resolveThrow() {
   }
   const pot = ti.pot || {}, def = ORBS[ti.orbIdx], hitR = Math.max(cr.r * 1.05, 24) * (pot.net ? POT_FX.zone : 1);
   const d = Math.hypot(ti.tx - cr.x, ti.ty - cr.y), hidden = fogHidden() && !pot.net;
+  if (d <= hitR && !hidden && cr.sp.chest) { openChest(); return; }
   if (d <= hitR && !hidden) {
     const bonus = throwBonusFor(d / hitR), stun = cr.stun > 0, G = ti.grade || RING_NORMAL;
     if (catchChance(cr.sp.rarity, def, 1) <= 0) {
@@ -9923,7 +9963,7 @@ function resolveThrow() {
     }
     if (def.item) { save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist(); ensureSelectable(); renderOrbs(); updateInfo(); }
     // этап 4: место × кольцо × закрутка; потолок по оценке кольца (100% — только «Идеально» по обычному)
-    const res = tryCatch(cr.sp.rarity, def, bonus.mult * G.mult * (ti.curve ? CURVE_BONUS : 1) * traitMult() * (stun ? STUN_MULT : 1) * (ti.echo || 1) * (cr.sp.ab === 'night' && wxOn('night') ? 1.4 : 1),
+    const res = tryCatch(cr.sp.rarity, def, bonus.mult * G.mult * (ti.curve ? CURVE_BONUS : 1) * traitMult() * specMult() * (stun ? STUN_MULT : 1) * (ti.echo || 1) * (cr.sp.ab === 'night' && wxOn('night') ? 1.4 : 1),
       !!pot.moon, chanceCap(cr.sp.rarity, G));
     if (tut.on && tut.easy) { res.chance = Math.max(res.chance, 0.9); res.success = res.roll < res.chance; }   // в обучении первый зверёк ловится почти наверняка
     const shakes = res.chance >= 1 ? 1 : res.success ? 3 : (res.roll - res.chance < 0.15 ? 2 : 1);
@@ -9967,11 +10007,13 @@ function onCaught(sp, lucky) {
   save.seen[sp.id] = true; save.caught++;
   // этап 4: оценка кольца добавляет опыт и эссенцию; серия — опыт и монеты (+10% за каждого пойманного подряд до этого)
   const G = (cr && cr.sp === sp && cr.grade) || RING_NORMAL, sPrev = streakLive(), sm = streakMult(sPrev), sn = streakAdd();
-  const xpGot = Math.round(catchXp(sp, first) * G.xp * sm); gainXp(xpGot);
-  const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess); addEss(essEl, essN);
+  const SPk = cr && cr.sp === sp && cr.special ? SPECIAL[cr.special] : null, rk = (SPk && SPk.reward) || 1;   // Великан ×3, Малыш и Беглец ×2
+  if (SPk && cr.special === 'pack' && cr.packLeft > 0) packNext = { sp:SPECIES_BY_ID[sp.id] || sp, left:cr.packLeft - 1 };
+  const xpGot = Math.round(catchXp(sp, first) * G.xp * sm * rk); gainXp(xpGot);
+  const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess * rk); addEss(essEl, essN);
   if (essN && typeof orb !== 'undefined') addPop(orb.x, orb.y - ORB_R * 1.6, `+${essN} ${ELEMENTS[essEl].icon}`, ELEMENTS[essEl].color);
   if (essN && !save.flags.essIntro) { save.flags.essIntro = true; const E = ELEMENTS[essEl]; setTimeout(() => toast(`${E.icon} Это эссенция ${E.gen}. Эссенции дают поимки, а нужны они, чтобы улучшать сферу с Жемчужной. Все эссенции — в профиле ⭐`, 'good', 5200), 3800); }
-  const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1) * sm;
+  const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1) * sm * rk;
   questProgress('catch');
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('rare')) questProgress('rare');
   questProgress('loc', 1, { loc:save.loc });
@@ -9989,7 +10031,7 @@ function onCaught(sp, lucky) {
   } else full = true;
   persist(); refreshWallet(true);
   // итог поимки — короткая строка (сама исчезает через 1,5 с); сообщение — только если есть что-то особенное
-  showCatchLine([['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
+  showCatchLine([rk > 1 ? ['special', `${SPk.icon} ×${rk}`] : null, ['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
   const notes = [sp.shiny ? `✨ Сияющий ${sp.name}! Доход ×${SHINY_MULT}` : '', first ? `Новый в альбоме: ${dexNo(sp.no)} ${sp.name}!` : '',
     full ? `${sp.name} ждёт на ферме: загон полон, замени кого-нибудь` : '', spaceMsg.trim(), shardMsg.trim(), sp.shiny ? '' : noteMerge(sp).trim()].filter(Boolean);
   if (notes.length) setTimeout(() => toast(notes.join(' '), 'good', 3400), 1500);   // после строки итога, чтобы не закрывать её
@@ -10032,6 +10074,11 @@ function update(dt) {
   trailStep(dt); fxStep(dt);   // «Лавка красоты»: шлейф сферы и эффект поимки
   if (cr && MOVING.has(state)) {
     if (cr.stun > 0) cr.stun = Math.max(0, cr.stun - dt); else { cr.mt += dt; cr.flT = (cr.flT || 0) + dt; }
+    // Беглец уходит сам через 12 секунд (серия не сгорает: он не испугался, он просто такой)
+    if (cr.special === 'runner') {
+      cr.runT += dt;
+      if (cr.runT >= SPECIAL.runner.time && state === 'ready') { capFrom = { x:cr.x, y:cr.y }; sfx('flee'); toast('💨 Беглец убежал. Ещё встретится!', '', 2200); setState('fleeing'); }
+    }
     // Пульсарик во вспышке замирает (шанс ×1,5), вспышка идёт по тому же времени, что и на рисунке
     if (cr.sp.ab === 'pulse' && !(cr.stun > 0) && pulsePhase(T) < PULSE_TIME) { cr.stun = PULSE_TIME - pulsePhase(T); cr.stunKind = 'pulse'; }
     cr.fogT = (cr.fogT || 0) + dt;
@@ -10149,6 +10196,7 @@ function update(dt) {
       break;
     }
     case 'fleeing': {
+      if (cr.sp.chest) { cr.alpha = stT < 0.55 ? 1 : Math.max(0, 1 - (stT - 0.55) / 0.4); if (stT >= 1.0) spawn(); break; }   // сундук открылся или его пропустили
       const u = Math.min(1, stT / 0.6);
       cr.y = capFrom.y - easeIn(u) * cr.r * 2.5; cr.alpha = 1 - u; cr.scale = 1 - 0.3 * u;
       if (stT >= 1.0) spawn();
@@ -10231,7 +10279,8 @@ function draw() {
     const fa = MOVING.has(state) ? fogAlpha() : 1;
     const lifted = inSpace() && cr.sp.rarity !== 'glitch', shOn = fa > 0.5 && !['capturing','fleeing'].includes(state);
     if (lifted && shOn) drawFloatShadow(fa);
-    drawCreature(ctx, cr.sp, cr.x, cr.y, cr.r, T, { scale:cr.scale, alpha:cr.alpha * fa, shadow:!lifted && shOn, sleep:cr.trait === 'sleepy' });
+    if (cr.sp.chest) drawChest(ctx, cr.x, cr.y, cr.r * cr.scale, cr.sp.chest, cr.opened ? Math.min(1, stT / 0.35) : 0, cr.alpha * fa);
+    else drawCreature(ctx, cr.sp, cr.x, cr.y, cr.r, T, { scale:cr.scale, alpha:cr.alpha * fa, shadow:!lifted && shOn, sleep:cr.trait === 'sleepy' });
     if (fa < 1) drawFogVeil(fa);
     if (cr.trait && MOVING.has(state) && fa > 0.5) drawTraitFx();
     if (cr.stun > 0 && MOVING.has(state)) drawStunFx();
@@ -10664,7 +10713,11 @@ function updateInfo() {
   cTrait.hidden = !tr;
   if (tr) cTrait.textContent = `${tr.icon} ${tr.name}`;
   const luck = luckMult(sp.rarity) - 1;
-  if (sp.hiveItem) cChance.innerHTML = `Ловит только <b>точный бросок в самый центр</b>. Промахов до побега: <b>${Math.max(0, HIVE_ITEM_MISSES - (cr.misses || 0))}</b>`;
+  const S = cr.special && SPECIAL[cr.special], cs = $('cSpecial');
+  cs.hidden = !S; if (S) cs.textContent = specialChip();
+  if (sp.chest) {
+    cRarity.textContent = '🎁 Сундук'; cChance.innerHTML = 'Попади в него сферой — <b>откроется</b>. Внутри монеты, эссенция и не только';
+  } else if (sp.hiveItem) cChance.innerHTML = `Ловит только <b>точный бросок в самый центр</b>. Промахов до побега: <b>${Math.max(0, HIVE_ITEM_MISSES - (cr.misses || 0))}</b>`;
   else if (sp.rarity === 'glitch' && !def.glitch) cChance.innerHTML = `Ловится только <b>глитч-сферой</b>, у тебя ${save.orbs.glitch || 0}`;
   else cChance.innerHTML = `${orbShort(def)}: шанс <b>${chanceRange(sp, def)}</b>` +
     (luck > 0 ? ` 🍀+${Math.round(luck * 100)}%` : '') + (potWorks(POT_BY_ID.moon) ? ' 🌙×1,5' : '');
@@ -12163,6 +12216,13 @@ const RULES = [
     `Место попадания: в самый центр ×${fx2(THROW_BONUS[0].mult)}, рядом с центром ×${fx2(THROW_BONUS[1].mult)}, с краю ×${fx2(THROW_EDGE.mult)}. Всё складывается с кольцом и закруткой.`,
     'Шанс 100% бывает только за «Идеально» по обычному зверьку. На карточке зверька шанс показан от небрежного броска до «Идеально» в центр.',
     'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине или выпей зелье Кометы.']],
+  ['🧰', 'Сундуки и особые встречи', ['Иногда вместо зверька на поле стоит сундук: деревянный, серебряный или золотой. Попади в него сферой — он откроется.',
+    'В сундуке монеты и эссенции, бывает зелье, в космосе — звёздная пыль, а изредка — осколок глитча или украшение из «Лавки красоты». Чем лучше сундук, тем больше внутри.',
+    `${SPECIAL.giant.icon} Великан: в полтора раза больше и ловится труднее, зато награды ×${SPECIAL.giant.reward}.`,
+    `${SPECIAL.baby.icon} Малыш: маленький и юркий, попасть труднее, награды ×${SPECIAL.baby.reward}.`,
+    `${SPECIAL.runner.icon} Беглец: бежит по полю и через ${SPECIAL.runner.time} секунд уходит сам. Награды ×${SPECIAL.runner.reward}, серия от его ухода не сгорает.`,
+    `${SPECIAL.pack.icon} Стая: поймай — и сразу придёт ещё такой же, до ${SPECIAL.pack.count} подряд.`,
+    'Сундук попадается примерно раз в 25 появлений, особая встреча — примерно раз в 30, но не чаще раза в 10 появлений.']],
   ['🔥', 'Серия', [`Каждый зверёк, пойманный подряд, добавляет +${Math.round(STREAK.step * 100)}% к опыту и монетам за следующую поимку, до ×${fx2(STREAK.max)} после серии из 10.`,
     `Серия сгорает, если зверёк убежал или ты ничего не ловил ${STREAK.burnMs / 60000} минуты. Кнопка «Другой» серию не сжигает.`,
     'Счётчик серии виден над сферой.']],
@@ -12696,6 +12756,7 @@ const QUEST_POOL = [
   { id:'perfect',    icon:'🏹', n:[3, 5],     text:n => `Попади в самый центр ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
   { id:'ideal',      icon:'🎯', n:[3],        text:n => `Сделай ${n} ${plural(n, 'идеальный бросок', 'идеальных броска', 'идеальных бросков')}` },
   { id:'streak',     icon:'🔥', n:[5],        text:n => `Собери серию из ${n} поимок подряд` },
+  { id:'chest',      icon:'🧰', n:[1],        text:() => 'Открой сундук на охоте' },
   { id:'curve',      icon:'🌀', n:[2, 3],     text:n => `Попади закрученным броском ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
   { id:'merge',      icon:'✨', n:[1],        text:() => 'Сделай слияние на ферме' },
   { id:'shepherd',   icon:'🧑‍🌾', n:[1],      text:() => 'Прогони пастуха' },
@@ -13797,7 +13858,7 @@ function goHunt(locId) {
 function taskGo(id, q) {
   if (TASK_GO[id]) return TASK_GO[id];
   if (id === 'loc' && q && LOC_BY_ID[q.loc]) { const L = LOC_BY_ID[q.loc]; return locOpen(L) ? [`🎯 ${L.icon} ${L.name}`, () => goHunt(L.id)] : null; }
-  if (['catch', 'rare', 'perfect', 'curve', 'weather', 'ideal', 'streak'].includes(id)) return ['🎯 На охоту', () => goHunt()];
+  if (['catch', 'rare', 'perfect', 'curve', 'weather', 'ideal', 'streak', 'chest'].includes(id)) return ['🎯 На охоту', () => goHunt()];
   if (id === 'pet') return ['💕 В загон', () => showTab('farm', 0)];
   return null;
 }
@@ -16650,6 +16711,10 @@ $('adminLvl10').addEventListener('click', () => {
 $('adminLvlOld').addEventListener('click', () => { save.path = null; initPath(); pathAdminDone(`Уровень посчитан по заслугам: ${pathLevel()}. Подарок «За опыт» ждёт в «Следующей цели»`); });
 $('adminEss').addEventListener('click', () => { for (const k of ESS_ORDER) addEss(k, 100); pathAdminDone('+100 каждой эссенции'); });
 $('adminClockBack').addEventListener('click', () => { save.maxT = Date.now() + 2 * 3600000; save.clockPlay = 0; pathAdminDone('Игра думает, что часы ушли назад на 2 часа: ферма, задания, реванш и мёд ждут'); });
+$('adminChest').addEventListener('click', () => { closeAdmin(); showTab('hunt'); spawn(chestSp(Math.random() < 0.5 ? 'gold' : 'silver')); });
+for (const k of ['giant', 'baby', 'runner', 'pack']) $('admin' + k[0].toUpperCase() + k.slice(1)).addEventListener('click', () => {
+  closeAdmin(); showTab('hunt'); spawn(pickSpecies()); if (specialOk(cr.sp)) { applySpecial(k); placeCreature(); cr.x = creatureX(); updateInfo(); toast(SPECIAL[k].tip, 'good'); } else toast('Этот зверёк особым не бывает, нажми ещё раз');
+});
 $('adminBeauty').addEventListener('click', () => { for (const b of BEAUTY) save.beauty.own[b.id] = true; pathAdminDone('Вся лавка красоты твоя: надень вещи в «Магазине» → «Красота»'); });
 $('adminMagnate').addEventListener('click', () => { save.flags.magnateChk = false; checkMagnate(); pathAdminDone(save.flags.magnate ? '👑 «Магнат» и золотая статуя выданы' : `Монет меньше ${fmt(MAGNATE_COINS)}: «Магнат» не положен`); });
 $('adminClockOk').addEventListener('click', () => { save.maxT = Date.now(); save.clockPlay = 0; pathAdminDone('Часы снова верные'); });
@@ -16937,15 +17002,20 @@ applyFrame();
 /* ======================= ЖИВАЯ ОХОТА (этап 4, версия 47) =======================
    Кольцо меткости, серия поимок, строка «итог поимки», вибрация, тряска и вспышка. Числа — в начале файла (RING…, STREAK, CATCH_FEEL). */
 function ringPeriod(sp) { return RING.period[sp.rarity] || 1.8; }
+function specialChip() {
+  const S = SPECIAL[cr.special];
+  return cr.special === 'runner' ? `${S.icon} ${S.name} · ${Math.max(0, Math.ceil(S.time - (cr.runT || 0)))} с` : cr.special === 'pack' ? `${S.icon} ${S.name} ${cr.packNo}/${S.count}` : `${S.icon} ${S.name} ×${S.reward}`;
+}
+function specMult() { return cr && cr.special ? (SPECIAL[cr.special].chance || 1) : 1; }
 // размер кольца сейчас: 1 — самое большое, 0 — самое маленькое
 function ringNow() { return cr ? (1 + Math.cos(TAU * (T + (cr.ringOff || 0)) / ringPeriod(cr.sp))) / 2 : 1; }
 function ringColor() {
   if (!cr) return RING_COLORS[0][1];
-  const g = RING_GRADE[1], c = catchChance(cr.sp.rarity, ORBS[selected], THROW_BONUS[1].mult * g.mult * traitMult(), undefined, chanceCap(cr.sp.rarity, g));
+  const g = RING_GRADE[1], c = catchChance(cr.sp.rarity, ORBS[selected], THROW_BONUS[1].mult * g.mult * traitMult() * specMult(), undefined, chanceCap(cr.sp.rarity, g));
   return (RING_COLORS.find(([v]) => c >= v) || RING_COLORS[RING_COLORS.length - 1])[1];
 }
 function drawRing() {
-  if (!cr || cr.sp.hiveItem || cr.scale < 0.9) return;
+  if (!cr || cr.sp.hiveItem || cr.sp.chest || cr.scale < 0.9) return;
   let k, a = 1;
   if (['ready', 'dragging', 'spawning'].includes(state)) k = ringNow();
   else if (state === 'flying' && throwInfo && throwInfo.ringK != null) { k = throwInfo.ringK; a = Math.max(0, 1 - stT / 0.45); }   // в полёте кольцо замирает и гаснет
@@ -17025,6 +17095,85 @@ function catchFeel(sp) {
   if (f[1]) { flashCol = f[1]; flashIce = false; flash = Math.max(flash, lowMotion() ? 0.25 : 0.55); }
 }
 
+/* ======================= СУНДУКИ И ОСОБЫЕ ВСТРЕЧИ (этап 4б, версия 48) =======================
+   Числа — ENC, CHEST, SPECIAL в начале файла. Решение принимается в spawn(): сундук вместо зверька или особая метка на зверьке. */
+let encSince = ENC.gap;   // сколько появлений прошло с последней особой встречи
+let packNext = null;      // «Стая»: кто придёт следом после поимки
+const pickW = (list, x) => { let s = 0; for (const [k, w] of list) { s += w; if (x < s) return k; } return list[list.length - 1][0]; };
+// одно появление: сундук (≈1 из 25), особая встреча (≈1 из 30, не чаще раза в 10 появлений) или обычный зверёк
+function encounterRoll(rnd = Math.random) {
+  encSince++;
+  if (rnd() < ENC.chest) return { chest:pickW(ENC.chestTier, rnd()) };
+  if (encSince >= ENC.gap && rnd() < ENC.special) { encSince = 0; return { special:pickW(ENC.specialKinds, rnd()) }; }
+  return {};
+}
+const chestSp = tier => ({ id:'chest_' + tier, chest:tier, name:CHEST[tier].name, rarity:'common', no:0, body:'#a86b35', belly:'#ffe0b2' });
+const specialOk = sp => !sp.chest && !sp.hiveItem && sp.rarity !== 'glitch' && !sp.event;
+// метка особой встречи на только что появившемся зверьке
+function applySpecial(kind, packLeft) {
+  const S = SPECIAL[kind]; if (!S || !cr) return;
+  cr.special = kind; cr.sizeK = S.size || 1; cr.runT = 0;
+  if (kind === 'baby') cr.freq *= S.freq;
+  if (kind === 'pack') { cr.packLeft = packLeft == null ? S.count - 1 : packLeft; cr.packNo = S.count - cr.packLeft; }
+  if (kind === 'runner') cr.trait = null;
+  placeCreature();
+}
+// награды сундука: монеты от уровня ловца, эссенции, зелье, звёздная пыль в космосе, редко осколок и украшение из лавки
+function openChest() {
+  const tier = cr.sp.chest, C = CHEST[tier], got = [];
+  const coins = lvlCoins(C.coins); save.coins += coins; got.push(['coin', `+${fmt(coins)} 🪙`]);
+  const els = [...ESS_ORDER].sort(() => Math.random() - 0.5).slice(0, C.ess[0]);
+  for (const el of els) { addEss(el, C.ess[1]); got.push(['ess', `+${C.ess[1]} ${ELEMENTS[el].icon}`]); }
+  if (Math.random() < C.pot) { const P = POTIONS[Math.random() < 0.7 ? Math.floor(Math.random() * 2) : 2 + Math.floor(Math.random() * 2)]; save.pot[P.id] = (save.pot[P.id] || 0) + 1; got.push(['pot', `🧪 ${P.name}`]); }
+  if (inSpace()) { const d = C.dust[0] + Math.floor(Math.random() * (C.dust[1] - C.dust[0] + 1)); save.dust = (save.dust || 0) + d; got.push(['dust', `+${d} ✨`]); }
+  if (Math.random() < C.shard) { save.shards = (save.shards || 0) + 1; got.push(['shard', '🧩']); }
+  let deco = '';
+  if (Math.random() < C.deco) {
+    const pool = BEAUTY.filter(b => !save.beauty.own[b.id] && b.price <= CHEST_DECO_MAX);
+    if (pool.length) { const b = pool[Math.floor(Math.random() * pool.length)]; save.beauty.own[b.id] = true; deco = `${b.icon} ${b.name}`; got.push(['deco', b.icon]); }
+  }
+  save.stats.chests = (save.stats.chests || 0) + 1; questProgress('chest');
+  persist(); refreshWallet(true); renderOrbs(); updateShopDot();
+  burst(cr.x, cr.y - cr.r * 0.3, tier === 'gold' ? ['#ffd54f', '#fff59d', '#ffffff'] : tier === 'silver' ? ['#e3ecf7', '#90caf9', '#ffffff'] : ['#ffcc80', '#a1887f', '#ffe082'], tier === 'gold' ? 40 : 26, 240);
+  sfx('coin'); setTimeout(() => sfx(tier === 'wood' ? 'ok' : 'rare'), 120); buzz(30);
+  showCatchLine(got);
+  if (deco) setTimeout(() => toast(`🎁 В сундуке украшение из «Лавки красоты»: ${deco}! Надень его в «Магазине» → «Красота»`, 'good', 4200), 1500);
+  cr.opened = true; cr.openT = 0; capFrom = { x:cr.x, y:cr.y };
+  resetOrb(true); setState('fleeing');
+}
+function drawChest(c, x, y, r, tier, open, alpha) {
+  const K = { wood:['#8d5a2b', '#b97a3d', '#5d3a1a', '#c8a26b'], silver:['#8a99ab', '#c9d4e0', '#56657a', '#eef3f8'], gold:['#c68a00', '#ffcf40', '#8a5a00', '#fff3b0'] }[tier];
+  const w = r * 1.9, h = r * 1.15, bx = x - w / 2, by = y - h * 0.25, bob = open ? 0 : Math.sin(T * 2.2) * r * 0.04;
+  c.save(); c.globalAlpha = alpha;
+  c.fillStyle = 'rgba(0,0,0,0.22)'; c.beginPath(); c.ellipse(x, by + h + r * 0.05, w * 0.55, r * 0.16, 0, 0, TAU); c.fill();
+  c.translate(0, bob);
+  // корпус
+  c.fillStyle = K[0]; c.strokeStyle = K[2]; c.lineWidth = Math.max(1.5, r * 0.06);
+  c.beginPath(); c.roundRect ? c.roundRect(bx, by, w, h, r * 0.12) : c.rect(bx, by, w, h); c.fill(); c.stroke();
+  c.fillStyle = K[1]; c.fillRect(bx + w * 0.08, by + h * 0.12, w * 0.84, h * 0.18);
+  for (const fx of [0.18, 0.82]) { c.fillStyle = K[3]; c.fillRect(bx + w * fx - r * 0.07, by, r * 0.14, h); }
+  // крышка: на открытии откидывается назад, изнутри светит
+  if (open > 0) {
+    const g = c.createRadialGradient(x, by, 0, x, by, w * 0.7); g.addColorStop(0, `rgba(255,236,150,${0.9 * open})`); g.addColorStop(1, 'rgba(255,236,150,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, by, w * 0.7, Math.PI, TAU); c.fill();
+  }
+  // крышка подскакивает вверх и откидывается (становится ниже), между ней и сундуком — свет
+  const op = Math.min(1, open);
+  c.save(); c.translate(x, by - h * 0.55 * op); c.scale(1, 1 - 0.45 * op); c.rotate(-0.12 * op); c.translate(-x, -by);
+  c.fillStyle = K[0]; c.strokeStyle = K[2];
+  c.beginPath(); c.moveTo(bx, by); c.lineTo(bx, by - h * 0.25); c.quadraticCurveTo(x, by - h * 0.75, bx + w, by - h * 0.25); c.lineTo(bx + w, by); c.closePath(); c.fill(); c.stroke();
+  for (const fx of [0.18, 0.82]) { c.fillStyle = K[3]; c.fillRect(bx + w * fx - r * 0.07, by - h * 0.5 + (fx === 0.18 ? h * 0.12 : h * 0.12), r * 0.14, h * 0.38); }
+  c.restore();
+  // замок
+  if (!open) { c.fillStyle = K[3]; c.strokeStyle = K[2]; c.beginPath(); c.arc(x, by + h * 0.02, r * 0.15, 0, TAU); c.fill(); c.stroke(); }
+  // блёстки у серебряного и золотого
+  if (tier !== 'wood' && !open) for (let i = 0; i < 3; i++) {
+    const t = (T * 0.8 + i / 3) % 1, sx = bx + w * ((i * 0.37 + 0.15) % 1), sy = by - h * 0.4 + Math.sin(i * 2.1) * h * 0.3;
+    c.globalAlpha = alpha * Math.sin(t * Math.PI); c.fillStyle = '#ffffff'; starPath(c, sx, sy, r * 0.13, 4, 0.35, T); c.fill();
+  }
+  c.restore();
+}
+
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
   // ферма платит только за новое время: если часы ушли назад, уже прожитое время второй раз не оплачивается (версия 45)
@@ -17079,6 +17228,7 @@ function frame(now) {
     if (tab === 'farm') tickFarmExtras(); if (tab === 'shop') tickShop();
     if (tab === 'quests') { tickQuests(); tickStory(); }
     updateMood(); refreshIncome(); hiveTick(); syncBackGuard(); pathTick();
+    if (cr && cr.special === 'runner' && tab === 'hunt') $('cSpecial').textContent = specialChip();
     if (tab === 'hunt') refreshGoal();
     if (tab === 'farm') tickCare();
     updateQuestDot(); updateShopDot();
