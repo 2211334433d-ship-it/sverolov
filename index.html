@@ -1268,6 +1268,15 @@ html[data-frame="fr_silver"]{--frame:linear-gradient(135deg,#eef2f6,#9aa7b5 35%,
 html[data-frame="fr_gold"]{--frame:linear-gradient(135deg,#fff3b0,#f0b429 35%,#b7791f 60%,#ffe08a)}
 html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47e891,#4fc3f7,#b388ff)}
 
+/* ===== Этап 4 (версия 47): живая охота — итог поимки ===== */
+.catch-line{position:absolute;left:50%;z-index:5;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);padding:6px 14px;
+  border-radius:999px;background:rgba(18,24,20,.8);color:#fff;font-weight:900;font-size:.9rem;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+.catch-line[hidden]{display:none}
+.catch-line.show{animation:clIn .22s ease}
+@keyframes clIn{from{opacity:0;transform:translate(-50%,-8px)}}
+.cl-xp{color:#ffe082}
+.cl-streak{color:#ffab70}
+
 /* глава «Улей» (версия 42) */
 .hive-pill{flex:none;display:flex;align-items:center;gap:4px;min-height:44px;padding:4px 10px;border-radius:12px;border:2px solid #f0a500;
   background:linear-gradient(135deg,#fff3c4,#ffd54f);color:#4a3200;font:inherit;font-weight:900;font-size:.82rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;font-variant-numeric:tabular-nums}
@@ -1351,6 +1360,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
         </div>
       </div>
       </div>
+      <div class="catch-line" id="catchLine" role="status" aria-live="polite" hidden></div>
       <div class="hud hud-left"><div class="sec-stack"><button class="sec-btn" type="button" data-tab="farm" aria-label="Ферма"><span class="sb-ico" aria-hidden="true">🏡</span><small>Ферма</small></button><button class="sec-btn" type="button" data-tab="album" aria-label="Альбом"><span class="sb-ico" aria-hidden="true">📖</span><small>Альбом</small></button></div><button class="hud-btn hud-scope" id="scopeBtn" type="button" title="Телескоп: найти космического зверька" hidden><span class="hud-sym" aria-hidden="true">🔭</span><small>Телескоп</small><span class="hud-count" id="scopeDust">0</span></button><button class="hud-btn hud-orb" id="hudOrb" type="button" aria-haspopup="true"><span class="hud-ico" id="hudOrbIco"></span><small>Сфера ▾</small><span class="hud-count" id="hudOrbCount">0</span><span class="hud-dur" id="hudOrbDur" aria-hidden="true"><i></i></span></button></div>
       <div class="hud hud-right"><div class="sec-stack"><button class="sec-btn" type="button" data-tab="quests" aria-label="Задания"><span class="sb-ico" aria-hidden="true">🏆</span><small>Задания</small></button><button class="sec-btn" type="button" data-tab="games" aria-label="Арена"><span class="sb-ico" aria-hidden="true">⚔️</span><small>Арена</small></button><button class="sec-btn" type="button" data-tab="shop" aria-label="Магазин"><span class="sb-ico" aria-hidden="true">🛒</span><small>Магазин</small></button></div><button class="hud-btn hud-skip" id="skipBtn" type="button" title="Искать другого зверька"><span class="hud-sym" aria-hidden="true">↻</span><small>Другой</small></button></div>
       <div class="pop-back" id="orbBack" hidden></div>
@@ -1751,6 +1761,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
               <button class="btn wide" id="beeSongPlay" type="button">▶ Послушать «Песню пчёл»</button>
             </div>
             <label class="switch-row"><span>Звуковые эффекты</span><input type="checkbox" id="soundToggle"></label>
+            <label class="switch-row"><span>Вибрация: поимка, «Идеально» и поломка сферы</span><input type="checkbox" id="setVibe"></label>
           </div>
           <div class="card set-card">
             <h2><span aria-hidden="true">🎨</span> Оформление</h2>
@@ -1763,7 +1774,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="promo-row"><input id="promoInput" type="text" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" aria-label="Промокод"><button class="btn primary" id="promoBtn" type="button">Ввести</button></div>
           </div>
           <button class="link-btn" type="button" id="adminChip">🔒 Для разработчика</button>
-          <p class="version">Версия игры 46</p>
+          <p class="version">Версия игры 47</p>
             </div>
     <div class="start-card start-panel" id="rulesPanel" hidden>
       <div class="panel-head"><button class="btn back-btn" id="rulesBack" type="button">← Назад</button><h2>Правила</h2></div>
@@ -1777,7 +1788,7 @@ html[data-frame="fr_rainbow"]{--frame:linear-gradient(135deg,#ff5f6d,#ffc371,#47
             <div class="table-wrap"><table id="rules"></table></div>
           </div>
     </div>
-    <p class="start-ver">Версия игры 46</p>
+    <p class="start-ver">Версия игры 47</p>
   </div>
 </div>
 
@@ -2322,11 +2333,33 @@ const TRAITS = {
 };
 const CURVE_BONUS = 1.2;   // закрученный бросок: шанс ×1,2 и ветер почти не сносит
 
-// Бонус за точность: расстояние от центра зверька в долях его размера
+// Бонус за точность: расстояние от центра зверька в долях его размера.
+// Этап 4 (версия 47): небрежное попадание с краю теперь ловит хуже (×0,85), а точное лучше вместе с кольцом
 const THROW_BONUS = [
-  { maxDist:0.35, mult:1.5,  label:'Отличный бросок!' },
-  { maxDist:0.70, mult:1.25, label:'Хороший бросок!' },
+  { maxDist:0.35, mult:1.4,  key:'center', label:'В самый центр!' },
+  { maxDist:0.70, mult:1.15, key:'near',   label:'Рядом с центром' },
 ];
+const THROW_EDGE = { mult:0.85, key:'edge', label:'' };
+/* ======================= ЖИВАЯ ОХОТА: ЧИСЛА (этап 4, версия 47) ======================= */
+// Кольцо меткости вокруг зверька сжимается и разжимается. Оценка — в миг броска: k от 0 (кольцо меньше всего) до 1.
+// Цикл: у обычных 2 с, у редких быстрее, до 1,5 с. Радиус — в долях зоны попадания
+const RING = { period:{ common:2.0, uncommon:1.9, rare:1.8, epic:1.7, legendary:1.6, mythic:1.5, secret:1.5, divine:1.5, pet:1.5, glitch:1.6 }, min:0.42, max:1.6 };
+const RING_GRADE = [
+  // окна по времени: «Идеально» — около 16% цикла, «Отлично» — ещё около 18%; наугад чаще всего выходит обычный бросок
+  { key:'perfect', maxK:0.06, mult:1.75, label:'Идеально!', xp:1.5,  ess:1.5 },
+  { key:'great',   maxK:0.25, mult:1.4,  label:'Отлично!',  xp:1.25, ess:1.25 },
+];
+const RING_NORMAL = { key:'normal', mult:0.85, label:'', xp:1, ess:1 };
+// Потолок шанса: 100% — только «Идеально» по обычному зверьку. Подобрано так, чтобы хороший игрок в среднем ловил не хуже,
+// чем в версии 46, а небрежный — хуже (сравнение в отчёте этапа 4)
+const CHANCE_CAP = { normal:0.93, great:0.99, perfect:0.99, common:{ normal:0.97, great:0.99, perfect:1 } };
+// Цвет кольца — трудность (шанс при «Отлично» рядом с центром): зелёный, жёлтый, оранжевый, красный
+const RING_COLORS = [[0.75, '#3ddc6b'], [0.45, '#ffd23f'], [0.2, '#ff9a2e'], [0, '#ff4d4d']];
+// Серия поимок подряд: +10% к опыту и монетам за каждую, до ×2. Сгорает, если зверёк убежал или 2 минуты без поимки
+const STREAK = { step:0.1, max:2, burnMs:120000 };
+// Тряска и вспышка при поимке по редкости (сила тряски в пикселях, цвет вспышки)
+const CATCH_FEEL = { rare:[2, null], epic:[3, '186,104,255'], legendary:[5, '255,213,79'], mythic:[6, '255,90,79'], secret:[7, '143,124,255'],
+                     divine:[8, '255,245,157'], pet:[7, '255,126,182'], glitch:[5, '0,229,255'] };
 
 // Рука: дальность броска растёт на 6 м за уровень
 const ARM_MAX = 10;
@@ -2352,23 +2385,33 @@ const IDEAL_SPEED = 1900;  // скорость свайпа (px/с), при ко
 /* ======================= ЛОГИКА ПОИМКИ ======================= */
 function luckMult(rarityId) { return 1 + LUCK_STEP * Math.min(LUCK_MAX, save.luck[rarityId] || 0); }
 // moon — действует ли Лунное зелье (в темноте шанс ×1,5)
-function catchChance(rarityId, orbDef, throwBonus = 1, moon = potWorks(POT_BY_ID.moon)) {
+// cap — потолок шанса для этой оценки кольца (этап 4); без него шанс не выше 100%
+function catchChance(rarityId, orbDef, throwBonus = 1, moon = potWorks(POT_BY_ID.moon), cap = 1) {
   if (rarityId === 'glitch' || orbDef.glitch) {
     if (!(rarityId === 'glitch' && orbDef.glitch)) return 0;
-    return Math.min(1, GLITCH_CHANCE * throwBonus * luckMult(rarityId));
+    return Math.min(cap, GLITCH_CHANCE * throwBonus * luckMult(rarityId));
   }
   const base = RARITY[rarityId].base * orbPower(orbDef);
-  return Math.min(1, base * throwBonus * luckMult(rarityId) * (moon ? POT_FX.moon : 1));
+  return Math.min(cap, base * throwBonus * luckMult(rarityId) * (moon ? POT_FX.moon : 1));
 }
-function tryCatch(rarityId, orbDef, throwBonus = 1, moon) {
-  const chance = catchChance(rarityId, orbDef, throwBonus, moon);
+const chanceCap = (rarityId, g) => (rarityId === 'common' ? CHANCE_CAP.common : CHANCE_CAP)[g.key];
+function tryCatch(rarityId, orbDef, throwBonus = 1, moon, cap = 1) {
+  const chance = catchChance(rarityId, orbDef, throwBonus, moon, cap);
   const roll = Math.random();
   return { success: roll < chance, chance, roll };
 }
 function tryFlee(rarityId, k = 1) { return Math.random() < RARITY[rarityId].flee * k; }
 function throwBonusFor(ratio) {
   for (const b of THROW_BONUS) if (ratio <= b.maxDist) return b;
-  return { mult:1, label:'' };
+  return THROW_EDGE;
+}
+const ringGrade = k => RING_GRADE.find(g => k <= g.maxK) || RING_NORMAL;
+// «шанс 35–90%»: от небрежного броска с краю до «Идеально» в самый центр
+function chanceRange(sp, def) {
+  const tm = traitMult(), lo = catchChance(sp.rarity, def, THROW_EDGE.mult * RING_NORMAL.mult * tm, undefined, chanceCap(sp.rarity, RING_NORMAL));
+  const g = RING_GRADE[0], hi = catchChance(sp.rarity, def, THROW_BONUS[0].mult * g.mult * tm, undefined, chanceCap(sp.rarity, g));
+  const a = pct(lo), b = pct(hi);
+  return a === b ? a : `${a.replace('%', '')}–${b}`;
 }
 function pickSpecies() {
   const L = LOC_BY_ID[save.loc] || LOCATIONS[0], boost = new Set(noWx() ? [] : weather.boost);
@@ -2644,7 +2687,7 @@ function freshSave() {
            arm:1, pen:1, pets:{}, inPen:{}, seen:{}, caught:0, flags:{}, luck:{}, evoMax:{}, evoV:2, shards:0, guardUntil:0, stolen:[], shepherdWins:0, loc:'meadow', ach:{}, quests:null,
            stats:{ perfect:0, curve:0, merges:0, maxCoins:100, arenaWins:0, feeds:0, pets:0 }, dust:0, spaceCaught:0, idleLeft:IDLE_FREE, actSec:0,
            arena:{ level:1 }, mood:0.7, moodT:Date.now(), playAt:0, deco:{}, mini:{ starsBest:0 }, shinySeen:{}, promoUsed:{}, story:{ ch:1, intro:{}, prog:[], beaten:{}, rematch:{}, loot:{}, dog:false, title:false }, hive:freshHive(),
-           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, last:Date.now() };
+           path:{ xp:0, paid:1, shown:1, gift:null, v:1 }, name:'', title:'', ess:{}, maxT:Date.now(), clockPlay:0, beauty:{ own:{}, on:{} }, streak:{ n:0, t:0 }, last:Date.now() };
 }
 const penCount = d => Object.values(d.inPen).reduce((s, n) => s + n, 0);
 // Зверьки хранятся по вариантам: 'puff' — обычный, 'puff@2' — ★, 'puff@3' — ★★, 'puff@4' — ★★★
@@ -2748,6 +2791,8 @@ function sanitize(d) {
   if (bt.own && typeof bt.own === 'object') for (const id of Object.keys(bt.own)) if (BEAUTY_BY_ID[id] && bt.own[id]) own[id] = true;
   if (bt.on && typeof bt.on === 'object') for (const c of BEAUTY_CATS) { const id = bt.on[c.id]; if (own[id] && BEAUTY_BY_ID[id].cat === c.id && c.id !== 'title') on[c.id] = id; }
   d.beauty = { own, on };
+  const sk = d.streak && typeof d.streak === 'object' ? d.streak : {};
+  d.streak = { n:clamp(Math.floor(Number(sk.n)) || 0, 0, 9999), t:Number.isFinite(+sk.t) && +sk.t > 0 ? +sk.t : 0 };
   if (d.title && d.title.startsWith('ti_') && !own[d.title]) d.title = '';
   if (d.title === 'magnate' && !(d.flags && d.flags.magnate)) d.title = '';
   if (!(d.coins >= 0)) d.coins = 0;
@@ -2807,6 +2852,7 @@ function loadSave() {
         // экономика (версия 45): эссенции и самое позднее время, которое видела игра
         d.ess = s.ess; d.maxT = Number(s.maxT) || d.last; d.clockPlay = s.clockPlay;
         d.beauty = s.beauty;   // «Лавка красоты» (версия 46)
+        d.streak = s.streak;   // серия поимок (версия 47)
         delete d.mini.digAt; delete d.mini.mazeBest; if (d.mini.plays) { delete d.mini.plays.dig; delete d.mini.plays.maze; }
         // версия 4 хранила эволюцию для всего вида: превращаем её в одного эволюционировавшего зверька
         if (s.evo && !s.evoMax) {
@@ -2933,6 +2979,8 @@ const SFX = {
   merge:  () => { tone({ f:220, d:1.4, v:0.055, slide:880, attack:0.35, vib:0.01 }); noise({ d:1.4, v:0.025, type:'bandpass', f:400, f2:3000, q:1.5, attack:0.45 }); },
   evo:    () => { [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => bell(f, 1.3, 0.055, i * 0.09)); noise({ d:1.5, v:0.02, type:'highpass', f:4000, attack:0.3 }); },
   win:    () => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f, d:0.35, v:0.055, when:i * 0.08, type:'triangle', attack:0.012 })),
+  great:  () => { bell(880, 0.35, 0.05); bell(1174.7, 0.45, 0.05, 0.07); },
+  perfect:() => { [1046.5, 1318.5, 1568, 2093].forEach((f, i) => bell(f, 0.55, 0.045, i * 0.05)); noise({ d:0.5, v:0.014, type:'highpass', f:6000, attack:0.02 }); },
   // фанфары нового уровня: быстрый подъём и звонкий аккорд
   level:  () => { [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ f, d:0.32, v:0.05, when:i * 0.075, type:'triangle', attack:0.01 }));
                   [1046.5, 1318.5, 1568].forEach(f => bell(f, 1.5, 0.045, 0.42)); noise({ d:1.2, v:0.016, type:'highpass', f:5000, when:0.4, attack:0.2 }); },
@@ -9451,7 +9499,7 @@ function drawWeatherFront(t) {
   drawFlash();
 }
 // Вспышка: молния, ледяная вспышка в горах или упавший метеорит
-function drawFlash() { if (flash > 0) { ctx.fillStyle = `rgba(${flashIce ? '200,232,255' : '255,255,255'},${flash * 0.55})`; ctx.fillRect(0, 0, W, H); } }
+function drawFlash() { if (flash > 0) { ctx.fillStyle = `rgba(${flashCol || (flashIce ? '200,232,255' : '255,255,255')},${flash * 0.55})`; ctx.fillRect(0, 0, W, H); } }
 function drawTraitFx() {
   if (cr.trait === 'sleepy') {
     ctx.save(); ctx.textAlign = 'center';
@@ -9802,6 +9850,7 @@ function spawn(forced) {
          trait:rollTrait(sp), fogT:0, stun:0 };
   // невесомость: своя скорость парения; подставка-астероид у каждого своя
   cr.flT = 0; cr.flW = 1.0 + Math.random() * 0.5; cr.padSeed = 1 + Math.floor(Math.random() * 9999);
+  cr.ringOff = Math.random() * 3;   // кольцо меткости у каждого начинается по-своему
   if (sp.ab === 'drive') cr.freq *= 1.6;
   if (easy) { cr.trait = null; cr.dist = 7; }
   // пропажа улья: без характера, прыгает и через какое-то время ускачет сама
@@ -9844,6 +9893,7 @@ function throwOrb(vx, vy, curve = 0) {
   const echoNow = cr.echo ? 1.25 : 1; cr.echo = 0;
   throwInfo = { echo:echoNow, sx, sy, tx, ty, aimX, drift, slip, curve, tooFar, reach, orbIdx:orb.defIdx, pot, tier:K.main ? chainT() : 0,
                 arc:Math.min(140, Math.max(30, (sy - ty) * (pot.comet ? 0.2 : 0.35))) * (inSpace() ? ZERO_G.arc : 1), dur:(0.5 + 0.3 * tD) * (pot.comet ? 0.75 : 1) * (inSpace() ? ZERO_G.dur : 1), endScale:lerp(0.62, 0.3, tD) };
+  throwInfo.ringK = cr.sp.hiveItem ? 1 : ringNow(); throwInfo.grade = cr.sp.hiveItem ? RING_NORMAL : ringGrade(throwInfo.ringK);
   if (!cr.sp.hiveItem) { wearOnThrow(K); potUse(); }
   if (K.main || POTIONS.some(P => pot[P.id])) renderOrbs();
   hintDone = true;
@@ -9864,7 +9914,7 @@ function resolveThrow() {
   const pot = ti.pot || {}, def = ORBS[ti.orbIdx], hitR = Math.max(cr.r * 1.05, 24) * (pot.net ? POT_FX.zone : 1);
   const d = Math.hypot(ti.tx - cr.x, ti.ty - cr.y), hidden = fogHidden() && !pot.net;
   if (d <= hitR && !hidden) {
-    const bonus = throwBonusFor(d / hitR), stun = cr.stun > 0;
+    const bonus = throwBonusFor(d / hitR), stun = cr.stun > 0, G = ti.grade || RING_NORMAL;
     if (catchChance(cr.sp.rarity, def, 1) <= 0) {
       toast(cr.sp.rarity === 'glitch' ? 'Сфера прошла сквозь Виарика! Его ловит только глитч-сфера' : 'Глитч-сфера ловит только Виарика', 'bad', 3000);
       missV = { x:(ti.tx - ti.sx) / ti.dur * 0.5, y:-200 };
@@ -9872,13 +9922,19 @@ function resolveThrow() {
       return;
     }
     if (def.item) { save.orbs[def.id] = Math.max(0, (save.orbs[def.id] || 0) - 1); persist(); ensureSelectable(); renderOrbs(); updateInfo(); }
-    const res = tryCatch(cr.sp.rarity, def, bonus.mult * (ti.curve ? CURVE_BONUS : 1) * traitMult() * (stun ? STUN_MULT : 1) * (ti.echo || 1) * (cr.sp.ab === 'night' && wxOn('night') ? 1.4 : 1), !!pot.moon);
+    // этап 4: место × кольцо × закрутка; потолок по оценке кольца (100% — только «Идеально» по обычному)
+    const res = tryCatch(cr.sp.rarity, def, bonus.mult * G.mult * (ti.curve ? CURVE_BONUS : 1) * traitMult() * (stun ? STUN_MULT : 1) * (ti.echo || 1) * (cr.sp.ab === 'night' && wxOn('night') ? 1.4 : 1),
+      !!pot.moon, chanceCap(cr.sp.rarity, G));
+    if (tut.on && tut.easy) { res.chance = Math.max(res.chance, 0.9); res.success = res.roll < res.chance; }   // в обучении первый зверёк ловится почти наверняка
     const shakes = res.chance >= 1 ? 1 : res.success ? 3 : (res.roll - res.chance < 0.15 ? 2 : 1);
     attempt = { ...res, shakes, def };
-    if (bonus.mult >= 1.5) { save.stats.perfect = (save.stats.perfect || 0) + 1; questProgress('perfect'); }
+    cr.grade = G;
+    if (bonus.key === 'center') { save.stats.perfect = (save.stats.perfect || 0) + 1; questProgress('perfect'); }
     if (ti.curve) { save.stats.curve = (save.stats.curve || 0) + 1; questProgress('curve'); }
-    gainXp((bonus.mult >= 1.5 ? XP_GAIN.perfect : 0) + (ti.curve ? XP_GAIN.curve : 0));
-    toast(`${stun ? stunLook()[3] : ''}${ti.curve ? '🌀 Закрученный! ' : ''}${bonus.label || 'Попадание!'} Шанс ${pct(res.chance)}`);
+    if (G.key === 'perfect') { save.stats.ideal = (save.stats.ideal || 0) + 1; questProgress('ideal'); sfx('perfect'); buzz([18, 40, 18]); }
+    else if (G.key === 'great') sfx('great');
+    gainXp((bonus.key === 'center' ? XP_GAIN.perfect : 0) + (ti.curve ? XP_GAIN.curve : 0));
+    toast(`${stun ? stunLook()[3] : ''}${G.label ? G.label + ' ' : ''}${ti.curve ? '🌀 ' : ''}${bonus.label ? bonus.label + ' ' : G.label ? '' : 'Попадание! '}Шанс ${pct(res.chance)}`);
     capFrom = { x:cr.x, y:cr.y }; capOrb = { x:orb.x, y:orb.y };
     burst(orb.x, orb.y, ['#ffffff', orbLook(def).glow], 14, 150);
     sfx('pop');
@@ -9909,11 +9965,13 @@ function onCaught(sp, lucky) {
   save.luck[sp.rarity] = 0;
   const first = !save.seen[sp.id];
   save.seen[sp.id] = true; save.caught++;
-  gainXp(catchXp(sp, first));
-  const essEl = essOf(sp), essN = essFor(sp); addEss(essEl, essN);
+  // этап 4: оценка кольца добавляет опыт и эссенцию; серия — опыт и монеты (+10% за каждого пойманного подряд до этого)
+  const G = (cr && cr.sp === sp && cr.grade) || RING_NORMAL, sPrev = streakLive(), sm = streakMult(sPrev), sn = streakAdd();
+  const xpGot = Math.round(catchXp(sp, first) * G.xp * sm); gainXp(xpGot);
+  const essEl = essOf(sp), essN = Math.ceil(essFor(sp) * G.ess); addEss(essEl, essN);
   if (essN && typeof orb !== 'undefined') addPop(orb.x, orb.y - ORB_R * 1.6, `+${essN} ${ELEMENTS[essEl].icon}`, ELEMENTS[essEl].color);
   if (essN && !save.flags.essIntro) { save.flags.essIntro = true; const E = ELEMENTS[essEl]; setTimeout(() => toast(`${E.icon} Это эссенция ${E.gen}. Эссенции дают поимки, а нужны они, чтобы улучшать сферу с Жемчужной. Все эссенции — в профиле ⭐`, 'good', 5200), 3800); }
-  const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1);
+  const reward = incomeOfStage(sp, 1) * CATCH_REWARD * (lucky ? 2 : 1) * (sp.ab === 'piggy' ? 3 : 1) * sm;
   questProgress('catch');
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('rare')) questProgress('rare');
   questProgress('loc', 1, { loc:save.loc });
@@ -9924,14 +9982,17 @@ function onCaught(sp, lucky) {
   save.coins += reward; sfx('coin');
   let shardMsg = '';
   if (RARITY_ORDER.indexOf(sp.rarity) >= RARITY_ORDER.indexOf('mythic') && sp.rarity !== 'glitch') { save.shards++; shardMsg = ' +1 осколок глитча 🧩'; }
-  let where = '';
+  let full = false;
   if (penCount(save) < penSlots(save.pen)) {
     save.inPen[pk] = (save.inPen[pk] || 0) + 1;
-    where = ' и уже в загоне';
     refreshIncome(); refreshPenAnimals();
-  } else where = '. Загон полон, замени кого-нибудь на ферме';
+  } else full = true;
   persist(); refreshWallet(true);
-  toast(`${sp.shiny ? '✨ Сияющий! Доход ×' + SHINY_MULT + '. ' : ''}${first ? `Новый в альбоме: ${dexNo(sp.no)}! ` : ''}${sp.name} пойман${where}. +${fmt(reward)} монет${essN ? `, +${essN} ${ELEMENTS[essEl].icon}` : ''}.${spaceMsg}${shardMsg}${sp.shiny ? '' : noteMerge(sp)}`, 'good', 3400);
+  // итог поимки — короткая строка (сама исчезает через 1,5 с); сообщение — только если есть что-то особенное
+  showCatchLine([['xp', `+${fmt(xpGot)} ⭐`], essN ? ['ess', `+${essN} ${ELEMENTS[essEl].icon}`] : null, ['coin', `+${fmt(reward)} 🪙`], sn >= 2 ? ['streak', `🔥 Серия ${sn}`] : null].filter(Boolean));
+  const notes = [sp.shiny ? `✨ Сияющий ${sp.name}! Доход ×${SHINY_MULT}` : '', first ? `Новый в альбоме: ${dexNo(sp.no)} ${sp.name}!` : '',
+    full ? `${sp.name} ждёт на ферме: загон полон, замени кого-нибудь` : '', spaceMsg.trim(), shardMsg.trim(), sp.shiny ? '' : noteMerge(sp).trim()].filter(Boolean);
+  if (notes.length) setTimeout(() => toast(notes.join(' '), 'good', 3400), 1500);   // после строки итога, чтобы не закрывать её
   const K = COLL_BY_ID[sp.coll];
   if (first && K && collDone(K)) setTimeout(() => { sfx('rare'); toast(`🗂 Коллекция ${K.icon} «${K.name}» собрана целиком! Награда ждёт в «Заданиях» → «Достижения»`, 'good', 4600); updateQuestDot(); }, 3600);
 }
@@ -9948,14 +10009,14 @@ function finishAttempt() {
     onCaught(cr.sp, cr.trait === 'lucky');
     sfx('catch');
     burst(orb.x, orb.y, ['#ffffff', RARITY[cr.sp.rarity].aura || '#9be38f', '#ffe27a'], 34, 230);
-    catchFx(orb.x, orb.y);
+    catchFx(orb.x, orb.y); catchFeel(cr.sp);
     setState('caught'); tutEvent('caught');
   } else {
     // сильная сфера может треснуть (Колыбельное зелье её бережёт)
     const ti = throwInfo, K = attempt.def;
     if (K.main && ti.tier > 0 && ti.tier === chainT() && !(ti.pot && ti.pot.lull) && !tut.on && save.chain.dur > 0 && !save.chain.broken &&
         Math.random() < breakChance(cr.sp.rarity, ti.tier)) {
-      save.chain.broken = true; attempt.broke = orbTitle(K);
+      save.chain.broken = true; attempt.broke = orbTitle(K); buzz(90);
       burst(orb.x, orb.y, ['#8d8d8d', '#cfd8dc', '#ffffff'], 26, 260);
     }
     burst(orb.x, orb.y, ['#ffffff', orbLook(attempt.def).glow], 22, 210);
@@ -10021,7 +10082,7 @@ function update(dt) {
         if (cr.runAway) {
           cr.runAway = false; capFrom = { x:cr.x, y:cr.y }; sfx('flee');
           if (cr.sp.hiveItem) { cr.hiveToasted = true; toast(`${cr.sp.name} ${cr.sp.hiveItem === 'egg' ? 'ускакало' : 'ускакала'}! Пчёлы найдут пропажу снова: «Улей» → «Искать»`, 'bad', 3600); }
-          else toast(`${cr.sp.name} испугался промаха и убежал!`, 'bad');
+          else toast(`${cr.sp.name} испугался промаха и убежал!${streakBurn()}`, 'bad');
           setState('fleeing');
         }
         else { resetOrb(true); setState('ready'); }
@@ -10076,7 +10137,7 @@ function update(dt) {
       if (u >= 1) {
         const lull = !!(throwInfo.pot && throwInfo.pot.lull), br = attempt.broke ? `💥 ${attempt.broke} треснула и сломалась! ` : '';
         if (attempt.broke) renderOrbs();
-        if (cr.trait !== 'stubborn' && tryFlee(cr.sp.rarity, orbHold(attempt.def) * (lull ? POT_FX.hold : 1) * (cr.sp.ab === 'calm' ? 0.5 : 1))) { sfx('flee'); toast(`${br}${cr.sp.name} убегает…`, 'bad', br ? 4000 : 2200); setState('fleeing'); }
+        if (cr.trait !== 'stubborn' && tryFlee(cr.sp.rarity, orbHold(attempt.def) * (lull ? POT_FX.hold : 1) * (cr.sp.ab === 'calm' ? 0.5 : 1))) { sfx('flee'); toast(`${br}${cr.sp.name} убегает…${streakBurn()}`, 'bad', br ? 4000 : 2200); setState('fleeing'); }
         else {
           updateInfo();
           toast(br ? `${br}Почини её: кнопка сферы → «Починить». Пока бросаем медной`
@@ -10175,6 +10236,7 @@ function draw() {
     if (cr.trait && MOVING.has(state) && fa > 0.5) drawTraitFx();
     if (cr.stun > 0 && MOVING.has(state)) drawStunFx();
   }
+  drawRing();
   if (cr && ['spawning','ready','dragging','flying','miss','returning'].includes(state)) drawDistLabel();
   if (cr && ['ready','dragging','flying'].includes(state) && cr.scale > 0.9 && (state === 'flying' ? !!(throwInfo.pot && throwInfo.pot.net) : potOn('net'))) drawNetZone();
   if (state === 'capturing') {
@@ -10204,10 +10266,11 @@ function draw() {
   drawActivePots();
   drawParts();
   drawBolt();
+  drawStreak();
   drawPops();
   drawWeatherFront(T);
   if (warpT > 0 && save.flags.motion !== 'low') drawWarp();
-  if (!hintDone && state === 'ready' && orb.pop >= 1) {
+  if (!hintDone && state === 'ready' && orb.pop >= 1 && streakLive() < 2) {
     ctx.save();
     ctx.globalAlpha = 0.65 + 0.35 * Math.sin(T * 4);
     ctx.font = '800 15px Nunito, ui-rounded, system-ui, sans-serif';
@@ -10603,7 +10666,7 @@ function updateInfo() {
   const luck = luckMult(sp.rarity) - 1;
   if (sp.hiveItem) cChance.innerHTML = `Ловит только <b>точный бросок в самый центр</b>. Промахов до побега: <b>${Math.max(0, HIVE_ITEM_MISSES - (cr.misses || 0))}</b>`;
   else if (sp.rarity === 'glitch' && !def.glitch) cChance.innerHTML = `Ловится только <b>глитч-сферой</b>, у тебя ${save.orbs.glitch || 0}`;
-  else cChance.innerHTML = `${orbShort(def)}: шанс <b>${pct(catchChance(sp.rarity, def, traitMult()))}</b>, в центр до <b>${pct(catchChance(sp.rarity, def, 1.5 * traitMult()))}</b>` +
+  else cChance.innerHTML = `${orbShort(def)}: шанс <b>${chanceRange(sp, def)}</b>` +
     (luck > 0 ? ` 🍀+${Math.round(luck * 100)}%` : '') + (potWorks(POT_BY_ID.moon) ? ' 🌙×1,5' : '');
   const far = cr.dist > reach;
   cDist.innerHTML = far
@@ -12094,8 +12157,15 @@ function renderShop() {
 
 /* ======================= АЛЬБОМ ======================= */
 const RULES = [
-  ['🎯', 'Бросок', ['Смахни сферу вверх, к зверьку. Чем резче движение, тем дальше она летит.', 'Попадание в самый центр даёт шанс ×1,5, рядом с центром ×1,25.',
+  ['🎯', 'Бросок', ['Смахни сферу вверх, к зверьку. Чем резче движение, тем дальше она летит.',
+    `Вокруг зверька цветное кольцо сжимается и разжимается. Бросай, когда оно маленькое: «Отлично!» — шанс ×${fx2(RING_GRADE[1].mult)}, «Идеально!» — ×${fx2(RING_GRADE[0].mult)}. За них ещё больше опыта и эссенции. Небрежный бросок, когда кольцо большое, — ×${fx2(RING_NORMAL.mult)}.`,
+    'Цвет кольца — трудность: зелёный — легко, жёлтый, оранжевый, красный — очень трудно.',
+    `Место попадания: в самый центр ×${fx2(THROW_BONUS[0].mult)}, рядом с центром ×${fx2(THROW_BONUS[1].mult)}, с краю ×${fx2(THROW_EDGE.mult)}. Всё складывается с кольцом и закруткой.`,
+    'Шанс 100% бывает только за «Идеально» по обычному зверьку. На карточке зверька шанс показан от небрежного броска до «Идеально» в центр.',
     'Закрученный бросок (смахни дугой) даёт шанс ×1,2 и почти не сносится ветром.', 'Если зверёк дальше, чем бросает рука, сфера не долетит. Прокачай руку в Магазине или выпей зелье Кометы.']],
+  ['🔥', 'Серия', [`Каждый зверёк, пойманный подряд, добавляет +${Math.round(STREAK.step * 100)}% к опыту и монетам за следующую поимку, до ×${fx2(STREAK.max)} после серии из 10.`,
+    `Серия сгорает, если зверёк убежал или ты ничего не ловил ${STREAK.burnMs / 60000} минуты. Кнопка «Другой» серию не сжигает.`,
+    'Счётчик серии виден над сферой.']],
   ['🧭', 'Главный экран', ['Игра открывается на охоте. Кнопки по краям поля открывают разделы: слева Ферма и Альбом, справа Задания, Арена и Магазин.',
     'Раздел закрывается крестиком ✕, свайпом в ту сторону, откуда он выехал, или кнопкой «Назад» на телефоне. Пока раздел открыт, охота ждёт.',
     'Красная точка значит: прямо сейчас можно что-то забрать или сделать. Больше трёх точек на поле не бывает.',
@@ -12624,6 +12694,8 @@ const QUEST_POOL = [
   { id:'catch',      icon:'🎯', n:[5, 8, 12], text:n => `Поймай ${n} ${plural(n, 'зверька', 'зверьков', 'зверьков')}` },
   { id:'rare',       icon:'💎', n:[1, 2, 3],  text:n => `Поймай ${n} ${plural(n, 'редкого', 'редких', 'редких')} или ещё реже` },
   { id:'perfect',    icon:'🏹', n:[3, 5],     text:n => `Попади в самый центр ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
+  { id:'ideal',      icon:'🎯', n:[3],        text:n => `Сделай ${n} ${plural(n, 'идеальный бросок', 'идеальных броска', 'идеальных бросков')}` },
+  { id:'streak',     icon:'🔥', n:[5],        text:n => `Собери серию из ${n} поимок подряд` },
   { id:'curve',      icon:'🌀', n:[2, 3],     text:n => `Попади закрученным броском ${n} ${plural(n, 'раз', 'раза', 'раз')}` },
   { id:'merge',      icon:'✨', n:[1],        text:() => 'Сделай слияние на ферме' },
   { id:'shepherd',   icon:'🧑‍🌾', n:[1],      text:() => 'Прогони пастуха' },
@@ -13725,7 +13797,7 @@ function goHunt(locId) {
 function taskGo(id, q) {
   if (TASK_GO[id]) return TASK_GO[id];
   if (id === 'loc' && q && LOC_BY_ID[q.loc]) { const L = LOC_BY_ID[q.loc]; return locOpen(L) ? [`🎯 ${L.icon} ${L.name}`, () => goHunt(L.id)] : null; }
-  if (['catch', 'rare', 'perfect', 'curve', 'weather'].includes(id)) return ['🎯 На охоту', () => goHunt()];
+  if (['catch', 'rare', 'perfect', 'curve', 'weather', 'ideal', 'streak'].includes(id)) return ['🎯 На охоту', () => goHunt()];
   if (id === 'pet') return ['💕 В загон', () => showTab('farm', 0)];
   return null;
 }
@@ -15766,13 +15838,14 @@ function applyControls() {
   $('setLeft').checked = !!f.leftHand;
   root.setAttribute('data-font', f.font === 'l' ? 'l' : 'm');
   if (f.motion === 'low') root.setAttribute('data-motion', 'low'); else root.removeAttribute('data-motion');
-  $('setFont').checked = f.font === 'l'; $('setMotion').checked = f.motion === 'low';
+  $('setFont').checked = f.font === 'l'; $('setMotion').checked = f.motion === 'low'; $('setVibe').checked = f.vibe !== false;
   requestAnimationFrame(measureSides);
 }
 for (const b of document.querySelectorAll('#setHud button')) b.addEventListener('click', () => { save.flags.hudSize = b.dataset.v; persist(); applyControls(); sfx('tap'); });
 for (const b of document.querySelectorAll('#setLift button')) b.addEventListener('click', () => { save.flags.hudLift = b.dataset.v === 'up'; persist(); applyControls(); sfx('tap'); });
 $('setLeft').addEventListener('change', e => { save.flags.leftHand = e.target.checked; persist(); applyControls(); toast(e.target.checked ? 'Режим для левши включён' : 'Режим для левши выключен'); });
 $('setFont').addEventListener('change', e => { save.flags.font = e.target.checked ? 'l' : 'm'; persist(); applyControls(); requestAnimationFrame(layout); toast(e.target.checked ? 'Крупный шрифт включён' : 'Обычный шрифт'); });
+$('setVibe').addEventListener('change', e => { save.flags.vibe = e.target.checked; persist(); if (e.target.checked) buzz(40); toast(e.target.checked ? 'Вибрация включена' : 'Вибрация выключена'); });
 $('setMotion').addEventListener('change', e => { save.flags.motion = e.target.checked ? 'low' : ''; persist(); applyControls(); toast(e.target.checked ? 'Анимации стало меньше' : 'Анимации как обычно'); });
 applyControls();
 window.addEventListener('resize', () => { if (shep) placeShepBtn(); });
@@ -16109,7 +16182,7 @@ function tutStartShep() {
 }
 const TUT_STEPS = {
   intro:     { g:0, text:'Привет! За минуту покажу главное: как бросать сферу, где её улучшать и как прогнать пастуха.', next:'Начать', onNext:() => tutGo('throw') },
-  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:() => (tut.first ? 'Привет! ' : '') + 'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Это бросок.',
+  throw:     { g:1, tab:'hunt', enter:tutPrepareHunt, target:tutOrbRect, text:() => (tut.first ? 'Привет! ' : '') + 'Проведи пальцем по сфере вверх, к зверьку, и отпусти. Лучше бросать, когда цветное кольцо вокруг зверька маленькое.',
                on:{ throw:() => tutGo('flying') } },
   flying:    { g:1, tab:'hunt', hide:true, on:{ miss:() => tutGo('missed'), caught:() => tutGo('caught'), breakout:() => tutGo('broke'), throw:() => {} } },
   missed:    { g:1, tab:'hunt', target:tutOrbRect, text:'Мимо! Сфера вернулась к тебе. Брось ещё раз, прямо в зверька.', on:{ throw:() => tutGo('flying') } },
@@ -16861,6 +16934,97 @@ function checkMagnate() {
 checkMagnate();
 applyFrame();
 
+/* ======================= ЖИВАЯ ОХОТА (этап 4, версия 47) =======================
+   Кольцо меткости, серия поимок, строка «итог поимки», вибрация, тряска и вспышка. Числа — в начале файла (RING…, STREAK, CATCH_FEEL). */
+function ringPeriod(sp) { return RING.period[sp.rarity] || 1.8; }
+// размер кольца сейчас: 1 — самое большое, 0 — самое маленькое
+function ringNow() { return cr ? (1 + Math.cos(TAU * (T + (cr.ringOff || 0)) / ringPeriod(cr.sp))) / 2 : 1; }
+function ringColor() {
+  if (!cr) return RING_COLORS[0][1];
+  const g = RING_GRADE[1], c = catchChance(cr.sp.rarity, ORBS[selected], THROW_BONUS[1].mult * g.mult * traitMult(), undefined, chanceCap(cr.sp.rarity, g));
+  return (RING_COLORS.find(([v]) => c >= v) || RING_COLORS[RING_COLORS.length - 1])[1];
+}
+function drawRing() {
+  if (!cr || cr.sp.hiveItem || cr.scale < 0.9) return;
+  let k, a = 1;
+  if (['ready', 'dragging', 'spawning'].includes(state)) k = ringNow();
+  else if (state === 'flying' && throwInfo && throwInfo.ringK != null) { k = throwInfo.ringK; a = Math.max(0, 1 - stT / 0.45); }   // в полёте кольцо замирает и гаснет
+  else return;
+  a *= MOVING.has(state) ? fogAlpha() : 1;
+  if (a <= 0.02) return;
+  const hitR = Math.max(cr.r * 1.05, 24), rr = hitR * (RING.min + (RING.max - RING.min) * k), col = ringColor();
+  ctx.save();
+  ctx.globalAlpha = 0.45 * a; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cr.x, cr.y, hitR * RING.max, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = col; ctx.globalAlpha = 0.3 * a; ctx.lineWidth = 10;
+  ctx.beginPath(); ctx.arc(cr.x, cr.y, rr, 0, TAU); ctx.stroke();
+  ctx.globalAlpha = a; ctx.lineWidth = k <= RING_GRADE[0].maxK ? 5 : 3.5; ctx.stroke();
+  ctx.restore();
+}
+// ---- серия поимок ----
+function streakLive() { return save.streak.n > 0 && Date.now() - save.streak.t <= STREAK.burnMs ? save.streak.n : 0; }
+function streakMult(n = streakLive()) { return Math.min(STREAK.max, 1 + STREAK.step * n); }
+function streakAdd() {
+  const n = streakLive() + 1;
+  save.streak = { n, t:Date.now() };
+  questStreak(n);
+  return n;
+}
+// зверёк убежал — серия сгорает; возвращает подпись для сообщения о побеге
+function streakBurn() {
+  const n = streakLive();
+  save.streak = { n:0, t:0 };
+  return n >= 2 ? ` 🔥 Серия ${n} сгорела` : '';
+}
+function questStreak(n) {
+  ensureQuests();
+  let done = false;
+  for (const q of save.quests.list) if (q.id === 'streak' && !q.claimed && q.prog < q.n) { q.prog = Math.min(q.n, Math.max(q.prog, n)); if (q.prog >= q.n) done = true; }
+  if (done) setTimeout(() => { sfx('ok'); toast('📋 Задание выполнено: серия собрана. Забери награду!', 'good', 3200); }, 1400);
+  if (tab === 'quests') renderQuests();
+  updateQuestDot();
+}
+function drawStreak() {
+  const n = streakLive();
+  if (n < 2 || !['ready', 'spawning', 'dragging', 'returning', 'miss'].includes(state)) return;
+  const txt = `🔥 Серия ${n} · ×${fx2(streakMult(n))}`;
+  ctx.save();
+  ctx.font = '900 13px Nunito, ui-rounded, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(txt).width + 18, x = rest.x, y = rest.y - ORB_R * 2.25, h = 24;
+  ctx.fillStyle = 'rgba(30,18,6,0.62)'; ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, 12); else ctx.rect(x - w / 2, y - h / 2, w, h);
+  ctx.fill();
+  ctx.fillStyle = n >= 10 ? '#ffd54f' : '#ffffff'; ctx.fillText(txt, x, y + 1);
+  ctx.restore();
+}
+// ---- итог поимки: короткая строка, сама исчезает через 1,5 с или по нажатию ----
+let catchLineTimer = 0;
+function showCatchLine(parts) {
+  const el = $('catchLine'); if (!el) return;
+  el.innerHTML = '';
+  for (const [cls, text] of parts) { const s = document.createElement('span'); s.className = 'cl-' + cls; s.textContent = text; el.append(s); }
+  const top = Math.max($('huntTop').getBoundingClientRect().bottom, $('info').getBoundingClientRect().bottom) - $('stage').getBoundingClientRect().top;
+  el.style.top = Math.round(top + 6) + 'px';
+  el.hidden = false; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  clearTimeout(catchLineTimer); catchLineTimer = setTimeout(hideCatchLine, 1500);
+}
+function hideCatchLine() { clearTimeout(catchLineTimer); const el = $('catchLine'); if (el) { el.hidden = true; el.classList.remove('show'); } }
+$('catchLine').addEventListener('click', hideCatchLine);
+// ---- ощущения: вибрация, тряска, вспышка ----
+// вибрацию выключают галочкой в Настройках
+function buzz(pattern) {
+  if (save.flags.vibe === false) return;
+  try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+}
+let shakeT = 0, shakeMag = 0, flashCol = null;
+function catchFeel(sp) {
+  const f = CATCH_FEEL[sp.rarity] || (sp.shiny ? [4, '255,255,255'] : null);
+  buzz(f ? [30, 40, 30] : 30);
+  if (!f) return;
+  if (!lowMotion()) { shakeMag = f[0]; shakeT = 0.28; }
+  if (f[1]) { flashCol = f[1]; flashIce = false; flash = Math.max(flash, lowMotion() ? 0.25 : 0.55); }
+}
+
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
   // ферма платит только за новое время: если часы ушли назад, уже прожитое время второй раз не оплачивается (версия 45)
@@ -16901,11 +17065,13 @@ function frame(now) {
   if (warpT > 0) warpT = Math.max(0, warpT - dt);
   // гроза: вспышка молнии (в горах и зимой ледяная), и зверёк на миг замирает
   if (!hold && weather.id === 'storm' && !noWx() && Math.random() < dt * 0.2) {
-    flash = save.flags.motion === 'low' ? 0.35 : 1; flashIce = snowy();
+    flash = save.flags.motion === 'low' ? 0.35 : 1; flashIce = snowy(); flashCol = null;
     if (!flashIce) setTimeout(() => sfx('thunder'), 300 + Math.random() * 700);
     if (cr && MOVING.has(state) && wxOn('storm') && cr.sp.rarity !== 'glitch') { cr.stun = STUN_TIME; cr.stunKind = null; }
   }
-  flash = Math.max(0, flash - dt * 2.5);
+  flash = Math.max(0, flash - dt * 2.5); if (!flash) flashCol = null;
+  // лёгкая тряска поля при поимке редкого (этап 4)
+  if (shakeT > 0) { shakeT = Math.max(0, shakeT - dt); const m = shakeMag * shakeT / 0.28; canvas.style.transform = shakeT > 0 ? `translate(${((Math.random() - 0.5) * 2 * m).toFixed(1)}px,${((Math.random() - 0.5) * 2 * m).toFixed(1)}px)` : ''; }
   uiTick += dt;
   if (uiTick > 0.5) {
     uiTick = 0;
